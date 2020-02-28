@@ -1,0 +1,1547 @@
+#subscription
+
+subscription subscribeToLog($where: LogRequestSubscriptionWhereInput) {
+  logRequest(where: $where) {
+    mutation
+    node {
+      ID
+      caseId {
+        id
+        judulKasus
+        transfer {
+          id
+          tglTransfer
+          network {
+            id
+            name
+          }
+        }
+        application {
+          id
+          noReg
+          clients {
+            id
+            personId {
+              id
+              namaLengkap
+            }
+          }
+        }
+        kronologiKasus
+        pk {
+          id
+          didampingi
+          tglRapat
+        }
+      }
+      isiRequest
+      tanggapanRequestIsi
+      applicationId {
+        id
+        tahap
+        noReg
+        dudukPerara
+        clients {
+          id
+          personId {
+            id
+            namaLengkap
+          }
+        }
+      }
+      jenisRequest
+      networkId {
+        id
+        name
+      }
+      personId {
+        id
+        namaLengkap
+      }
+      pp {
+        id
+        appConsultation {
+          name
+          id
+        }
+      }
+      requestBy {
+        id
+        name
+      }
+      requestTo {
+        id
+      }
+      statusRequest
+      tanggapanRequest
+      tglExpired
+      tglRequest
+      tglRespon
+    }
+  }
+}
+
+# mutation
+
+mutation destroyRoles($where: RoleWhereInput!) {
+  deleteManyRoles(where: $where) {
+    count
+  }
+}
+
+mutation destroyLog($where: LogRequestWhereInput!) {
+  deleteManyLogRequests(where: $where) {
+    count
+  }
+}
+
+mutation destroyLit($where: CaseProgressActivityLitWhereInput!) {
+  deleteManyCaseProgressActivityLits(where: $where) {
+    count
+  }
+}
+
+mutation destroyNonlit($where: CaseProgressActivityNonlitWhereInput!) {
+  deleteManyCaseProgressActivityNonlits(where: $where) {
+    count
+  }
+}
+
+mutation destroyKorban($where: CaseKorbanWhereInput!) {
+  deleteManyCaseKorbans(where: $where) {
+    count
+  }
+}
+
+mutation destroyPelaku($where: CasePelakuWhereInput!) {
+  deleteManyCasePelakus(where: $where) {
+    count
+  }
+}
+
+mutation destroyCaseViolatedRight($where: CaseViolatedRightWhereInput!) {
+  deleteManyCaseViolatedRights(where: $where) {
+    count
+  }
+}
+
+mutation destroyCaseClassification($where: CaseClassificationWhereInput!) {
+  deleteManyCaseClassifications(where: $where) {
+    count
+  }
+}
+
+mutation destroyCaseProgressActivity($where: CaseProgressActivityWhereInput!) {
+  deleteManyCaseProgressActivities(where: $where) {
+    count
+  }
+}
+
+mutation destroyCaseIssue($where: CaseIssueWhereInput!) {
+  deleteManyCaseIssues(where: $where) {
+    count
+  }
+}
+
+mutation postLogRequest($data: LogRequestCreateInput!) {
+  createLogRequest(data: $data) {
+    ID
+    caseId {
+      id
+    }
+    isiRequest
+    applicationId {
+      id
+      tahap
+    }
+    jenisRequest
+    networkId {
+      id
+    }
+    personId {
+      id
+    }
+    pp {
+      id
+    }
+    requestBy {
+      id
+    }
+    requestTo {
+      id
+    }
+    tanggapanRequest
+    tanggapanRequestIsi
+    tglExpired
+    tglRequest
+    tglRespon
+  }
+}
+
+mutation postUser($data: UserCreateInput!) {
+  createUser(data: $data) {
+    address
+    avatar
+    createdAt
+    deletedAt
+    email
+    id
+    name
+    password
+    phone
+    position
+    rememberToken
+    roles
+    status
+    updatedAt
+    username
+    profile {
+      id
+      noContact
+    }
+  }
+}
+
+mutation postNetwork($data: NetworkCreateInput!) {
+  createNetwork(data: $data) {
+    address
+    contactPerson
+    createdAt
+    email
+    id
+    name
+    noContact
+    provinceId
+    regencyId
+    type
+    status
+    updatedAt
+  }
+}
+mutation postClient($data: ClientCreateInput!) {
+  createClient(data: $data) {
+    id
+    alamatLokasi
+    applicationId {
+      id
+    }
+    asetGedung
+    asetKios
+    asetLahanGarapan
+    asetLapak
+    asetMobil
+    asetMotor
+    asetRumah
+    asetTanah
+    asetToko
+    asetWarung
+    createdAt
+    createdBy
+    pendapatan
+    personId {
+      id
+    }
+    sktm
+    sktmUpload
+    stmKeterangan
+    tanggunganAnak
+    tanggunganFamili
+    tanggunganLain
+    tanggunganPasangan
+    updatedAt
+    updatedBy
+    usiaSaatKlien
+  }
+}
+
+mutation postApplication($data: ApplicationCreateInput!) {
+  createApplication(data: $data) {
+    id
+    createdAt
+    createdBy
+    dudukPerara
+    infoLbh
+    jumlahPenerimaManfaat
+    konfirmasiData
+    noReg
+    pernahKlien
+    pernahPpLain
+    ppLain
+    regDate
+    relasiWakilClient
+    setujuAdvokasi
+    statusPerwakilan
+    updatedAt
+    updatedBy
+    wakilId {
+      id
+      namaLengkap
+    }
+    waktuPernahKlien
+    whyLbh
+    case {
+      id
+    }
+    clients {
+      id
+      alamatLokasi
+      asetGedung
+      asetKios
+      asetLahanGarapan
+      asetLapak
+      asetMobil
+      asetMotor
+      asetRumah
+      asetTanah
+      asetToko
+      asetWarung
+      createdAt
+      createdBy
+      pendapatan
+      personId {
+        id
+        namaLengkap
+      }
+      sktm
+      sktmUpload
+      stmKeterangan
+      tanggunganAnak
+      tanggunganFamili
+      tanggunganLain
+      tanggunganPasangan
+      updatedAt
+      updatedBy
+      usiaSaatKlien
+    }
+  }
+}
+
+mutation putCase($data: CaseUpdateInput!, $where: CaseWhereUniqueInput!) {
+  updateCase(data: $data, where: $where) {
+    id
+    applicationId
+    caseClosed
+    caseClosedJenis
+    createdAt
+    createdBy
+    hakTerlanggar
+    issue
+    judulKasus
+    klasifikasiDok
+    klasifikasiDok
+    kronologiKasus
+    lockDitolak
+    statusPendampingan
+    targetAdvokasi
+    unlockPk
+    unlockTransfer
+    updatedAt
+    updatedBy
+    application {
+      id
+      createdAt
+      createdBy
+      dudukPerara
+      infoLbh
+      jumlahPenerimaManfaat
+      konfirmasiData
+      noReg
+      pernahKlien
+      pernahPpLain
+      ppLain
+      regDate
+      relasiWakilClient
+      setujuAdvokasi
+      statusPerwakilan
+      updatedAt
+      updatedBy
+      wakilId {
+        id
+        agama
+        alamatDomisili
+        alamatId
+        alatBantu
+        alias
+        createdAt
+        createdBy
+        disabilitas
+        distrikDomisili
+        distrikId
+        domisiliSama
+        email
+        golDarah
+        jenisDisabilitas
+        jenisDomisili
+        jenisId
+        jenisKelamin
+        jmlAnggota
+        namaLengkap
+        nomorId
+        pekerjaan
+        pendidikan
+        statusPernikahan
+        telepon
+      }
+      waktuPernahKlien
+      whyLbh
+      clients {
+        personId {
+          namaLengkap
+        }
+      }
+      tahap
+      status
+    }
+    classifications {
+      id
+      kodeMt
+    }
+    consultations {
+      id
+      appKonsul
+      createdAt
+      createdBy
+      isiKonsul
+      judulAktifitas
+      ppKonsul
+      harapan
+      saranHukum
+      rencanaTindakLanjut
+      tglKonsul
+      updatedAt
+      updatedBy
+      apps {
+        appConsultation {
+          name
+          id
+        }
+      }
+    }
+    documents {
+      jenisDokumen
+      judulDokumen
+      keterangan
+      filename
+      link
+    }
+    issues {
+      id
+      kodeMt
+    }
+    korbans {
+      id
+      personId {
+        namaLengkap
+        id
+      }
+    }
+    pelakus {
+      id
+      personId {
+        namaLengkap
+        id
+      }
+      jenisPelaku
+    }
+    pk {
+      id
+      createdAt
+      createdBy
+      didampingi
+      legalMemo
+      notulaRapat
+      strategiAdvokasi
+      targetAkhirAdvokasi
+      ppPendamping {
+        address
+        avatar
+        createdAt
+        deletedAt
+        email
+        id
+        name
+        password
+        phone
+        position
+        rememberToken
+        roles
+        status
+        updatedAt
+        username
+        profile {
+          id
+          noContact
+        }
+      }
+      statusAlasanTdk
+      tglRapat
+    }
+    progresses {
+      id
+      catatan
+      jenisPeradilan
+    }
+    activities {
+      id
+      capaian
+      hambatan
+      judulAktifitas
+      position
+      rencanaStrategi
+      targetAdvokasi
+      activitieslit {
+        id
+        kodeMt
+      }
+      activitiesnonlit {
+        id
+        kodeMt
+      }
+    }
+    transferreferrals {
+      id
+      catatan
+      document
+      jenisTransferReferral
+      networkId
+      updatedAt
+      updatedBy
+    }
+    violatedrights {
+      id
+      kodeMt
+    }
+  }
+}
+
+mutation putLogRequest($data: LogRequestUpdateInput!, $where: LogRequestWhereUniqueInput!) {
+  updateLogRequest(data: $data, where: $where) {
+    ID
+    caseId {
+      id
+    }
+    isiRequest
+    applicationId {
+      id
+    }
+    jenisRequest
+    networkId {
+      id
+    }
+    personId {
+      id
+    }
+    pp {
+      id
+    }
+    requestBy {
+      id
+    }
+    requestTo {
+      id
+    }
+    tanggapanRequest
+    tanggapanRequestIsi
+    tglExpired
+    tglRequest
+    tglRespon
+  }
+}
+
+mutation putUser($data: UserUpdateInput!, $where: UserWhereUniqueInput!) {
+  updateUser(data: $data, where: $where) {
+    address
+    avatar
+    createdAt
+    deletedAt
+    email
+    id
+    name
+    password
+    phone
+    position
+    rememberToken
+    roles
+    status
+    updatedAt
+    username
+    profile {
+      id
+      noContact
+    }
+  }
+}
+
+mutation putNetwork($data: NetworkUpdateInput!, $where: NetworkWhereUniqueInput!) {
+  updateNetwork(data: $data, where: $where) {
+    address
+    contactPerson
+    createdAt
+    email
+    id
+    name
+    noContact
+    provinceId
+    regencyId
+    type
+    status
+    updatedAt
+  }
+}
+
+mutation putApplication($data: ApplicationUpdateInput!, $where: ApplicationWhereUniqueInput!) {
+  updateApplication(data: $data, where: $where) {
+    id
+    createdAt
+    createdBy
+    dudukPerara
+    infoLbh
+    jumlahPenerimaManfaat
+    konfirmasiData
+    noReg
+    pernahKlien
+    pernahPpLain
+    ppLain
+    regDate
+    relasiWakilClient
+    setujuAdvokasi
+    statusPerwakilan
+    updatedAt
+    updatedBy
+    wakilId {
+      id
+      namaLengkap
+    }
+    waktuPernahKlien
+    whyLbh
+    case {
+      id
+    }
+    clients {
+      id
+      alamatLokasi
+      asetGedung
+      asetKios
+      asetLahanGarapan
+      asetLapak
+      asetMobil
+      asetMotor
+      asetRumah
+      asetTanah
+      asetToko
+      asetWarung
+      createdAt
+      createdBy
+      pendapatan
+      personId {
+        id
+        namaLengkap
+      }
+      sktm
+      sktmUpload
+      stmKeterangan
+      tanggunganAnak
+      tanggunganFamili
+      tanggunganLain
+      tanggunganPasangan
+      updatedAt
+      updatedBy
+      usiaSaatKlien
+    }
+  }
+}
+
+mutation putPerson($data: PersonUpdateInput!, $where: PersonWhereUniqueInput!) {
+  updatePerson(data: $data, where: $where) {
+    id
+    agama
+    alamatDomisili
+    alamatId
+    alatBantu
+    alias
+    createdAt
+    createdBy
+    disabilitas
+    distrikDomisili
+    distrikId
+    domisiliSama
+    email
+    golDarah
+    jenisDisabilitas
+    jenisDomisili
+    jenisId
+    jenisKelamin
+    jmlAnggota
+    namaLengkap
+    nomorId
+    pekerjaan
+    pendidikan
+    statusPernikahan
+    telepon
+    tglLahir
+    tmpLahir
+    unitSatuan
+    updatedAt
+    updatedBy
+    wargaNegara
+    applications {
+      id
+      noReg
+      createdAt
+    }
+    clients {
+      id
+      applicationId {
+        id
+        noReg
+        createdAt
+      }
+    }
+    documents {
+      id
+      title
+      file
+    }
+  }
+}
+
+mutation postPerson($data: PersonCreateInput!) {
+  createPerson(data: $data) {
+    id
+    agama
+    alamatDomisili
+    alamatId
+    alatBantu
+    alias
+    createdAt
+    createdBy
+    disabilitas
+    distrikDomisili
+    distrikId
+    domisiliSama
+    email
+    golDarah
+    jenisDisabilitas
+    jenisDomisili
+    jenisId
+    jenisKelamin
+    jmlAnggota
+    namaLengkap
+    nomorId
+    pekerjaan
+    pendidikan
+    statusPernikahan
+    telepon
+    tglLahir
+    tmpLahir
+    unitSatuan
+    updatedAt
+    updatedBy
+    wargaNegara
+    applications {
+      id
+      noReg
+      createdAt
+    }
+    clients {
+      id
+      applicationId {
+        id
+        noReg
+        createdAt
+      }
+    }
+    documents {
+      id
+      title
+      file
+    }
+  }
+}
+
+# query
+
+query getLogRequest(
+  $where: LogRequestWhereInput
+  $orderBy: LogRequestOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  logRequests(
+    where: $where
+    orderBy: $orderBy
+    skip: $skip
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+  ) {
+    ID
+    updatedAt
+    caseId {
+      id
+      judulKasus
+      transfer {
+        id
+        tglTransfer
+        network {
+          id
+          name
+        }
+      }
+      application {
+        id
+        noReg
+        clients {
+          id
+          personId {
+            id
+            namaLengkap
+          }
+        }
+      }
+      kronologiKasus
+      pk {
+        id
+        didampingi
+        tglRapat
+      }
+    }
+    isiRequest
+    tanggapanRequestIsi
+    applicationId {
+      id
+      tahap
+      noReg
+      dudukPerara
+      clients {
+        id
+        personId {
+          id
+          namaLengkap
+        }
+      }
+    }
+    jenisRequest
+    networkId {
+      id
+      name
+    }
+    personId {
+      id
+      namaLengkap
+    }
+    pp {
+      id
+      appConsultation {
+        name
+        id
+      }
+    }
+    requestBy {
+      id
+      name
+    }
+    requestTo {
+      id
+    }
+    statusRequest
+    tanggapanRequest
+    tglExpired
+    tglRequest
+    tglRespon
+  }
+}
+
+query getRolesType(
+  $where: RolesTypeWhereInput
+  $orderBy: RolesTypeOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  rolesTypes(
+    where: $where
+    orderBy: $orderBy
+    skip: $skip
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+  ) {
+    id
+    description
+  }
+}
+
+query getNetworks(
+  $where: NetworkWhereInput
+  $orderBy: NetworkOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  networks(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+    address
+    contactPerson
+    createdAt
+    email
+    id
+    name
+    noContact
+    provinceId
+    regencyId
+    type
+    status
+    updatedAt
+  }
+}
+
+query getUser(
+  $where: UserWhereInput
+  $orderBy: UserOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  users(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+    address
+    avatar
+    createdAt
+    deletedAt
+    email
+    id
+    name
+    password
+    phone
+    position
+    rememberToken
+    roles
+    status
+    updatedAt
+    username
+    profile {
+      id
+      noContact
+    }
+    roles_type {
+      id
+      type {
+        id
+        description
+      }
+    }
+  }
+}
+
+query getCase(
+  $where: CaseWhereInput
+  $orderBy: CaseOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  cases(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+    id
+    applicationId
+    caseClosed
+    caseClosedJenis
+    createdAt
+    createdBy
+    hakTerlanggar
+    issue
+    judulKasus
+    klasifikasiDok
+    klasifikasiDok
+    kronologiKasus
+    lockDitolak
+    statusPendampingan
+    targetAdvokasi
+    unlockPk
+    unlockTransfer
+    updatedAt
+    updatedBy
+    transfer {
+      id
+      tglTransfer
+      catatan
+      network {
+        id
+        name
+      }
+      createdBy
+      updatedBy
+    }
+    referrals {
+      id
+      client {
+        id
+        namaLengkap
+      }
+      tglTransfer
+      catatan
+      network {
+        id
+        name
+      }
+      createdBy
+      updatedBy
+    }
+    application {
+      id
+      createdAt
+      createdBy
+      dudukPerara
+      infoLbh
+      jumlahPenerimaManfaat
+      konfirmasiData
+      noReg
+      pernahKlien
+      pernahPpLain
+      ppLain
+      regDate
+      relasiWakilClient
+      setujuAdvokasi
+      statusPerwakilan
+      updatedAt
+      updatedBy
+      wakilId {
+        id
+        agama
+        alamatDomisili
+        alamatId
+        alatBantu
+        alias
+        createdAt
+        createdBy
+        disabilitas
+        distrikDomisili
+        distrikId
+        domisiliSama
+        email
+        golDarah
+        jenisDisabilitas
+        jenisDomisili
+        jenisId
+        jenisKelamin
+        jmlAnggota
+        namaLengkap
+        nomorId
+        pekerjaan
+        pendidikan
+        statusPernikahan
+        telepon
+      }
+      waktuPernahKlien
+      whyLbh
+      clients {
+        id
+        alamatLokasi
+        asetGedung
+        asetKios
+        asetLahanGarapan
+        asetLapak
+        asetMobil
+        asetMotor
+        asetRumah
+        asetTanah
+        asetToko
+        asetWarung
+        createdAt
+        createdBy
+        pendapatan
+        personId {
+          id
+          agama
+          alamatDomisili
+          alamatId
+          alatBantu
+          alias
+          createdAt
+          createdBy
+          disabilitas
+          distrikDomisili
+          distrikId
+          domisiliSama
+          email
+          golDarah
+          jenisDisabilitas
+          jenisDomisili
+          jenisId
+          jenisKelamin
+          jmlAnggota
+          namaLengkap
+          nomorId
+          pekerjaan
+          pendidikan
+          statusPernikahan
+          telepon
+          tglLahir
+          tmpLahir
+          unitSatuan
+          updatedAt
+          updatedBy
+          wargaNegara
+        }
+        sktm
+        sktmUpload
+        stmKeterangan
+        tanggunganAnak
+        tanggunganFamili
+        tanggunganLain
+        tanggunganPasangan
+        updatedAt
+        updatedBy
+        usiaSaatKlien
+      }
+      tahap
+      status
+    }
+    classifications {
+      id
+      kodeMt
+    }
+    consultations {
+      id
+      caseId {
+        id
+        application {
+          id
+          noReg
+        }
+      }
+      appKonsul
+      createdAt
+      createdBy
+      isiKonsul
+      judulAktifitas
+      ppKonsul
+      tglKonsul
+      harapan
+      saranHukum
+      rencanaTindakLanjut
+      updatedAt
+      updatedBy
+      apps {
+        id
+        appConsultation {
+          name
+          id
+          roles_type {
+            id
+            type {
+              id
+            }
+          }
+        }
+      }
+    }
+    documents {
+      id
+      jenisDokumen
+      judulDokumen
+      keterangan
+      filename
+      link
+      createdAt
+    }
+    issues {
+      id
+      kodeMt
+    }
+    korbans {
+      id
+      personId {
+        namaLengkap
+        id
+      }
+    }
+    pelakus {
+      id
+      personId {
+        namaLengkap
+        id
+      }
+      jenisPelaku
+    }
+    pk {
+      id
+      createdAt
+      createdBy
+      didampingi
+      legalMemo
+      notulaRapat
+      strategiAdvokasi
+      targetAkhirAdvokasi
+      ppPendamping {
+        address
+        avatar
+        createdAt
+        deletedAt
+        email
+        id
+        name
+        password
+        phone
+        position
+        rememberToken
+        roles
+        status
+        updatedAt
+        username
+        profile {
+          id
+          noContact
+        }
+      }
+      statusAlasanTdk
+      tglRapat
+    }
+    progresses {
+      id
+      catatan
+      jenisPeradilan
+    }
+    activities {
+      id
+      capaian
+      hambatan
+      tglAktifitas
+      judulAktifitas
+      position
+      rencanaStrategi
+      targetAdvokasi
+      activitieslit {
+        id
+        kodeMt
+      }
+      activitiesnonlit {
+        id
+        kodeMt
+      }
+    }
+    transferreferrals {
+      id
+      catatan
+      document
+      jenisTransferReferral
+      networkId
+      updatedAt
+      updatedBy
+    }
+    violatedrights {
+      id
+      kodeMt
+    }
+
+    logRequests {
+      ID
+      caseId {
+        id
+        judulKasus
+      }
+      isiRequest
+      tanggapanRequestIsi
+      applicationId {
+        id
+        tahap
+        noReg
+        dudukPerara
+        clients {
+          id
+          personId {
+            id
+            namaLengkap
+          }
+        }
+      }
+      jenisRequest
+      networkId {
+        id
+      }
+      personId {
+        id
+      }
+      pp {
+        id
+        appConsultation {
+          name
+          id
+          roles_type {
+            id
+            type {
+              id
+            }
+          }
+        }
+      }
+      requestBy {
+        id
+      }
+      requestTo {
+        id
+      }
+      statusRequest
+      tanggapanRequest
+      tglExpired
+      tglRequest
+      tglRespon
+    }
+  }
+}
+
+query getConsultation(
+  $where: CaseConsultationWhereInput
+  $orderBy: CaseConsultationOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  caseConsultations(
+    where: $where
+    orderBy: $orderBy
+    skip: $skip
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+  ) {
+    id
+  }
+}
+
+query getPk(
+  $where: CasePkWhereInput
+  $orderBy: CasePkOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  casePks(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+    id
+  }
+}
+
+query getClient(
+  $where: ClientWhereInput
+  $orderBy: ClientOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  clients(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+    id
+    alamatLokasi
+    applicationId {
+      id
+    }
+    asetGedung
+    asetKios
+    asetLahanGarapan
+    asetLapak
+    asetMobil
+    asetMotor
+    asetRumah
+    asetTanah
+    asetToko
+    asetWarung
+    createdAt
+    createdBy
+    pendapatan
+    personId {
+      id
+    }
+    sktm
+    sktmUpload
+    stmKeterangan
+    tanggunganAnak
+    tanggunganFamili
+    tanggunganLain
+    tanggunganPasangan
+    updatedAt
+    updatedBy
+    usiaSaatKlien
+  }
+}
+
+query getApplications(
+  $where: ApplicationWhereInput
+  $orderBy: ApplicationOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  applications(
+    where: $where
+    orderBy: $orderBy
+    skip: $skip
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+  ) {
+    id
+    createdAt
+    createdBy
+    dudukPerara
+    infoLbh
+    jumlahPenerimaManfaat
+    konfirmasiData
+    noReg
+    pernahKlien
+    pernahPpLain
+    ppLain
+    regDate
+    relasiWakilClient
+    setujuAdvokasi
+    statusPerwakilan
+    updatedAt
+    updatedBy
+    wakilId {
+      id
+      namaLengkap
+      alamatId
+    }
+    waktuPernahKlien
+    whyLbh
+    case {
+      id
+    }
+    clients {
+      id
+      alamatLokasi
+      asetGedung
+      asetKios
+      asetLahanGarapan
+      asetLapak
+      asetMobil
+      asetMotor
+      asetRumah
+      asetTanah
+      asetToko
+      asetWarung
+      createdAt
+      createdBy
+      pendapatan
+      personId {
+        id
+        namaLengkap
+        tglLahir
+        tmpLahir
+        alamatId
+        pekerjaan
+        jenisId
+        nomorId
+      }
+      sktm
+      sktmUpload
+      stmKeterangan
+      tanggunganAnak
+      tanggunganFamili
+      tanggunganLain
+      tanggunganPasangan
+      updatedAt
+      updatedBy
+      usiaSaatKlien
+    }
+  }
+}
+
+query getMtVocabs(
+  $where: MtVocabWhereInput
+  $orderBy: MtVocabOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  mtVocabs(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+    KODE
+    kode_induk
+    level
+    sembunyikan
+    teks
+    urutan
+  }
+}
+query allPerson(
+  $where: PersonWhereInput
+  $orderBy: PersonOrderByInput
+  $skip: Int
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+) {
+  persons(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+    id
+    agama
+    alamatDomisili
+    alamatId
+    alatBantu
+    alias
+    createdAt
+    createdBy
+    disabilitas
+    distrikDomisili
+    distrikId
+    domisiliSama
+    email
+    golDarah
+    jenisDisabilitas
+    jenisDomisili
+    jenisId
+    jenisKelamin
+    jmlAnggota
+    namaLengkap
+    nomorId
+    pekerjaan
+    pendidikan
+    statusPernikahan
+    telepon
+    tglLahir
+    tmpLahir
+    unitSatuan
+    updatedAt
+    updatedBy
+    wargaNegara
+    applications {
+      id
+      noReg
+      createdAt
+    }
+    clients {
+      id
+      applicationId {
+        id
+        noReg
+        createdAt
+      }
+    }
+    documents {
+      id
+      title
+      file
+    }
+  }
+}

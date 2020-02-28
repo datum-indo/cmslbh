@@ -1,0 +1,127 @@
+{
+  "app": {
+    "name": "CMS LBH",
+    "description": "Case Management System Lembaga Bantuan Hukum"
+  },
+  "menu": [{
+    "text": "Form",
+    "i18n": "menu.main",
+    "group": true,
+    "hideInBreadcrumb": true,
+    "children": [{
+        "text": "Dashboard",
+        "acl": ["8", "1", "2", "3", "4", "5", "6", "7"],
+        "i18n": "menu.dashboard",
+        "icon": "anticon-dashboard",
+        "children": [{
+            "text": "Dashboard",
+            "link": "/dashboard/v1",
+            "i18n": "menu.dashboard.v1"
+          },
+          {
+            "text": "Dashboard",
+            "acl": ["3", "4"],
+            "link": "/dashboard/workplace",
+            "i18n": "menu.dashboard.workplace"
+          },
+          {
+            "text": "Dashboard",
+            "acl": ["7", "5", "6", "8"],
+            "link": "/dashboard/cases",
+            "i18n": "menu.dashboard.cases"
+          },
+          {
+            "text": "Analisa",
+            "acl": ["7", "5", "6", "8"],
+            "link": "/form/analisa"
+          }
+        ]
+      },
+      {
+        "text": "Person",
+        "icon": "anticon-edit",
+        "acl": ["8", "1"],
+        "children": [{
+            "text": "Create Person",
+            "link": "/form/person/create"
+          },
+          {
+            "text": "List Person",
+            "link": "/form/person/list"
+          }
+        ]
+      },
+      {
+        "text": "Application",
+        "icon": "anticon-edit",
+        "acl": ["8", "1"],
+        "children": [{
+            "text": "Create Application",
+            "link": "/form/application/create"
+          },
+          {
+            "text": "List Application",
+            "link": "/form/application/list"
+          }
+        ]
+      },
+      {
+        "text": "User",
+        "icon": "anticon-edit",
+        "acl": ["8"],
+        "children": [{
+            "text": "Create User",
+            "link": "/form/user/create"
+          },
+          {
+            "text": "List User",
+            "link": "/form/user/list"
+          }
+        ]
+      },
+      {
+        "text": "Network",
+        "icon": "anticon-edit",
+        "acl": ["8"],
+        "children": [{
+            "text": "Create Network",
+            "link": "/form/network/create"
+          },
+          {
+            "text": "List Network",
+            "link": "/form/network/list"
+          }
+        ]
+      },
+      {
+        "text": "Permintaan",
+        "icon": "anticon-edit",
+        "acl": ["8", "1", "2", "3", "4", "5"],
+        "children": [{
+            "text": "Konsultasi",
+            "acl": ["1", "2", "3", "4"],
+            "link": "/form/consultation-queue"
+          }, {
+            "text": "Rekomendasi Kasus",
+            "acl": ["3", "4", "5"],
+            "link": "/form/rapat-queue"
+          },
+          {
+            "text": "Rekomendasi Referral",
+            "acl": ["3", "4", "5"],
+            "link": "/form/referral-queue"
+          }
+        ]
+      },
+      {
+        "text": "Kasus",
+        "icon": "anticon-edit",
+        "acl": ["8"],
+        "children": [{
+          "text": "List Kasus",
+          "link": "/form/case/list"
+        }]
+      }
+    ]
+  }]
+}

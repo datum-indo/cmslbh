@@ -1,0 +1,15 @@
+overwrite: true
+schema: http://192.168.1.2:3000/graphql
+documents: src/app/shared/graphql/types/*.graphql
+config:
+  scalars:
+    DateTime: Date
+  avoidOptionals: false
+  skipTypename: true
+generates:
+  ./src/app/shared/graphql/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-apollo-angular\
+      - typescript-compatibility

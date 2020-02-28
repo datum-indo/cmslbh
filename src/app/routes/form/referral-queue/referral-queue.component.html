@@ -1,0 +1,150 @@
+<page-header *ngIf="!parent" [title]="'Rekomendasi Referral'"></page-header>
+<div #card>
+  <nz-card [nzBordered]="false">
+    <form nz-form [nzLayout]="'inline'" (ngSubmit)="getData()" class="search__form">
+      <div nz-row [nzGutter]="{ xs: 8, sm: 8, md: 8, lg: 24, xl: 48, xxl: 48 }">
+        <div nz-col nzMd="8" nzSm="24">
+          <nz-form-item>
+            <nz-form-label nzFor="clientName">Nama Klien</nz-form-label>
+            <nz-form-control>
+              <input nz-input [(ngModel)]="q.clientName" name="clientName" placeholder="Nama Klien" id="clientName" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzMd="8" nzSm="24">
+          <nz-form-item>
+            <nz-form-label nzFor="ppName">Nama PP</nz-form-label>
+            <nz-form-control>
+              <input nz-input [(ngModel)]="q.ppName" name="ppName" placeholder="Nama PP" id="ppName" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzMd="8" nzSm="24" *ngIf="expandForm">
+          <nz-form-item>
+            <nz-form-label nzFor="noReg">No Reg</nz-form-label>
+            <nz-form-control>
+              <input nz-input [(ngModel)]="q.noReg" name="noReg" placeholder="Nomor Registrasi" id="noReg" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="expandForm ? 24 : 8" [class.text-right]="expandForm">
+          <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="loading">Search</button>
+          <button nz-button type="reset" (click)="reset()" class="mx-sm">Reset</button>
+          <a (click)="expandForm = !expandForm">
+            {{ expandForm ? 'Hide' : 'Expand' }}
+            <i nz-icon [nzType]="expandForm ? 'up' : 'down'"></i>
+          </a>
+        </div>
+      </div>
+    </form>
+    <div class="my-md">
+      <button nz-button (click)="addPP(modalContent, 'Buat Baru Rekomendasi')" [nzType]="'primary'">
+        <i nz-icon nzType="plus"></i>
+        <span>New</span>
+      </button>
+    </div>
+    <st
+      #st
+      [columns]="columns"
+      [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
+      [data]="data"
+      [loading]="loading"
+      [scroll]="{ x: '1300px' }"
+    >
+      <ng-template st-row="status" let-i>
+        <nz-badge [nzStatus]="i.statusType" [nzText]="i.statusText"></nz-badge>
+      </ng-template>
+    </st>
+  </nz-card>
+</div>
+
+<ng-template #modalContent>
+  <!-- <sf #sf [schema]="schema" [formData]="editData" (formSubmit)="submit($event)" [loading]="loading"></sf> -->
+  <sf
+    #sfCreateKasus
+    [layout]="'vertical'"
+    [schema]="schema"
+    [formData]="editData"
+    (formSubmit)="submitByPP($event)"
+    [loading]="loading"
+  >
+    <ng-template sf-template="caseIdReturned" let-me let-ui="ui" let-schema="schema">
+      <button
+        type="button"
+        [disabled]="mode === 'edit'"
+        nz-button
+        nzType="dashed"
+        nzSize="default"
+        (click)="add(modalKasus, 'Pilih Kasus')"
+        nzSearch
+      >
+        Search
+      </button>
+      <sv-container size="Large" col="1" layout="vertical">
+        <sv label="No Registrasi">{{ editDataTemp?.application.noReg }}</sv>
+        <sv label="Judul Kasus">{{ editDataTemp?.judulKasus }}</sv>
+        <sv label="Klien">{{ listClient(editDataTemp?.application.clients) }}</sv>
+        <sv label="Deskripsi Kasus"
+          ><div *ngIf="editDataTemp?.kronologiKasus">
+            <pre style="white-space:pre-wrap;"> {{ editDataTemp?.kronologiKasus }}</pre>
+          </div>
+        </sv>
+      </sv-container>
+    </ng-template>
+  </sf>
+</ng-template>
+
+<ng-template #modalContentKabid>
+  <!-- <sf #sf [schema]="schema" [formData]="editData" (formSubmit)="submit($event)" [loading]="loading"></sf> -->
+  <sf
+    #sfCreateKasus
+    [layout]="'vertical'"
+    [schema]="schemaKabid"
+    [formData]="editDataKabid"
+    (formSubmit)="submitByKabid($event)"
+    [loading]="loading"
+  >
+    <ng-template sf-template="caseId" let-me let-ui="ui" let-schema="schema">
+      <button
+        type="button"
+        [disabled]="mode === 'edit'"
+        nz-button
+        nzType="dashed"
+        nzSize="default"
+        (click)="add(modalContentViewKasus, 'Detail Kasus')"
+        nzSearch
+      >
+        Lihat Kasus
+      </button>
+      <sv-container size="Large" col="1" layout="vertical">
+        <sv-title>Ikhtisar Kasus</sv-title>
+        <sv label="No Registrasi">{{ me.formProperty.value?.application.noReg }}</sv>
+        <sv label="Judul Kasus">{{ me.formProperty.value?.judulKasus }}</sv>
+        <sv label="Klien">{{ listClient(me.formProperty.value?.application.clients) }}</sv>
+        <sv label="Deskripsi Kasus"
+          ><div *ngIf="me.formProperty.value?.kronologiKasus">
+            <pre style="white-space:pre-wrap;">{{ me.formProperty.value?.kronologiKasus }}</pre>
+          </div>
+        </sv>
+        <sv-title>Rekomendasi</sv-title>
+        <sv label="Tgl Request">{{ momentF(editDataKabid.tglRequest).format('DD/MM/YYYY HH:mm') }}</sv>
+        <sv label="Rekomendasi Dari">{{ editDataKabid.requestBy.name }}</sv>
+        <sv label="Rekomendasi">{{ editDataKabid.jenisRequestTeks }}</sv>
+        <sv label="Referral Ke">{{ editDataKabid.networkId.name }}</sv>
+        <sv label="Alasan"
+          ><div *ngIf="editDataKabid.isiRequest">
+            <pre style="white-space: pre-wrap;">{{ editDataKabid.isiRequest }}</pre>
+          </div>
+        </sv>
+      </sv-container>
+    </ng-template>
+  </sf>
+</ng-template>
+
+<ng-template #modalKasus>
+  <app-list-case [parent]="true" [query]="query" (dataKasus)="getDataKasus($event)"></app-list-case>
+</ng-template>
+
+<ng-template #modalContentViewKasus>
+  <app-view-case [parent]="true" [caseParam]="editDataKabid.caseId.id"></app-view-case>
+</ng-template>

@@ -1,0 +1,11 @@
+<page-header *ngIf="!parent" [title]="'Create Network'"></page-header>
+<nz-card [nzBordered]="false">
+  <sf
+    #sf
+    [layout]="'vertical'"
+    [schema]="schema"
+    [formData]="editData"
+    (formSubmit)="submit($event)"
+    [loading]="loading"
+  ></sf>
+</nz-card>

@@ -1,0 +1,60 @@
+<page-header *ngIf="!parent" [title]="'Create Application'"></page-header>
+<div #card>
+  <nz-card [nzBordered]="false">
+    <sf
+      [layout]="'vertical'"
+      #sf
+      [schema]="schema"
+      [formData]="editData"
+      (formSubmit)="submit($event)"
+      [loading]="loading"
+    >
+      <ng-template sf-template="clients" let-me let-ui="ui" let-schema="schema">
+        <div>
+          <button
+            type="button"
+            (click)="createModal(modalClient, 'Buat Client', 'create')"
+            nz-button
+            [nzType]="'primary'"
+          >
+            <i nz-icon nzType="plus"></i>
+            <span>New</span>
+          </button>
+        </div>
+        <st #st [columns]="columns" [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }" [data]="clientData"> </st>
+      </ng-template>
+      <ng-template sf-template="wakilId" let-me let-ui="ui" let-schema="schema">
+        <button
+          type="button"
+          nz-button
+          nzType="dashed"
+          nzSize="default"
+          (click)="createModal(listPerson, 'Pilih Wakil')"
+          nzSearch
+        >
+          Search
+        </button>
+        <input
+          *ngIf="me.formProperty.value"
+          nz-input
+          [attr.id]="me.id"
+          [readonly]="me.disabled"
+          [nzSize]="ui.size"
+          [ngModel]="me.formProperty.value.namaLengkap"
+        />
+      </ng-template>
+    </sf>
+  </nz-card>
+</div>
+<ng-template #modalClient>
+  <app-create-client
+    [parent]="true"
+    [mode]="mode"
+    [editData]="modalEditData"
+    (saveData)="saveClient($event)"
+  ></app-create-client>
+</ng-template>
+
+<ng-template #listPerson>
+  <app-list-person [parent]="true" (dataPerson)="closeModalAndSaveData($event)"></app-list-person>
+</ng-template>

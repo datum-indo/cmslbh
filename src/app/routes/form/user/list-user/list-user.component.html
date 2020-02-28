@@ -1,0 +1,63 @@
+<page-header *ngIf="!parent" [title]="'List User'"></page-header>
+<div #card>
+  <nz-card [nzBordered]="false">
+    <form nz-form [nzLayout]="'inline'" (ngSubmit)="getData()" class="search__form">
+      <div nz-row [nzGutter]="{ xs: 8, sm: 8, md: 8, lg: 24, xl: 48, xxl: 48 }">
+        <div nz-col nzMd="8" nzSm="24">
+          <nz-form-item>
+            <nz-form-label nzFor="name">Nama</nz-form-label>
+            <nz-form-control>
+              <input nz-input [(ngModel)]="q.name" name="name" placeholder="nama" id="name" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzMd="8" nzSm="24">
+          <nz-form-item>
+            <nz-form-label nzFor="email">Email</nz-form-label>
+            <nz-form-control>
+              <input nz-input [(ngModel)]="q.email" name="email" placeholder="Email" id="email" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col nzMd="8" nzSm="24" *ngIf="expandForm">
+          <nz-form-item>
+            <nz-form-label nzFor="callNo">No Reg</nz-form-label>
+            <nz-form-control>
+              <input nz-input id="callNo" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="expandForm ? 24 : 8" [class.text-right]="expandForm">
+          <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="loading">Search</button>
+          <button nz-button type="reset" (click)="reset()" class="mx-sm">Reset</button>
+          <a (click)="expandForm = !expandForm">
+            {{ expandForm ? 'Hide' : 'Expand' }}
+            <i nz-icon [nzType]="expandForm ? 'up' : 'down'"></i>
+          </a>
+        </div>
+      </div>
+    </form>
+    <div class="my-md">
+      <button nz-button (click)="add(modalContent, 'Create New User')" [nzType]="'primary'">
+        <i nz-icon nzType="plus"></i>
+        <span>New</span>
+      </button>
+    </div>
+    <st
+      #st
+      [columns]="columns"
+      [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
+      [data]="data"
+      [loading]="loading"
+      [scroll]="{ x: '1300px' }"
+    >
+      <ng-template st-row="status" let-i>
+        <nz-badge [nzStatus]="i.statusType" [nzText]="i.statusText"></nz-badge>
+      </ng-template>
+    </st>
+  </nz-card>
+</div>
+<ng-template #modalContent>
+  <app-create-user [parent]="true" [mode]="mode" [editData]="dataSelected" (saveDone)="closeModal($event)">
+  </app-create-user>
+</ng-template>

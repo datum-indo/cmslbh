@@ -1,0 +1,10 @@
+# add files you wish to ignore here
+**/*.md
+**/*.svg
+**/test.ts
+src/index.html
+node_modules/
+coverage/
+dist/
+package.json
+src/app/shared/graphql/generated/graphql.ts

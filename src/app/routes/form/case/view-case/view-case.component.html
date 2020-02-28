@@ -1,0 +1,763 @@
+<div #card>
+  <page-header [title]="'Detail Kasus'" autoBreadcrumb="false" [action]="action" [loading]="loading">
+    <!-- <ng-template #logo>
+    <img src="https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png" />
+  </ng-template> -->
+    <ng-template #action>
+      <!-- <nz-button-group>
+      <button nz-button>操作</button>
+      <button nz-button>操作</button>
+    </nz-button-group> -->
+      <!-- <button nz-button nz-dropdown  [nzDropdownMenu]="opMenu" class="mx-sm">
+      <i nz-icon nzType="ellipsis"></i>
+    </button>
+    <nz-dropdown-menu #opMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item>选项一</li>
+        <li nz-menu-item>选项二</li>
+        <li nz-menu-item>选项三</li>
+      </ul>
+    </nz-dropdown-menu> -->
+      <!-- <button nz-button [nzType]="'default'" (click)="changeShow()">Edit</button> -->
+    </ng-template>
+    <sv-container *ngIf="show" size="Large" col="1">
+      <sv label="Nomor Registrasi">{{ data.application?.noReg }}</sv>
+      <sv label="Judul Kasus">{{ data?.judulKasus }}</sv>
+      <!-- <sv label="创建时间">2017-07-07</sv>
+        <sv label="关联单据">
+          <a (click)="msg.success('yes')">12421</a>
+        </sv>
+        <sv label="生效日期">2017-07-07 ~ 2017-08-08</sv>
+        <sv label="备注">请于两个工作日内确认</sv> -->
+    </sv-container>
+    <!-- <ng-template #extra>
+    <div nz-row>
+      <div nz-col nzXs="24" nzSm="12">
+        <p class="text-grey">状态</p>
+        <p class="text-lg">待审批</p>
+      </div>
+      <div nz-col nzXs="24" nzSm="12">
+        <p class="text-grey">订单金额</p>
+        <p class="text-lg">¥ 568.08</p>
+      </div>
+    </div>
+  </ng-template> -->
+  </page-header>
+  <nz-card [nzBordered]="false">
+    <nz-tabset [nzType]="'card'" [nzSelectedIndex]="0" [nzSize]="'small'" [nzShowPagination]="true">
+      <nz-tab nzTitle="Data Permohonan">
+        <nz-card [nzBordered]="false">
+          <sv-container size="Large" col="1" layout="vertical">
+            <sv label="Bertindak untuk diri sendiri atau mewakili">{{
+              data.application?.statusPerwakilanTeks | async
+            }}</sv>
+            <sv label="Tanggal Registrasi">{{
+              data.application?.regDate ? momentF(data.application?.regDate).format('DD/MM/YYYY HH:mm') : null
+            }}</sv>
+            <sv label="Tahap Kasus">{{ data.application?.tahapteks | async }}</sv>
+            <sv label="Klien"
+              ><div *ngFor="let client of data.application?.clients">
+                - <a (click)="openModalClient(client, modalClient)">{{ client.personId.namaLengkap }}</a>
+              </div></sv
+            >
+            <sv label="Yang Mewakili">{{ data.application?.wakilId?.namaLengkap }}</sv>
+            <sv label="Hubungan Wakil Klien">{{ data.application?.relasiWakilClient }}</sv>
+            <sv label="Duduk Perkara"
+              ><div *ngIf="data.application?.dudukPerara">
+                <pre
+                  style="white-space:pre-wrap;  overflow-wrap: break-word;
+                word-wrap: break-word;
+                -webkit-hyphens: auto;
+                -ms-hyphens: auto;
+                -moz-hyphens: auto;
+                hyphens: auto;"
+                  >{{ data.application?.dudukPerara }}</pre
+                >
+              </div></sv
+            >
+          </sv-container>
+        </nz-card>
+      </nz-tab>
+      <nz-tab nzTitle="Umum">
+        <nz-card [nzBordered]="false" class="asd">
+          <sv-container size="Large" col="1" layout="vertical">
+            <sv><a nz-button (click)="openModalUmum(modalContentUmum)">Edit Data Umum</a></sv>
+            <sv label="Judul Kasus">{{ data?.judulKasus }}</sv>
+            <sv label="Deskripsi Kasus"
+              ><div *ngIf="data?.kronologiKasus">
+                <pre style="white-space:pre-wrap;">{{ data?.kronologiKasus }}</pre>
+              </div></sv
+            >
+            <sv *ngIf="kabid"
+              ><a nz-button (click)="openModalPenangananLebihLanjut(modalPenangananLebihLanjut)">Edit</a></sv
+            >
+            <sv label="Status Penanganan Lebih Lanjut">{{ translateStatusPk(data?.statusPendampingan) }}</sv>
+            <sv><a nz-button (click)="openModalAnalisa(modalContentAnalisa)">Edit Data Analisa</a></sv>
+            <sv label="Korban">{{ translateKorbanPelaku('korban') }}</sv>
+            <sv label="Pelaku">{{ translateKorbanPelaku('pelaku') }}</sv>
+            <sv label="Issue Lokal">{{ translateCaseIssues() }}</sv>
+            <sv label="Hak Terdampak">{{ translateHakTerdampak() }}</sv>
+          </sv-container>
+        </nz-card>
+      </nz-tab>
+      <!-- <nz-tab nzTitle="Analisa">
+        <nz-card [nzBordered]="false" class="asd">
+          <sv-container size="Large" col="1" layout="vertical">
+            <sv><a nz-button (click)="openModalAnalisa(modalContentAnalisa)">Edit</a></sv>
+            <sv label="Korban">{{ translateKorbanPelaku('korban') }}</sv>
+            <sv label="Pelaku">{{ translateKorbanPelaku('pelaku') }}</sv>
+            <sv label="Hak Terdampak">{{ translateHakTerdampak() }}</sv>
+          </sv-container>
+        </nz-card></nz-tab
+      > -->
+      <nz-tab nzTitle="Konsultasi">
+        <nz-card [nzBordered]="false" class="asd">
+          <div *ngIf="allowedConsultation" nz-col>
+            <button nz-button (click)="openModalKonsultasiAdd(modalContentKonsultasi)" [nzType]="'primary'">
+              <i nz-icon nzType="plus"></i>
+              <span>New</span>
+            </button>
+          </div>
+          <div nz-col>
+            <st
+              #st
+              [columns]="columnsConsultation"
+              [data]="data?.consultations"
+              [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
+              [loading]="loading"
+              [scroll]="{ x: '1300px' }"
+            >
+              <ng-template st-row="status" let-i>
+                <nz-badge [nzStatus]="i.statusType" [nzText]="i.statusText"></nz-badge>
+              </ng-template>
+            </st>
+          </div>
+        </nz-card>
+      </nz-tab>
+      <nz-tab nzTitle="Hasil Rapat PK">
+        <nz-card [nzBordered]="false">
+          <sv-container size="Large" col="1" layout="vertical">
+            <sv><a nz-button (click)="openModalRapatPK(modalContentRapatPK)">Edit</a></sv>
+            <sv label="Tanggal Rapat PK">{{
+              data.pk?.tglRapat ? momentF(data.pk?.tglRapat).format('DD/MM/YYYY') : null
+            }}</sv>
+            <sv label="Penanganan Lebih Lanjut">{{ translateStatusPk(data.pk?.didampingi) }}</sv>
+            <sv label="PP Pendamping">{{ data.pk?.ppPendamping?.name }}</sv>
+            <sv label="Target Advokasi Akhir"
+              ><div *ngIf="data.pk?.targetAkhirAdvokasi">
+                <pre style="white-space:pre-wrap;">{{ data.pk?.targetAkhirAdvokasi }}</pre>
+              </div></sv
+            >
+            <sv label="Strategi Advokasi"
+              ><div *ngIf="data.pk?.strategiAdvokasi">
+                <pre style="white-space:pre-wrap;">{{ data.pk?.strategiAdvokasi }}</pre>
+              </div></sv
+            >
+            <sv label="Alasan Bila Kasus Tidak Didampingi / Transfer"
+              ><div *ngIf="data.pk?.statusAlasanTdk">
+                <pre style="white-space:pre-wrap;">{{ data.pk?.statusAlasanTdk }}</pre>
+              </div></sv
+            >
+            <!-- <sv label="Link File Legal Memo"
+                ><span
+                  *ngIf="data.applicaton?.pk?.legalMemo"
+                  [innerHTML]="data.applicaton?.pk?.legalMemo | linky"
+                ></span
+              ></sv>
+              <sv label="Link File Notula Rapat"
+                ><span
+                  *ngIf="data.applicaton?.pk?.notulaRapat"
+                  [innerHTML]="data.applicaton?.pk?.notulaRapat | linky"
+                ></span
+              ></sv> -->
+          </sv-container>
+        </nz-card>
+      </nz-tab>
+      <nz-tab nzTitle="Catatan Pendampingan">
+        <nz-card [nzBordered]="false">
+          <sv-container size="Large" col="1" layout="vertical">
+            <sv><a nz-button (click)="openCatatanPendampingan(modalContentCatatanPendampingan)">Edit</a></sv>
+            <sv label="Jenis Peradilan">{{ data.progresses?.jenisPeradilanTeks | async }}</sv>
+            <sv label="Catatan"
+              ><div *ngIf="data.progresses?.catatan">
+                <pre style="white-space:pre-wrap;">{{ data.progresses?.catatan }}</pre>
+              </div></sv
+            >
+          </sv-container>
+          <div nz-col>
+            <button
+              nz-button
+              (click)="openAktifitasPendampinganAdd(modalContentAktifitasPendampingan)"
+              [nzType]="'primary'"
+            >
+              <i nz-icon nzType="plus"></i>
+              <span>New</span>
+            </button>
+          </div>
+          <st
+            #stAktifitasPendampingan
+            [columns]="columnsCatatanPendampingan"
+            [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
+            [data]="data?.activities"
+            [loading]="loading"
+            [scroll]="{ x: '1300px' }"
+          >
+            <ng-template st-row="status" let-i>
+              <nz-badge [nzStatus]="i.statusType" [nzText]="i.statusText"></nz-badge>
+            </ng-template>
+          </st>
+        </nz-card>
+      </nz-tab>
+      <nz-tab nzTitle="Terminasi">
+        <nz-card [nzBordered]="false" class="asd">
+          <sv-container size="Large" col="1" layout="vertical">
+            <sv><a nz-button (click)="openModalTerminasi(modalContentTerminasi)">Edit</a></sv>
+            <sv label="Apakah Kasus Sudah Ditutup">{{ data.caseClosed ? 'Sudah' : 'Belum' }}</sv>
+            <sv label="Jenis Terminasi">{{ data.caseClosedJenisTeks | async }}</sv>
+          </sv-container>
+        </nz-card></nz-tab
+      >
+      <nz-tab nzTitle="Transfer/Referral">
+        <nz-card [nzBordered]="false">
+          <sv-container size="Large" col="1" layout="vertical">
+            <sv><a nz-button (click)="openModalTransfer(modalContentTransfer)">Edit</a></sv>
+            <sv label="Tanggal Transfer">{{
+              data.transfer?.tglTransfer ? momentF(data.transfer?.tglTransfer).format('DD/MM/YYYY') : null
+            }}</sv>
+            <sv label="Ditransfer Ke">{{ data.transfer?.network?.name }}</sv>
+            <sv label="Catatan"
+              ><div *ngIf="data.transfer?.catatan">
+                <pre style="white-space:pre-wrap;">{{ data.transfer?.catatan }}</pre>
+              </div></sv
+            >
+            <!-- <sv label="Link File Legal Memo"
+                    ><span
+                      *ngIf="data.applicaton?.pk?.legalMemo"
+                      [innerHTML]="data.applicaton?.pk?.legalMemo | linky"
+                    ></span
+                  ></sv>
+                  <sv label="Link File Notula Rapat"
+                    ><span
+                      *ngIf="data.applicaton?.pk?.notulaRapat"
+                      [innerHTML]="data.applicaton?.pk?.notulaRapat | linky"
+                    ></span
+                  ></sv> -->
+          </sv-container>
+          <br />
+          <br />
+          <h3>Daftar Referral</h3>
+          <st
+            #stLampiranDokumen
+            [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
+            [columns]="columnsReferral"
+            [data]="data?.referrals"
+            [loading]="loading"
+            [scroll]="{ x: '1300px' }"
+          >
+          </st>
+        </nz-card>
+      </nz-tab>
+      <nz-tab nzTitle="Dokumen">
+        <nz-card [nzBordered]="false">
+          <sv-container size="Large" col="1" layout="vertical">
+            <sv><a nz-button (click)="openModalKlasifikasiDokumen(modalContentKlasifikasiDokumen)">Edit</a></sv>
+            <sv label="Klasifikasi Pendokumenan">{{ translateKlasifikasiDokumen() }}</sv>
+          </sv-container>
+          <br />
+          <div nz-col>
+            <button nz-button (click)="openLampiranDokumenAdd(modalLampiranDokumen)" [nzType]="'primary'">
+              <i nz-icon nzType="plus"></i>
+              <span>New</span>
+            </button>
+          </div>
+          <st
+            #stLampiranDokumen
+            [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
+            [columns]="columnsLampiranDokumen"
+            [data]="data?.documents"
+            [loading]="loading"
+            [scroll]="{ x: '1300px' }"
+          >
+            <ng-template st-row="status" let-i>
+              <nz-badge [nzStatus]="i.statusType" [nzText]="i.statusText"></nz-badge>
+            </ng-template>
+          </st>
+        </nz-card>
+      </nz-tab>
+    </nz-tabset>
+  </nz-card>
+  <!-- <form nz-form #f="ngForm" *ngIf="!show" se-container gutter="32">
+    <se label="Judul Kasus" error="请填写">
+      <input type="text" nz-input name="ak" required />
+    </se>
+    <se>
+      <button nz-button nzType="primary" [disabled]="f.invalid">Save</button>
+    </se>
+  </form> -->
+
+  <ng-template #modalContentUmum>
+    <sf
+      #sfUmum
+      [layout]="'vertical'"
+      [schema]="schemaUmum"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitUmum($event)"
+      [loading]="loading"
+    ></sf>
+  </ng-template>
+
+  <ng-template #modalContentTerminasi>
+    <sf
+      #sfUmum
+      [layout]="'vertical'"
+      [schema]="schemaTerminasi"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitTerminasi($event)"
+      [loading]="loading"
+    ></sf>
+  </ng-template>
+
+  <ng-template #modalPenangananLebihLanjut>
+    <sf
+      #sfUmum
+      [layout]="'vertical'"
+      [schema]="schemaPenangananLebihLanjut"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitUmum($event)"
+      [loading]="loading"
+    ></sf>
+  </ng-template>
+  <ng-template #modalContentAnalisa>
+    <sf
+      #sfListPerson
+      [layout]="'vertical'"
+      [schema]="schemaAnalisa"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitAnalisa($event)"
+      [loading]="loading"
+    >
+      <ng-template sf-template="korban" let-me let-ui="ui" let-schema="schema">
+        <div>
+          <button type="button" (click)="openModalListPerson('korban')" nz-button [nzType]="'primary'">
+            <i nz-icon nzType="plus"></i>
+            <span>New</span>
+          </button>
+        </div>
+        <st
+          #stKorban
+          [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
+          [columns]="columnsKorban"
+          [data]="korbanData"
+          [page]="{ show: false }"
+          [loading]="loading"
+        >
+        </st>
+      </ng-template>
+      <ng-template sf-template="pelaku" let-me let-ui="ui" let-schema="schema">
+        <div>
+          <button type="button" (click)="openModalPelaku()" nz-button [nzType]="'primary'">
+            <i nz-icon nzType="plus"></i>
+            <span>New</span>
+          </button>
+        </div>
+        <st
+          #stPelaku
+          [columns]="columnsPelaku"
+          [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
+          [data]="pelakuData"
+          [page]="{ show: false }"
+          [loading]="loading"
+        >
+        </st>
+      </ng-template>
+      ></sf
+    >
+  </ng-template>
+  <ng-template #listPerson>
+    <app-list-person [parent]="true" (dataPerson)="closeModalAndSaveData($event)"></app-list-person>
+  </ng-template>
+  <ng-template #modalPelaku>
+    <sf
+      #sfPilihPelaku
+      [layout]="'vertical'"
+      [schema]="schemaPilihPelaku"
+      [formData]="dataModalTempLevelTwo"
+      (formSubmit)="savePelaku($event)"
+      [loading]="loading"
+    >
+      <ng-template sf-template="personId" let-me let-ui="ui" let-schema="schemaPilihPelaku">
+        <button
+          type="button"
+          (click)="openModalListPerson('pelaku')"
+          nz-button
+          nzType="dashed"
+          nzSize="default"
+          nzSearch
+        >
+          Search
+        </button>
+        <input
+          *ngIf="me.formProperty.value"
+          nz-input
+          [attr.id]="me.id"
+          [readonly]="me.disabled"
+          [nzSize]="ui.size"
+          [ngModel]="me.formProperty.value.namaLengkap"
+        />
+      </ng-template>
+    </sf>
+  </ng-template>
+  <ng-template #modalContentRapatPK>
+    <sf
+      #sfUmum
+      [layout]="'vertical'"
+      [schema]="schemaRapatPK"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitRapatPK($event)"
+      [loading]="loading"
+    ></sf>
+  </ng-template>
+  <ng-template #modalContentTransfer>
+    <sf
+      #sfUmum
+      [layout]="'vertical'"
+      [schema]="schemaTransfer"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitTransfer($event)"
+      [loading]="loading"
+    ></sf>
+  </ng-template>
+  <ng-template #modalContentCatatanPendampingan>
+    <sf
+      #sfUmum
+      [layout]="'vertical'"
+      [schema]="schemaCatatanPendampingan"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitCatatanPendampingan($event)"
+      [loading]="loading"
+    ></sf>
+  </ng-template>
+
+  <ng-template #modalContentKlasifikasiDokumen>
+    <sf
+      #sfUmum
+      [layout]="'vertical'"
+      [schema]="schemaKlasifikasiDokumen"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitKlasifikasiDokumen($event)"
+      [loading]="loading"
+    ></sf>
+  </ng-template>
+
+  <ng-template #modalContentAktifitasPendampingan>
+    <sf
+      #sfUmum
+      [layout]="'vertical'"
+      [schema]="schemaAktifitasPendampingan"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitAktifitasPendampingan($event)"
+      [loading]="loading"
+    ></sf>
+  </ng-template>
+
+  <ng-template #modalLampiranDokumen>
+    <sf
+      #sfUmum
+      [layout]="'vertical'"
+      [schema]="schemaLampiranDokumen"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitLampiranDokumen($event)"
+      [loading]="loading"
+    >
+      <ng-template sf-template="filename" let-me let-ui="ui" let-schema="schemaLampiranDokumen">
+        <nz-upload
+          [nzBeforeUpload]="beforeUpload"
+          (nzChange)="changedStatusUpload($event)"
+          [nzAction]="uploadAction"
+          [(nzFileList)]="fileList"
+          [nzPreview]="preview"
+        >
+          <button type="button" nz-button><i nz-icon nzType="upload"></i><span>Click to Upload</span></button>
+        </nz-upload>
+      </ng-template></sf
+    >
+  </ng-template>
+
+  <ng-template #modalContentKonsultasi>
+    <sf
+      #sfKonsultasi
+      [layout]="'vertical'"
+      [schema]="schemaKonsultasi"
+      [formData]="dataModalTemp"
+      (formSubmit)="submitKonsultasi($event)"
+      [loading]="loading"
+    ></sf>
+  </ng-template>
+  <ng-template #modalContentKonsultasiView>
+    <sv-container size="Large" col="1" layout="vertical">
+      <sv label="Judul Aktifitas">{{ dataModalTemp?.judulAktifitas }}</sv>
+      <sv label="Isi Konsultasi"
+        ><div *ngIf="dataModalTemp?.isiKonsul">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.isiKonsul }}</pre>
+        </div></sv
+      >
+      <sv label="Harapan"
+        ><div *ngIf="dataModalTemp?.harapan">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.harapan }}</pre>
+        </div></sv
+      >
+      <sv label="Saran Hukum"
+        ><div *ngIf="dataModalTemp?.saranHukum">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.saranHukum }}</pre>
+        </div></sv
+      >
+      <sv label="Rencana Tindak Lanjut"
+        ><div *ngIf="dataModalTemp?.rencanaTindakLanjut">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.rencanaTindakLanjut }}</pre>
+        </div></sv
+      >
+      <sv label="PP dan APBH"
+        ><div>
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.listPP }}</pre>
+        </div></sv
+      >
+    </sv-container>
+  </ng-template>
+
+  <ng-template #modalContentAktifitasView>
+    <sv-container size="Large" col="1" layout="vertical">
+      <sv label="Judul Aktifitas">{{ dataModalTemp?.judulAktifitas }}</sv>
+      <sv label="Tgl Aktifitas">{{
+        dataModalTemp?.tglAktifitas ? momentF(dataModalTemp?.tglAktifitas).format('DD/MM/YYYY HH:mm') : null
+      }}</sv>
+      <sv label="Aktifitas Litigasi"
+        ><div *ngIf="dataModalTemp?.activitieslit">
+          <div *ngFor="let a of dataModalTemp.activitieslit">{{ a.mtvocabteks | async }}</div>
+        </div></sv
+      >
+      <sv label="Aktifitas Non Litigasi"
+        ><div *ngIf="dataModalTemp?.activitiesnonlit">
+          <div *ngFor="let a of dataModalTemp.activitiesnonlit">{{ a.mtvocabteks | async }}</div>
+        </div></sv
+      >
+      <sv label="Posisi"
+        ><div *ngIf="dataModalTemp?.position">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.position }}</pre>
+        </div></sv
+      >
+      <sv label="Target"
+        ><div *ngIf="dataModalTemp?.targetAdvokasi">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.targetAdvokasi }}</pre>
+        </div></sv
+      >
+      <sv label="Capaian"
+        ><div *ngIf="dataModalTemp?.capaian">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.capaian }}</pre>
+        </div></sv
+      >
+      <sv label="Hambatan"
+        ><div *ngIf="dataModalTemp?.hambatan">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.hambatan }}</pre>
+        </div></sv
+      >
+      <sv label="Rencana Strategi"
+        ><div *ngIf="dataModalTemp?.rencanaStrategi">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.rencanaStrategi }}</pre>
+        </div></sv
+      >
+    </sv-container>
+  </ng-template>
+
+  <ng-template #modalLampiranDokumenView>
+    <sv-container size="Large" col="1" layout="vertical">
+      <sv label="Jenis Dokumen">{{ dataModalTemp?.mtvocabteks | async }}</sv>
+      <sv label="Judul Dokumen">{{ dataModalTemp?.judulDokumen }}</sv>
+      <sv label="Link File"><span *ngIf="dataModalTemp?.link" [innerHTML]="dataModalTemp?.link | linky"></span></sv>
+      <sv label="File Uploaded"
+        ><span *ngIf="dataModalTemp?.filename" [innerHTML]="downloadAction + dataModalTemp?.filename | linky"></span
+      ></sv>
+      <sv label="Keterangan"
+        ><div *ngIf="dataModalTemp?.keterangan">
+          <pre style="white-space:pre-wrap;">{{ dataModalTemp?.keterangan }}</pre>
+        </div></sv
+      >
+      <sv label="Tanggal">{{
+        dataModalTemp?.createdAt ? momentF(dataModalTemp?.createdAt).format('DD/MM/YYYY HH:mm') : null
+      }}</sv>
+    </sv-container>
+  </ng-template>
+
+  <ng-template #modalClient>
+    <sv-container size="Large" col="4" layout="vertical">
+      <sv-title>Detail Klien</sv-title>
+      <sv label="Nama Lengkap">{{ dataModalTemp?.personId?.namaLengkap }}</sv>
+      <sv label="SKTM">{{ dataModalTemp?.stmKeterangan }}</sv>
+      <sv label="Alamat ID">{{ dataModalTemp?.personId?.alamatId }}</sv>
+      <sv label="Alamat Domisili">{{ dataModalTemp?.personId?.alamatDomisili }}</sv>
+      <sv label="Posisi Saat Ini">{{ dataModalTemp?.alamatLokasi }}</sv>
+      <sv label="Tanggal Lahir">{{ dataModalTemp?.personId?.tglLahirTeks }}</sv>
+      <sv label="Agama">{{ dataModalTemp?.personId?.agama }}</sv>
+      <sv label="Pendapatan">{{ dataModalTemp?.pendapatanTeks }}</sv>
+      <sv label="SKTM">{{ dataModalTemp?.stmKeterangan }}</sv>
+      <sv label="Pekerjaan">{{ dataModalTemp?.personId?.pekerjaanTeks }}</sv>
+      <sv label="Nomor Telepon">{{ dataModalTemp?.personId?.telepon }}</sv>
+    </sv-container>
+  </ng-template>
+
+  <ng-template #modalPerson> </ng-template>
+
+  <!-- schemaAktifitasPendampingan: SFSchema = {
+      properties: {
+        judulAktifitas: {
+          type: 'string',
+          title: 'Judul',
+        },
+        tglAktifitas: {
+          type: 'string',
+          title: 'Tanggal',
+          ui: { widget: 'date', mode: 'date', displayFormat: 'dd-MM-yyyy' },
+        },
+        position: {
+          type: 'string',
+          title: 'Posisi Kasus',
+          ui: { widget: 'textarea', autosize: { minRows: 6, maxRows: 12 } },
+        },
+        targetAdvokasi: {
+          type: 'string',
+          title: 'Target Advokasi',
+          ui: { widget: 'textarea', autosize: { minRows: 6, maxRows: 12 } },
+        },
+        capaian: {
+          type: 'string',
+          title: 'Capaian',
+          ui: { widget: 'textarea', autosize: { minRows: 6, maxRows: 12 } },
+        },
+        hambatan: {
+          type: 'string',
+          title: 'Hambatan',
+          ui: { widget: 'textarea', autosize: { minRows: 6, maxRows: 12 } },
+        },
+        rencanaStrategi: {
+          type: 'string',
+          title: 'Rencana Strategi',
+          ui: { widget: 'textarea', autosize: { minRows: 6, maxRows: 12 } },
+        },
+        activitieslit: {
+          type: 'string',
+          title: 'Aktifitas Litigasi',
+          ui: {
+            widget: 'select',
+            mode: 'tags',
+            asyncData: () => this.mtVocabHelper.getMtVocabEnum(83, 'kode'),
+          },
+        },
+        activitiesnonlit: {
+          type: 'string',
+          title: 'Aktifitas Non-Litigasi',
+          ui: {
+            widget: 'select',
+            mode: 'tags',
+            asyncData: () => this.mtVocabHelper.getMtVocabEnum(84, 'kode'),
+          },
+        },
+      },
+      required: ['judulAktifitas', 'tglAktifitas', 'activitieslit', 'activitiesnonlit'],
+      ui: {
+        size: 'large',
+      },
+    }; -->
+  <!-- <nz-card [nzBordered]="false" class="mb-lg" nzTitle="流程进度">
+  <nz-steps [nzCurrent]="1" nzProgressDot>
+    <nz-step [nzTitle]="'创建项目'" [nzDescription]="createDesc">
+      <ng-template #createDesc>
+        <div class="desc">
+          <div class="my-sm">
+            曲丽丽
+            <i nz-icon nzType="dingding" class="ml-sm"></i>
+          </div>
+          <div>2016-12-12 12:32</div>
+        </div>
+      </ng-template>
+    </nz-step>
+    <nz-step [nzTitle]="'部门初审'" [nzDescription]="checkedDesc">
+      <ng-template #checkedDesc>
+        <div class="desc">
+          <div class="my-sm">
+            周毛毛
+            <i nz-icon nzType="dingding" class="ml-sm" style="color: #00a0e9;"></i>
+          </div>
+          <a (click)="msg.success('click')">催一下</a>
+        </div>
+      </ng-template>
+    </nz-step>
+    <nz-step [nzTitle]="'财务复核'"></nz-step>
+    <nz-step [nzTitle]="'完成'"></nz-step>
+  </nz-steps>
+  <div class="steps-content"></div>
+</nz-card> -->
+  <!-- <nz-card [nzBordered]="false" nzTitle="用户信息" class="mb-lg">
+  <sv-container class="mb-lg">
+    <sv label="用户姓名">付小小</sv>
+    <sv label="会员卡号">32943898021309809423</sv>
+    <sv label="身份证">3321944288191034921</sv>
+    <sv label="联系方式">18112345678</sv>
+    <sv label="联系地址">曲丽丽 18100000000 浙江省杭州市西湖区黄姑山路工专路交叉路口</sv>
+  </sv-container>
+  <sv-container class="mb-lg" title="信息组">
+    <sv label="某某数据">725</sv>
+    <sv label="该数据更新时间">2017-08-08</sv>
+    <sv>&nbsp;</sv>
+    <sv [label]="label">
+      <ng-template #label>
+        某某数据
+        <nz-tooltip [nzTitle]="'数据说明'">
+          <span nz-tooltip>
+            <i nz-icon nzType="info-circle"></i>
+          </span>
+        </nz-tooltip>
+      </ng-template>
+      725
+    </sv>
+    <sv label="该数据更新时间">2017-08-08</sv>
+  </sv-container>
+  <h4 class="mb-md">信息组</h4>
+  <nz-card nzType="inner" nzTitle="多层级信息组">
+    <sv-container size="small" title="组名称">
+      <sv label="负责人">林东东</sv>
+      <sv label="角色码">1234567</sv>
+      <sv label="所属部门">XX公司 - YY部</sv>
+      <sv label="过期时间">2017-08-08</sv>
+      <sv label="描述">这段描述很长很长很长很长很长很长很长很长很长很长很长很长很长很长...</sv>
+    </sv-container>
+    <nz-divider></nz-divider>
+    <sv-container size="small" title="组名称" col="1">
+      <sv label="学名">
+        Citrullus lanatus (Thunb.) Matsum. et Nakai一年生蔓生藤本；茎、枝粗壮，具明显的棱。卷须较粗..
+      </sv>
+    </sv-container>
+    <nz-divider></nz-divider>
+    <sv-container size="small" title="组名称">
+      <sv label="负责人">付小小</sv>
+      <sv label="角色码">1234568</sv>
+    </sv-container>
+  </nz-card>
+</nz-card> -->
+  <!-- <nz-card [nzBordered]="false" nzTitle="用户近半年来电记录" class="mb-lg">
+  <div class="no-data"><i nz-icon nzType="frown"></i>暂无数据</div>
+</nz-card>
+<nz-card [nzBordered]="false">
+  <nz-card-tab>
+    <nz-tabset nzSize="large" (nzSelectChange)="change($event)">
+      <nz-tab nzTitle="操作日志一"></nz-tab>
+      <nz-tab nzTitle="操作日志二"></nz-tab>
+      <nz-tab nzTitle="操作日志三"></nz-tab>
+    </nz-tabset>
+  </nz-card-tab>
+  <st [columns]="opColumns" [data]="list">
+    <ng-template st-row="status" let-i>
+      <nz-badge *ngIf="i.status === 'success'" [nzStatus]="'success'" [nzText]="'成功'"></nz-badge>
+      <nz-badge *ngIf="i.status !== 'success'" [nzStatus]="'processing'" [nzText]="'进行中'"></nz-badge>
+    </ng-template>
+  </st>
+</nz-card> -->
+</div>
