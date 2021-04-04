@@ -1,3 +1,4 @@
+import {QueryRef} from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -11,7 +12,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { GetNetworks, GetNetworksGQL, NetworkWhereInput } from '@shared';
-import { QueryRef } from 'apollo-angular';
+
 import { Subscription } from 'rxjs';
 import { NzModalRef, NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { STComponent, STColumn, STData } from '@delon/abc';

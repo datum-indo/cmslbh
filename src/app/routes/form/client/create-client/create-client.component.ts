@@ -1,3 +1,4 @@
+import {Observable} from '@apollo/client/core';
 import {
   Component,
   OnInit,
@@ -28,7 +29,7 @@ import { MtVocabHelper, HelperService } from '@shared/helper';
 import * as moment from 'moment';
 import { map, take } from 'rxjs/operators';
 import { AllPersonGQL, AllPerson } from '@shared/generated/graphql';
-import { Observable } from 'apollo-link';
+
 import { saveAs as importedSaveAs } from 'file-saver';
 import { environment } from '@env/environment';
 

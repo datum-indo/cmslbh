@@ -21,7 +21,9 @@
     ],
     "baseUrl": "./src/",
     "paths": {
-      "tslib": ["../vendor/tslib/tslib.d.ts"],
+      "tslib": [
+        "../vendor/tslib/tslib.d.ts"
+      ],
       "@shared": [
         "app/shared/index"
       ],
@@ -37,6 +39,7 @@
       "@env/*": [
         "environments/*"
       ]
-    }
+    },
+    "allowSyntheticDefaultImports": true
   }
 }

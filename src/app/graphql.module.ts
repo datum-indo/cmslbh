@@ -1,12 +1,17 @@
+import {ApolloModule, APOLLO_OPTIONS} from 'apollo-angular';
+import {HttpLinkModule, HttpLink} from 'apollo-angular/http';
+import {InMemoryCache, ApolloClientOptions, split} from '@apollo/client/core';
+import {WebSocketLink} from '@apollo/client/link/ws';
+import {getMainDefinition} from '@apollo/client/utilities';
 import { NgModule, Inject } from '@angular/core';
-import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
-import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+
+
+
 import { environment } from '@env/environment';
-import { ApolloClientOptions } from 'apollo-client';
-import { WebSocketLink } from 'apollo-link-ws';
-import { split } from 'apollo-link';
-import { getMainDefinition } from 'apollo-utilities';
+
+
+
+
 
 const uri = `http://${window.location.hostname}:3000/graphql`;
 const uriWS = `ws://${window.location.hostname}:3000/graphql`;

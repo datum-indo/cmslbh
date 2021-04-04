@@ -1,3 +1,4 @@
+import {QueryRef} from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -18,7 +19,7 @@ import { STComponent, STColumn, STData, STChange } from '@delon/abc';
 import { AllPersonGQL, AllPerson, PersonWhereInput, Person } from '@shared';
 import * as moment from 'moment';
 import { MtVocabHelper } from '@shared/helper/index';
-import { QueryRef } from 'apollo-angular';
+
 @Component({
   selector: 'app-list-person',
   templateUrl: './list-person.component.html',

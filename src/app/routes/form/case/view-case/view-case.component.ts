@@ -1,3 +1,5 @@
+import {QueryRef} from 'apollo-angular';
+import {ApolloQueryResult} from '@apollo/client/core';
 import {
   Component,
   OnInit,
@@ -44,11 +46,11 @@ import {
   CaseViolatedRightCreateWithoutCaseIdInput,
   CaseClassificationCreateWithoutCaseIdInput,
 } from '@shared';
-import { QueryRef } from 'apollo-angular';
+
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { switchMap, map, tap, take, delay } from 'rxjs/operators';
 import { Subscription, Observable, of, from } from 'rxjs';
-import { ApolloQueryResult } from 'apollo-client';
+
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { MtVocabHelper, HelperService } from '@shared/helper';
 import * as moment from 'moment';

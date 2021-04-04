@@ -1,7 +1,8 @@
+import {QueryRef} from 'apollo-angular';
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { GetCaseGQL, GetCase } from '@shared';
 import { map, tap } from 'rxjs/operators';
-import { QueryRef } from 'apollo-angular';
+
 import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormArray, Validators, FormGroup, FormControl } from '@angular/forms';
 import { _HttpClient } from '@delon/theme';
