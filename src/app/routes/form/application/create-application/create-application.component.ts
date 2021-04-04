@@ -53,10 +53,10 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
   ) { }
 
   @Output() saveDone = new EventEmitter<any>();
-  @ViewChild('sf') sf: SFComponent;
+  @ViewChild('sf', { static: true }) sf: SFComponent;
   @ViewChild('st') st: STComponent;
-  @ViewChild('modalClient') modalClient: TemplateRef<{}>;
-  @ViewChild('card') card: ElementRef;
+  @ViewChild('modalClient', { static: true }) modalClient: TemplateRef<{}>;
+  @ViewChild('card', { static: true }) card: ElementRef;
   @Input() parent: boolean;
   @Input() modeApp = 'create';
   @Input()

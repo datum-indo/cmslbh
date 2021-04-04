@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RapatQueueComponent } from './rapat-queue.component';
 
@@ -6,7 +6,7 @@ describe('RapatQueueComponent', () => {
   let component: RapatQueueComponent;
   let fixture: ComponentFixture<RapatQueueComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ RapatQueueComponent ]
     })

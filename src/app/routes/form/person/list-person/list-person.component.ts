@@ -27,8 +27,8 @@ import { QueryRef } from 'apollo-angular';
 export class ListPersonComponent implements OnInit, OnDestroy {
   @Input() parent: boolean;
   @Output() dataPerson = new EventEmitter<AllPerson.People>();
-  @ViewChild('card') card: ElementRef;
-  @ViewChild('modalContent') modalEl: TemplateRef<{}>;
+  @ViewChild('card', { static: true }) card: ElementRef;
+  @ViewChild('modalContent', { static: true }) modalEl: TemplateRef<{}>;
 
   q: any = {
     namaLengkap: null,
@@ -41,7 +41,7 @@ export class ListPersonComponent implements OnInit, OnDestroy {
   personsObs: Subscription;
   loading = false;
   modalInstance: NzModalRef;
-  @ViewChild('st')
+  @ViewChild('st', { static: true })
   st: STComponent;
 
   columns: STColumn[] = [

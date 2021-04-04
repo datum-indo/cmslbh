@@ -53,9 +53,9 @@ export class CreateClientComponent implements OnInit, OnDestroy {
   ) {}
 
   @Output() saveData = new EventEmitter<any>();
-  @ViewChild('sf') sf: SFComponent;
-  @ViewChild('card') card: ElementRef;
-  @ViewChild('listPerson') listPerson: TemplateRef<{}>;
+  @ViewChild('sf', { static: true }) sf: SFComponent;
+  @ViewChild('card', { static: true }) card: ElementRef;
+  @ViewChild('listPerson', { static: true }) listPerson: TemplateRef<{}>;
   @Input() mode: string;
   @Input() parent: boolean;
   @Input() create: boolean;

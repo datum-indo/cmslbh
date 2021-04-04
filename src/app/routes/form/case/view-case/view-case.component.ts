@@ -61,22 +61,22 @@ import { nextContext } from '@angular/core/src/render3';
   styleUrls: ['./view-case.component.less'],
 })
 export class ViewCaseComponent implements OnInit, OnDestroy {
-  @ViewChild('card') card: ElementRef;
+  @ViewChild('card', { static: true }) card: ElementRef;
   @ViewChild('sfUmum') sfUmum: SFComponent;
   @ViewChild('sfListPerson') sfListPerson: SFComponent;
   @ViewChild('sfPilihPelaku') sfPilihPelaku: SFComponent;
   @ViewChild('stKorban') stKorban: STComponent;
   @ViewChild('stPelaku') stPelaku: STComponent;
-  @ViewChild('stAktifitasPendampingan') stAktifitasPendampingan: STComponent;
-  @ViewChild('stLampiranDokumen') stLampiranDokumen: STComponent;
-  @ViewChild('modalContentKonsultasi') modalContentKonsultasi: TemplateRef<{}>;
-  @ViewChild('modalContentAktifitasPendampingan') modalContentAktifitasPendampingan: TemplateRef<{}>;
-  @ViewChild('modalLampiranDokumenView') modalLampiranDokumenView: TemplateRef<{}>;
-  @ViewChild('modalLampiranDokumen') modalLampiranDokumen: TemplateRef<{}>;
-  @ViewChild('modalContentKonsultasiView') modalContentKonsultasiView: TemplateRef<{}>;
-  @ViewChild('modalContentAktifitasView') modalContentAktifitasView: TemplateRef<{}>;
-  @ViewChild('modalPelaku') modalPelaku: TemplateRef<{}>;
-  @ViewChild('listPerson') listPerson: TemplateRef<{}>;
+  @ViewChild('stAktifitasPendampingan', { static: true }) stAktifitasPendampingan: STComponent;
+  @ViewChild('stLampiranDokumen', { static: true }) stLampiranDokumen: STComponent;
+  @ViewChild('modalContentKonsultasi', { static: true }) modalContentKonsultasi: TemplateRef<{}>;
+  @ViewChild('modalContentAktifitasPendampingan', { static: true }) modalContentAktifitasPendampingan: TemplateRef<{}>;
+  @ViewChild('modalLampiranDokumenView', { static: true }) modalLampiranDokumenView: TemplateRef<{}>;
+  @ViewChild('modalLampiranDokumen', { static: true }) modalLampiranDokumen: TemplateRef<{}>;
+  @ViewChild('modalContentKonsultasiView', { static: true }) modalContentKonsultasiView: TemplateRef<{}>;
+  @ViewChild('modalContentAktifitasView', { static: true }) modalContentAktifitasView: TemplateRef<{}>;
+  @ViewChild('modalPelaku', { static: true }) modalPelaku: TemplateRef<{}>;
+  @ViewChild('listPerson', { static: true }) listPerson: TemplateRef<{}>;
   @Input() parent: boolean;
   @Input() caseParam: string;
   list: any[] = [];

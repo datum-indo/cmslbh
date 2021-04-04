@@ -10,7 +10,7 @@
       "prefix": "app",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "less"
+          "style": "less"
         }
       },
       "architect": {
@@ -30,7 +30,8 @@
               "node_modules/@antv/g2-plugin-slider/dist/g2-plugin-slider.min.js",
               "node_modules/ajv/dist/ajv.bundle.js",
               "node_modules/qrious/dist/qrious.min.js"
-            ]
+            ],
+            "aot": true
           },
           "configurations": {
             "production": {
@@ -43,9 +44,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": false,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": false,
@@ -54,6 +53,10 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "100mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             },
@@ -62,6 +65,12 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.hmr.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }

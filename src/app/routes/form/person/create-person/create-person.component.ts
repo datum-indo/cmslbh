@@ -37,7 +37,7 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
   ) { }
 
   @Output() saveDone = new EventEmitter<boolean>();
-  @ViewChild('sf') sf: SFComponent;
+  @ViewChild('sf', { static: true }) sf: SFComponent;
   @Input() parent: boolean;
   @Input() mode = 'create';
   @Input()

@@ -16,7 +16,13 @@
     ],
     "curly": false,
     "forin": false,
-    "import-blacklist": [true, "rxjs/Rx"],
+    "import-blacklist": [
+      true,
+      "rxjs/Rx"
+    ],
+    "deprecation": {
+      "severity": "warning"
+    },
     "interface-over-type-literal": false,
     "label-position": true,
     "max-line-length": [
@@ -60,11 +66,13 @@
     "no-shadowed-variable": false,
     "no-string-literal": false,
     "no-string-throw": true,
+    "no-host-metadata-property": false,
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": false,
+    "no-inputs-metadata-property": true,
     "no-unnecessary-initializer": true,
     "no-unused-expression": true,
-    "no-use-before-declare": true,
+    "no-outputs-metadata-property": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
     "prefer-const": true,
@@ -88,15 +96,12 @@
       ["app", "passport", "exception", "layout", "header"],
       "kebab-case"
     ],
-    "use-input-property-decorator": true,
-    "use-output-property-decorator": true,
-    "use-host-property-decorator": false,
     "no-input-rename": false,
     "no-output-rename": false,
-    "use-life-cycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
     "directive-class-suffix": true,
+    "use-lifecycle-interface": true,
     "no-access-missing-member": true,
     "templates-use-public": true,
     "invoke-injectable": true

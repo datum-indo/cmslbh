@@ -47,10 +47,10 @@ import { SFSchema, SFComponent } from '@delon/form';
 export class RapatQueueComponent implements OnInit, OnDestroy {
   @Input() parent: boolean;
   @Output() dataUser = new EventEmitter<GetUser.Users>();
-  @ViewChild('card') card: ElementRef;
-  @ViewChild('modalContent') modalEl: TemplateRef<{}>;
+  @ViewChild('card', { static: true }) card: ElementRef;
+  @ViewChild('modalContent', { static: true }) modalEl: TemplateRef<{}>;
   @ViewChild('sfCreateKasus') sfCreateKasus: SFComponent;
-  @ViewChild('modalContentKabid') modalElKabid: TemplateRef<{}>;
+  @ViewChild('modalContentKabid', { static: true }) modalElKabid: TemplateRef<{}>;
 
   q: any = {
     clientName: null,
@@ -65,7 +65,7 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
   usersObs: Subscription;
   loading = false;
   modalInstance: NzModalRef;
-  @ViewChild('st')
+  @ViewChild('st', { static: true })
   st: STComponent;
   editData: any = {};
   editDataKabid: any;

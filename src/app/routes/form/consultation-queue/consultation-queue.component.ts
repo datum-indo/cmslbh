@@ -44,8 +44,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class ConsultationQueueComponent implements OnInit, OnDestroy {
   @Input() parent: boolean;
   @Output() dataUser = new EventEmitter<GetUser.Users>();
-  @ViewChild('card') card: ElementRef;
-  @ViewChild('modalContent') modalEl: TemplateRef<{}>;
+  @ViewChild('card', { static: true }) card: ElementRef;
+  @ViewChild('modalContent', { static: true }) modalEl: TemplateRef<{}>;
   @ViewChild('sf') sf: SFComponent;
 
   q: any = {
@@ -60,7 +60,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
   usersObs: Subscription;
   loading = false;
   modalInstance: NzModalRef;
-  @ViewChild('st')
+  @ViewChild('st', { static: true })
   st: STComponent;
   editData: any = {};
 

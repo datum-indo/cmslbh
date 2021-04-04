@@ -29,8 +29,8 @@ import { identifier } from 'babel-types';
 export class ListUserComponent implements OnInit, OnDestroy {
   @Input() parent: boolean;
   @Output() dataUser = new EventEmitter<GetUser.Users>();
-  @ViewChild('card') card: ElementRef;
-  @ViewChild('modalContent') modalEl: TemplateRef<{}>;
+  @ViewChild('card', { static: true }) card: ElementRef;
+  @ViewChild('modalContent', { static: true }) modalEl: TemplateRef<{}>;
 
   q: any = {
     email: null,
@@ -43,7 +43,7 @@ export class ListUserComponent implements OnInit, OnDestroy {
   usersObs: Subscription;
   loading = false;
   modalInstance: NzModalRef;
-  @ViewChild('st')
+  @ViewChild('st', { static: true })
   st: STComponent;
   columns: STColumn[] = [
     {

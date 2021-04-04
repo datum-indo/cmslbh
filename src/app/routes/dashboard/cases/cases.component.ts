@@ -29,8 +29,8 @@ import { Router } from '@angular/router';
 export class CasesComponent implements OnInit, OnDestroy {
   @Input() parent: boolean;
   @Output() dataKasus = new EventEmitter<String>();
-  @ViewChild('card') card: ElementRef;
-  @ViewChild('modalContent') modalEl: TemplateRef<{}>;
+  @ViewChild('card', { static: true }) card: ElementRef;
+  @ViewChild('modalContent', { static: true }) modalEl: TemplateRef<{}>;
   @Input() query: GetCase.Variables;
   caseParam = '';
   q: any = {
@@ -50,7 +50,7 @@ export class CasesComponent implements OnInit, OnDestroy {
   aggTotalKasus: Promise<number>;
   aggTotalPendampingan: Promise<number>;
 
-  @ViewChild('st')
+  @ViewChild('st', { static: true })
   st: STComponent;
 
   columns: STColumn[] = [

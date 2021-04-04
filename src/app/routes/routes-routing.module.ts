@@ -36,22 +36,22 @@ const routes: Routes = [
       { path: 'dashboard/cases', component: CasesComponent },
       {
         path: 'widgets',
-        loadChildren: './widgets/widgets.module#WidgetsModule',
+        loadChildren: () => import('./widgets/widgets.module').then(m => m.WidgetsModule),
       },
-      { path: 'style', loadChildren: './style/style.module#StyleModule' },
-      { path: 'delon', loadChildren: './delon/delon.module#DelonModule' },
-      { path: 'extras', loadChildren: './extras/extras.module#ExtrasModule' },
-      { path: 'pro', loadChildren: './pro/pro.module#ProModule' },
+      { path: 'style', loadChildren: () => import('./style/style.module').then(m => m.StyleModule) },
+      { path: 'delon', loadChildren: () => import('./delon/delon.module').then(m => m.DelonModule) },
+      { path: 'extras', loadChildren: () => import('./extras/extras.module').then(m => m.ExtrasModule) },
+      { path: 'pro', loadChildren: () => import('./pro/pro.module').then(m => m.ProModule) },
       // Exception
-      { path: 'exception', loadChildren: './exception/exception.module#ExceptionModule' },
-      { path: 'form', loadChildren: './form/form.module#FormModule' },
+      { path: 'exception', loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule) },
+      { path: 'form', loadChildren: () => import('./form/form.module').then(m => m.FormModule) },
     ],
   },
   // 全屏布局
   {
     path: 'data-v',
     component: LayoutFullScreenComponent,
-    children: [{ path: '', loadChildren: './data-v/data-v.module#DataVModule' }],
+    children: [{ path: '', loadChildren: () => import('./data-v/data-v.module').then(m => m.DataVModule) }],
   },
   // passport
   {
@@ -88,11 +88,12 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      useHash: environment.useHash,
-      // NOTICE: If you use `reuse-tab` component and turn on keepingScroll you can set to `disabled`
-      // Pls refer to https://ng-alain.com/components/reuse-tab
-      scrollPositionRestoration: 'top',
-    }),
+    useHash: environment.useHash,
+    // NOTICE: If you use `reuse-tab` component and turn on keepingScroll you can set to `disabled`
+    // Pls refer to https://ng-alain.com/components/reuse-tab
+    scrollPositionRestoration: 'top',
+    relativeLinkResolution: 'legacy'
+}),
   ],
   exports: [RouterModule],
 })

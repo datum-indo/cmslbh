@@ -39,8 +39,8 @@ import { ACLService } from '@delon/acl';
 export class ListApplicationComponent implements OnInit, OnDestroy {
   @Input() parent: boolean;
   @Output() dataPerson = new EventEmitter<AllPerson.People>();
-  @ViewChild('card') card: ElementRef;
-  @ViewChild('modalContent') modalEl: TemplateRef<{}>;
+  @ViewChild('card', { static: true }) card: ElementRef;
+  @ViewChild('modalContent', { static: true }) modalEl: TemplateRef<{}>;
 
   q: any = {
     namaKlien: null,
@@ -56,7 +56,7 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
   urlDocx = `http://${window.location.hostname}:3000/applicationdoc`;
   loading = false;
   modalInstance: NzModalRef;
-  @ViewChild('st')
+  @ViewChild('st', { static: true })
   st: STComponent;
 
   columns: STColumn[] = [

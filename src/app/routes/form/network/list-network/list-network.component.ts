@@ -27,8 +27,8 @@ import { map, tap } from 'rxjs/operators';
 export class ListNetworkComponent implements OnInit, OnDestroy {
   @Input() parent: boolean;
   @Output() dataNetwork = new EventEmitter<GetNetworks.Networks>();
-  @ViewChild('card') card: ElementRef;
-  @ViewChild('modalContent') modalEl: TemplateRef<{}>;
+  @ViewChild('card', { static: true }) card: ElementRef;
+  @ViewChild('modalContent', { static: true }) modalEl: TemplateRef<{}>;
 
   q: any = {
     email: null,
@@ -41,7 +41,7 @@ export class ListNetworkComponent implements OnInit, OnDestroy {
   networksObs: Subscription;
   loading = false;
   modalInstance: NzModalRef;
-  @ViewChild('st')
+  @ViewChild('st', { static: true })
   st: STComponent;
   columns: STColumn[] = [
     {
