@@ -26,6 +26,7 @@
     "@agm/core": "1.0.0-beta.7",
     "@agm/js-marker-clusterer": "1.0.0-beta.7",
     "@angular/animations": "~11.2.8",
+    "@angular/cdk": "^11.2.7",
     "@angular/common": "~11.2.8",
     "@angular/compiler": "~11.2.8",
     "@angular/core": "~11.2.8",
@@ -36,6 +37,7 @@
     "@antv/data-set": "^0.10.2",
     "@antv/g2": "^3.5.3",
     "@antv/g2-plugin-slider": "^2.1.1",
+    "@apollo/client": "^3.0.0",
     "@delon/abc": "^7.6.1",
     "@delon/acl": "^7.6.1",
     "@delon/auth": "^7.6.1",
@@ -72,8 +74,7 @@
     "subscriptions-transport-ws": "^0.9.16",
     "tslib": "^2.0.0",
     "underscore": "^1.9.1",
-    "zone.js": "~0.11.3",
-    "@apollo/client": "^3.0.0"
+    "zone.js": "~0.11.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1102.7",
