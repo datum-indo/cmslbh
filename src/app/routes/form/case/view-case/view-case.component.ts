@@ -15,34 +15,34 @@ import { saveAs as importedSaveAs } from 'file-saver';
 import {
   GetCaseGQL,
   GetCase,
-  Case,
+  Renamedcase,
   GetCaseQuery,
   Application,
-  CaseUpdateInput,
-  CaseWhereUniqueInput,
+  RenamedcaseUpdateInput,
+  RenamedcaseWhereUniqueInput,
   PutCaseGQL,
   CaseConsultationAppCreateWithoutCaseConsultationIdInput,
-  UserCreateOneInput,
+  UserCreateInput,
   PutCaseMutationVariables,
-  CaseProgressCreateWithoutCaseIdInput,
-  CaseProgressUpdateOneWithoutCaseIdInput,
-  CaseProgressActivityLitCreateWithoutCaseProgressActivityIdInput,
+  CaseProgressCreateWithoutCaseInput,
+  CaseProgressUpdateOneWithoutCaseInput,
   DestroyCaseProgressActivity,
   DestroyCaseProgressActivityGQL,
   AllPerson,
   CaseKorbanCreateWithoutCaseIdInput,
   CasePelakuCreateWithoutCaseIdInput,
-  CaseViolatedRightCreateWithoutCaseIdInput,
   DestroyKorbanGQL,
   DestroyPelakuGQL,
   DestroyCaseViolatedRightGQL,
   DestroyCaseClassificationGQL,
   CaseClassificationWhereInput,
-  CaseClassificationCreateWithoutCaseIdInput,
   DestroyLitGQL,
   DestroyNonlitGQL,
   DestroyCaseIssueGQL,
+  CaseProgressActivityLitCreateWithoutCaseProgressActivityIdInput,
   CaseIssueCreateWithoutCaseIdInput,
+  CaseViolatedRightCreateWithoutCaseIdInput,
+  CaseClassificationCreateWithoutCaseIdInput,
 } from '@shared';
 import { QueryRef } from 'apollo-angular';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
@@ -102,7 +102,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
   cases: QueryRef<GetCase.Query, GetCase.Variables>;
   loading = false;
   caseObs: Subscription;
-  data: GetCase.Cases | any = <GetCase.Cases>{};
+  data: GetCase.Renamedcases | any = <GetCase.Renamedcases>{};
   caseId: number;
   show = true;
   changeShow() {
@@ -166,7 +166,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     this.caseObs.unsubscribe();
     this.caseObs = this.cases.valueChanges
       .pipe(
-        map(result => result.data.cases[0]),
+        map(result => result.data.renamedcases[0]),
         tap(() => (this.loading = false)),
       )
       .subscribe(val => {
@@ -189,7 +189,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       this.caseId = Number(this.caseParam);
       this.cases = this.getCaseGQL.watch(
         // <GetLogRequest.Variables>{ where: { pp_some: { appConsultation: { id: this.settingService.user.id } } } },
-        { where: { id: this.caseId } },
+        { where: { id: { equals: this.caseId } } },
         {
           fetchPolicy: 'no-cache',
         },
@@ -197,7 +197,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.caseObs = this.cases.valueChanges
         .pipe(
-          map(result => result.data.cases[0]),
+          map(result => result.data.renamedcases[0]),
           tap(() => (this.loading = false)),
         )
         .subscribe(val => {
@@ -220,7 +220,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
         this.caseId = Number(res.get('id'));
         this.cases = this.getCaseGQL.watch(
           // <GetLogRequest.Variables>{ where: { pp_some: { appConsultation: { id: this.settingService.user.id } } } },
-          { where: { id: this.caseId } },
+          { where: { id: { equals: this.caseId } } },
           {
             fetchPolicy: 'no-cache',
           },
@@ -228,7 +228,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.caseObs = this.cases.valueChanges
           .pipe(
-            map(result => result.data.cases[0]),
+            map(result => result.data.renamedcases[0]),
             tap(() => (this.loading = false)),
           )
           .subscribe(val => {
@@ -923,21 +923,21 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     // console.log('hoiii');
     this.loading = true;
     this.destroyCaseIssue
-      .mutate({ where: { caseId: { id: this.data.id } } })
+      .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
       .toPromise()
       .then(
         res => {
           this.loading = false;
           this.loading = true;
           this.destroyKorban
-            .mutate({ where: { caseId: { id: this.data.id } } })
+            .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
             .toPromise()
             .then(
               res => {
                 this.loading = false;
                 this.loading = true;
                 this.destroyPelaku
-                  .mutate({ where: { caseId: { id: this.data.id } } })
+                  .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
                   .toPromise()
                   .then(
                     // tslint:disable-next-line: no-shadowed-variable
@@ -945,7 +945,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
                       this.loading = false;
                       this.loading = true;
                       this.destroyCaseViolatedRight
-                        .mutate({ where: { caseId: { id: this.data.id } } })
+                        .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
                         .toPromise()
                         .then(
                           // tslint:disable-next-line: no-shadowed-variable
@@ -1009,12 +1009,12 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       // console.log('hoiii');
 
       this.destroyNonlitGQL
-        .mutate({ where: { caseProgressActivityId: { id: data.id } } })
+        .mutate({ where: { caseProgressActivityId: { is: { id: { equals: data.id } } } } })
         .toPromise()
         .then(
           res => {
             this.destroyLitGQL
-              .mutate({ where: { caseProgressActivityId: { id: data.id } } })
+              .mutate({ where: { caseProgressActivityId: { is: { id: { equals: data.id } } } } })
               .toPromise()
               .then(result => {
                 this.loading = false;
@@ -1039,7 +1039,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     // console.log('hoiii');
 
     this.destroyCaseClassification
-      .mutate({ where: { caseId: { id: this.data.id } } })
+      .mutate({ where: { caseId: { is: { id: this.data.id } } } })
       .toPromise()
       .then(
         res => {
@@ -1053,7 +1053,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       );
   }
 
-  processAktifitasPendampingan(data): CaseUpdateInput | string {
+  processAktifitasPendampingan(data): RenamedcaseUpdateInput | string {
     if (this.modeEditModal === 'edit') {
       const activitieslit = <CaseProgressActivityLitCreateWithoutCaseProgressActivityIdInput[]>[];
       if (data.activitieslit) {
@@ -1071,7 +1071,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           });
         }
       }
-      return <CaseUpdateInput>{
+      return <RenamedcaseUpdateInput>{
         activities: {
           update: [
             {
@@ -1112,7 +1112,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           });
         }
       }
-      return <CaseUpdateInput>{
+      return <RenamedcaseUpdateInput>{
         activities: {
           create: [
             {
@@ -1133,7 +1133,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  processAnalisa(data): CaseUpdateInput | string {
+  processAnalisa(data): RenamedcaseUpdateInput | string {
     const korban = <CaseKorbanCreateWithoutCaseIdInput[]>[];
     const pelaku = <CasePelakuCreateWithoutCaseIdInput[]>[];
     const issues = <CaseIssueCreateWithoutCaseIdInput[]>[];
@@ -1159,7 +1159,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       issues.push({ kodeMt: a });
     }
 
-    return <CaseUpdateInput>{
+    return <RenamedcaseUpdateInput>{
       korbans: { create: korban },
       pelakus: { create: pelaku },
       violatedrights: { create: violatedRight },
@@ -1167,22 +1167,22 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     };
   }
 
-  processKlasifikasiDokumen(data): CaseUpdateInput | string {
+  processKlasifikasiDokumen(data): RenamedcaseUpdateInput | string {
     const classification = <CaseClassificationCreateWithoutCaseIdInput[]>[];
 
     for (const a of data.classifications) {
       classification.push({ kodeMt: a });
     }
 
-    return <CaseUpdateInput>{
+    return <RenamedcaseUpdateInput>{
       classifications: { create: classification },
     };
   }
 
-  processCatatanPendampingan(data): CaseUpdateInput | string {
+  processCatatanPendampingan(data): RenamedcaseUpdateInput | string {
     if ('progresses' in this.data) {
       if (this.data.progresses !== null) {
-        return <CaseUpdateInput>{
+        return <RenamedcaseUpdateInput>{
           application: { update: { tahap: '3012' } },
           progresses: {
             update: {
@@ -1194,11 +1194,11 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
         };
       } else {
         // console.log('masuksini');
-        return <CaseUpdateInput>{
+        return <RenamedcaseUpdateInput>{
           application: { update: { tahap: '3012' } },
           updatedBy: this.settingService.user.name,
-          progresses: <CaseProgressUpdateOneWithoutCaseIdInput>{
-            create: <CaseProgressCreateWithoutCaseIdInput>{
+          progresses: <CaseProgressUpdateOneWithoutCaseInput>{
+            create: <CaseProgressCreateWithoutCaseInput>{
               updatedBy: '',
               catatan: data.catatan,
               jenisPeradilan: data.jenisPeradilan,
@@ -1210,7 +1210,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  processLampiranDokumen(data): CaseUpdateInput | string {
+  processLampiranDokumen(data): RenamedcaseUpdateInput | string {
     let filename = '';
     if (this.fileList[0]) {
       if (`filename` in this.fileList[0]) {
@@ -1220,7 +1220,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       }
     }
     if (this.modeEditModal === 'add') {
-      return <CaseUpdateInput>{
+      return <RenamedcaseUpdateInput>{
         documents: {
           create: [
             {
@@ -1235,7 +1235,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
         },
       };
     } else {
-      return <CaseUpdateInput>{
+      return <RenamedcaseUpdateInput>{
         documents: {
           update: [
             {
@@ -1255,10 +1255,10 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  processTransfer(data): CaseUpdateInput | string {
+  processTransfer(data): RenamedcaseUpdateInput | string {
     if ('transfer' in this.data) {
       if (this.data.transfer) {
-        return <CaseUpdateInput>{
+        return <RenamedcaseUpdateInput>{
           transfer: {
             update: {
               catatan: data.catatan,
@@ -1284,7 +1284,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  processDataRapatPK(data): CaseUpdateInput | string {
+  processDataRapatPK(data): RenamedcaseUpdateInput | string {
     if ('progresses' in this.data) {
       if (this.data.progresses) {
         console.log(this.data.progresses);
@@ -1301,7 +1301,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     }
     switch (data.didampingi) {
       case '0111':
-        return <CaseUpdateInput>{
+        return <RenamedcaseUpdateInput>{
           statusPendampingan: '0111',
           application: { update: { tahap: '2012' } },
           pk: {
@@ -1318,7 +1318,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : null) : null,
         };
       case '4111':
-        return <CaseUpdateInput>{
+        return <RenamedcaseUpdateInput>{
           statusPendampingan: '4111',
           application: { update: { tahap: '2012' } },
           pk: {
@@ -1340,7 +1340,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : null) : null,
         };
       case '5111':
-        return <CaseUpdateInput>{
+        return <RenamedcaseUpdateInput>{
           statusPendampingan: '5111',
           application: { update: { tahap: '2012' } },
           pk: {
@@ -1367,7 +1367,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
               : { create: { tglTransfer: moment().toDate() } },
         };
       case '6111':
-        return <CaseUpdateInput>{
+        return <RenamedcaseUpdateInput>{
           statusPendampingan: '6111',
           application: { update: { tahap: '2012' } },
           pk: {
@@ -1385,7 +1385,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
         };
 
       case '7111':
-        return <CaseUpdateInput>{
+        return <RenamedcaseUpdateInput>{
           statusPendampingan: '7111',
           application: { update: { tahap: '2012' } },
           pk: {
@@ -1414,8 +1414,8 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     this.dataMutationUpdateUmum(this.processPenangananLebihLanjut(data), { id: this.data.id });
   }
 
-  processPenangananLebihLanjut(data): CaseUpdateInput | string {
-    return <CaseUpdateInput>{
+  processPenangananLebihLanjut(data): RenamedcaseUpdateInput | string {
+    return <RenamedcaseUpdateInput>{
       statusPendampingan: data.statusPendampingan,
       updatedBy: this.settingService.user.name,
     };
@@ -1426,8 +1426,8 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     this.dataMutationUpdateUmum(this.processTerminasi(data), { id: this.data.id });
   }
 
-  processTerminasi(data): CaseUpdateInput | string {
-    return <CaseUpdateInput>{
+  processTerminasi(data): RenamedcaseUpdateInput | string {
+    return <RenamedcaseUpdateInput>{
       caseClosed: data.caseClosed,
       caseClosedJenis: data.caseClosedJenis,
       application: { update: { tahap: '4012' } },
@@ -1597,7 +1597,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       nzBodyStyle: {},
     });
   }
-  closeModalAndSaveData(event: AllPerson.Persons) {
+  closeModalAndSaveData(event: AllPerson.People) {
     if (this.korbanOrPelaku === 'korban') {
       this.modalInstance.close();
       this.sfListPerson.setValue('/korban', event);
@@ -1889,7 +1889,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  dataMutationUpdateUmum(data: CaseUpdateInput | string, id: CaseWhereUniqueInput) {
+  dataMutationUpdateUmum(data: RenamedcaseUpdateInput | string, id: RenamedcaseWhereUniqueInput) {
     this.loading = true;
     if (typeof data === 'string') {
       this.msg.info(data);
@@ -1969,7 +1969,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       appList.push(b);
     }
 
-    const dataInput = <CaseUpdateInput>{
+    const dataInput = <RenamedcaseUpdateInput>{
       logRequests: { update: [{ where: { ID: logRequestToday.ID }, data: { statusRequest: '2' } }] },
       consultations: {
         create: [
@@ -1999,7 +1999,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       };
       appList.push(b);
     }
-    const dataInput = <CaseUpdateInput>{
+    const dataInput = <RenamedcaseUpdateInput>{
       logRequests: { update: [{ where: { ID: logRequestToday.ID }, data: { statusRequest: '2' } }] },
       consultations: {
         update: [
@@ -2106,7 +2106,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     this.editKonsultasi(template, 'View Data Aktifitas Pendampingan');
   }
 
-  dataMutationUpdateKonsultasi(data: CaseUpdateInput, id: CaseWhereUniqueInput) {
+  dataMutationUpdateKonsultasi(data: RenamedcaseUpdateInput, id: RenamedcaseWhereUniqueInput) {
     this.putCaseGQL
       .mutate({ where: id, data: data })
       .pipe(take(1))

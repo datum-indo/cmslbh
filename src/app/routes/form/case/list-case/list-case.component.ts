@@ -10,7 +10,7 @@ import {
   ChangeDetectorRef,
   OnDestroy,
 } from '@angular/core';
-import { AllPerson, AllPersonGQL, PersonWhereInput, GetCaseGQL, GetCase, CaseWhereInput } from '@shared';
+import { AllPerson, AllPersonGQL, PersonWhereInput, GetCaseGQL, GetCase, RenamedcaseWhereInput } from '@shared';
 import { QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
 import { NzModalRef, NzMessageService, NzModalService } from 'ng-zorro-antd';
@@ -37,8 +37,8 @@ export class ListCaseComponent implements OnInit, OnDestroy {
     noReg: null,
     namaLengkap: null,
   };
-  data: GetCase.Cases[] = [];
-  dataSelected: GetCase.Cases;
+  data: GetCase.Renamedcases[] = [];
+  dataSelected: GetCase.Renamedcases;
   mode = '';
   cases: QueryRef<GetCase.Query, GetCase.Variables>;
   casesObs: Subscription;
@@ -129,7 +129,7 @@ export class ListCaseComponent implements OnInit, OnDestroy {
     private allPersonGQL: AllPersonGQL,
     public mtVocab: MtVocabHelper,
     private getCaseGQL: GetCaseGQL,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cases = this.getCaseGQL.watch(this.query ? this.query : this.searchGenerator(), {
@@ -138,7 +138,7 @@ export class ListCaseComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.casesObs = this.cases.valueChanges
       .pipe(
-        map(result => result.data.cases),
+        map(result => result.data.renamedcases),
         tap(() => (this.loading = false)),
       )
       .subscribe(res => {
@@ -158,7 +158,7 @@ export class ListCaseComponent implements OnInit, OnDestroy {
     this.cases
       .refetch(this.searchGeneratorAppend(this.query))
       .then(res => {
-        this.data = res.data.cases;
+        this.data = res.data.renamedcases;
       })
       .finally(() => {
         this.loading = false;
@@ -169,27 +169,27 @@ export class ListCaseComponent implements OnInit, OnDestroy {
     const queryVar = JSON.parse(JSON.stringify(query));
     console.log(queryVar);
     queryVar.where.AND.push({
-      AND: <CaseWhereInput[]>[
+      AND: <RenamedcaseWhereInput[]>[
         this.q.judulKasus
           ? {
-              judulKasus_contains: this.q.judulKasus,
-            }
+            judulKasus_contains: this.q.judulKasus,
+          }
           : {},
         this.q.namaLengkap
           ? {
-              application: {
-                clients_some: {
-                  personId: { namaLengkap_contains: this.q.namaLengkap },
-                },
+            application: {
+              clients_some: {
+                personId: { namaLengkap_contains: this.q.namaLengkap },
               },
-            }
+            },
+          }
           : {},
         this.q.noReg
           ? {
-              application: {
-                noReg_contains: this.q.noReg,
-              },
-            }
+            application: {
+              noReg_contains: this.q.noReg,
+            },
+          }
           : {},
       ],
     });
@@ -199,8 +199,8 @@ export class ListCaseComponent implements OnInit, OnDestroy {
   searchGenerator(): GetCase.Variables {
     if (this.q.namaLengkap || this.q.nomorId) {
       return <GetCase.Variables>{
-        where: <CaseWhereInput>{
-          OR: <CaseWhereInput[]>[
+        where: <RenamedcaseWhereInput>{
+          OR: <RenamedcaseWhereInput[]>[
             {
               namaLengkap_contains: this.q.namaLengkap === '' ? null : this.q.namaLengkap,
             },
@@ -212,7 +212,7 @@ export class ListCaseComponent implements OnInit, OnDestroy {
       };
     }
     return <GetCase.Variables>{
-      where: <CaseWhereInput>{},
+      where: <RenamedcaseWhereInput>{},
     };
   }
 
@@ -231,7 +231,7 @@ export class ListCaseComponent implements OnInit, OnDestroy {
 
   add(tpl: TemplateRef<{}>, title: string) {
     this.mode = 'create';
-    this.dataSelected = <GetCase.Cases>{};
+    this.dataSelected = <GetCase.Renamedcases>{};
     this.modalInstance = this.modalSrv.create({
       nzTitle: title,
       nzContent: tpl,

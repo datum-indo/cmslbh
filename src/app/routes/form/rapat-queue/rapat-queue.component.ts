@@ -25,7 +25,7 @@ import {
   PostLogRequestGQL,
   LogRequestCreateInput,
   PutLogRequestMutationVariables,
-  CaseWhereInput,
+  RenamedcaseWhereInput,
 } from '@shared';
 import { QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
@@ -70,7 +70,7 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
   editData: any = {};
   editDataKabid: any;
   query = {
-    where: <CaseWhereInput>{
+    where: <RenamedcaseWhereInput>{
       AND: [
         { consultations_some: { apps_some: { appConsultation: { id: this.settingService.user.id } } } },
         { caseClosed: false },
@@ -287,7 +287,7 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
     private settingService: SettingsService,
     private router: Router,
     private postLogRequestGQL: PostLogRequestGQL,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.users = this.getLogRequestGQL.watch(
@@ -396,26 +396,26 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
           AND: [
             this.q.ppName !== null
               ? {
-                  requestBy: {
-                    name_contains: this.q.ppName,
-                  },
-                }
+                requestBy: {
+                  name_contains: this.q.ppName,
+                },
+              }
               : {},
             this.q.clientName !== null
               ? {
-                  applicationId: {
-                    clients_some: {
-                      personId: { namaLengkap_contains: this.q.clientName },
-                    },
+                applicationId: {
+                  clients_some: {
+                    personId: { namaLengkap_contains: this.q.clientName },
                   },
-                }
+                },
+              }
               : {},
             this.q.noReg !== null
               ? {
-                  applicationId: {
-                    noReg_contains: this.q.noReg,
-                  },
-                }
+                applicationId: {
+                  noReg_contains: this.q.noReg,
+                },
+              }
               : {},
           ],
         },
@@ -428,28 +428,28 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
           AND: [
             this.q.ppName
               ? {
-                  pp_some: {
-                    appConsultation: {
-                      name_contains: this.q.ppName,
-                    },
+                pp_some: {
+                  appConsultation: {
+                    name_contains: this.q.ppName,
                   },
-                }
+                },
+              }
               : {},
             this.q.clientName
               ? {
-                  applicationId: {
-                    clients_some: {
-                      personId: { namaLengkap_contains: this.q.clientName },
-                    },
+                applicationId: {
+                  clients_some: {
+                    personId: { namaLengkap_contains: this.q.clientName },
                   },
-                }
+                },
+              }
               : {},
             this.q.noReg
               ? {
-                  applicationId: {
-                    noReg_contains: this.q.noReg,
-                  },
-                }
+                applicationId: {
+                  noReg_contains: this.q.noReg,
+                },
+              }
               : {},
           ],
         },
@@ -659,15 +659,15 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
       caseId: data.caseId
         ? null
         : {
-            create: {
-              judulKasus: data.caseTitle,
-              caseClosed: false,
-              unlockPk: false,
-              lockDitolak: false,
-              unlockTransfer: false,
-              application: { connect: { id: data.applicationId.id } },
-            },
+          create: {
+            judulKasus: data.caseTitle,
+            caseClosed: false,
+            unlockPk: false,
+            lockDitolak: false,
+            unlockTransfer: false,
+            application: { connect: { id: data.applicationId.id } },
           },
+        },
     };
   }
 
@@ -684,8 +684,8 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
                 networkId: data.networkList
                   ? { connect: { id: data.networkList } }
                   : data.networkId
-                  ? { connect: { id: data.networkId.id } }
-                  : null,
+                    ? { connect: { id: data.networkId.id } }
+                    : null,
                 requestTo: { connect: { id: this.settingService.user.id } },
                 tanggapanRequestIsi: data.tanggapanRequestIsi,
                 tglRespon: moment().toDate(),
@@ -704,8 +704,8 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
               networkId: data.networkList
                 ? { connect: { id: data.networkList } }
                 : data.networkId
-                ? { connect: { id: data.networkId.id } }
-                : null,
+                  ? { connect: { id: data.networkId.id } }
+                  : null,
               requestTo: { connect: { id: this.settingService.user.id } },
               tanggapanRequestIsi: data.tanggapanRequestIsi,
               tglRespon: moment().toDate(),
@@ -731,8 +731,8 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
           networkId: data.networkList
             ? { connect: { id: data.networkList } }
             : data.networkId
-            ? { connect: { id: data.networkId.id } }
-            : null,
+              ? { connect: { id: data.networkId.id } }
+              : null,
           requestTo: { connect: { id: this.settingService.user.id } },
           tanggapanRequestIsi: data.tanggapanRequestIsi,
           tglRespon: moment().toDate(),
@@ -749,8 +749,8 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
               networkId: data.networkList
                 ? { connect: { id: data.networkList } }
                 : data.networkId
-                ? { connect: { id: data.networkId.id } }
-                : null,
+                  ? { connect: { id: data.networkId.id } }
+                  : null,
               requestTo: { connect: { id: this.settingService.user.id } },
               tanggapanRequestIsi: data.tanggapanRequestIsi,
               tglRespon: moment().toDate(),
@@ -772,8 +772,8 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
           networkId: data.networkList
             ? { connect: { id: data.networkList } }
             : data.networkId
-            ? { connect: { id: data.networkId.id } }
-            : null,
+              ? { connect: { id: data.networkId.id } }
+              : null,
           requestTo: { connect: { id: this.settingService.user.id } },
           tanggapanRequestIsi: data.tanggapanRequestIsi,
           tglRespon: moment().toDate(),
@@ -793,8 +793,8 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
           networkId: data.networkList
             ? { connect: { id: data.networkList } }
             : data.networkId
-            ? { connect: { id: data.networkId.id } }
-            : null,
+              ? { connect: { id: data.networkId.id } }
+              : null,
           requestTo: { connect: { id: this.settingService.user.id } },
           tanggapanRequestIsi: data.tanggapanRequestIsi,
           tglRespon: moment().toDate(),

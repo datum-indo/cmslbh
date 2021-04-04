@@ -134,7 +134,7 @@ export class ListUserComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     public mtVocab: MtVocabHelper,
     private getUserGQL: GetUserGQL,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.users = this.getUserGQL.watch(this.searchGenerator(), {
@@ -176,10 +176,10 @@ export class ListUserComponent implements OnInit, OnDestroy {
         where: <UserWhereInput>{
           OR: <UserWhereInput[]>[
             {
-              name_contains: this.q.name === '' ? null : this.q.name,
+              name: { contains: this.q.name === '' ? null : this.q.name },
             },
             {
-              email_contains: this.q.email === '' ? null : this.q.email,
+              email: { contains: this.q.email === '' ? null : this.q.email },
             },
           ],
         },

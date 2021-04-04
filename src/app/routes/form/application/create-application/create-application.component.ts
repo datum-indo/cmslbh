@@ -14,10 +14,10 @@ import { SettingsService } from '@delon/theme';
 import { SFSchema, SFComponent, ErrorData } from '@delon/form';
 import {
   AllPerson,
-  ClientCreateManyWithoutApplicationIdInput,
+  ClientCreateNestedManyWithoutApplicationIdInput,
   ClientCreateWithoutApplicationIdInput,
   ApplicationCreateInput,
-  CaseCreateWithoutApplicationInput,
+  RenamedcaseCreateWithoutApplicationInput,
   PostApplicationGQL,
   ApplicationUpdateInput,
   ClientUpdateManyWithoutApplicationIdInput,
@@ -50,7 +50,7 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
     private modalSrv: NzModalService,
     private postApplicationGQL: PostApplicationGQL,
     private putApplicationGQL: PutApplicationGQL,
-  ) {}
+  ) { }
 
   @Output() saveDone = new EventEmitter<any>();
   @ViewChild('sf') sf: SFComponent;
@@ -78,9 +78,9 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
     return this._editData;
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
   loading = false;
 
   submit(value: any) {
@@ -113,7 +113,7 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
       newData.personId = { connect: { id: personId } };
       arrClient.push(newData);
     }
-    const clients = <ClientCreateManyWithoutApplicationIdInput>{ create: arrClient };
+    const clients = <ClientCreateNestedManyWithoutApplicationIdInput>{ create: arrClient };
     // const caseCreate = <CaseCreateWithoutApplicationInput>(<unknown>{
     //   create: {
     //     caseClosed: false,
@@ -482,7 +482,7 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
     });
   }
 
-  closeModalAndSaveData(event: AllPerson.Persons) {
+  closeModalAndSaveData(event: AllPerson.People) {
     this.modalInstance.close();
     this.sf.setValue('/wakilId', event);
   }

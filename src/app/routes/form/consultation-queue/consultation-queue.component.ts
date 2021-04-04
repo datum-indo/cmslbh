@@ -237,7 +237,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
     private settingService: SettingsService,
     private route: ActivatedRoute,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.users = this.getLogRequestGQL.watch(
@@ -301,32 +301,32 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
     if (this.aclService.data.roles.find(el => el === '2' || el === '1'))
       return <GetLogRequest.Variables>{
         where: {
-          jenisRequest: '1011',
+          jenisRequest: { equals: '1011' },
           AND: [
             this.q.ppName
               ? {
-                  pp_some: {
-                    appConsultation: {
-                      name_contains: this.q.ppName,
-                    },
+                pp_some: {
+                  appConsultation: {
+                    name_contains: this.q.ppName,
                   },
-                }
+                },
+              }
               : {},
             this.q.clientName
               ? {
-                  applicationId: {
-                    clients_some: {
-                      personId: { namaLengkap_contains: this.q.clientName },
-                    },
+                applicationId: {
+                  clients_some: {
+                    personId: { namaLengkap_contains: this.q.clientName },
                   },
-                }
+                },
+              }
               : {},
             this.q.noReg
               ? {
-                  applicationId: {
-                    noReg_contains: this.q.noReg,
-                  },
-                }
+                applicationId: {
+                  noReg_contains: this.q.noReg,
+                },
+              }
               : {},
           ],
         },
@@ -365,42 +365,42 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
     return <GetLogRequest.Variables>{
       where: <LogRequestWhereInput>this.aclService.data.roles.find(el => el === '3' || el === '4')
         ? {
-            jenisRequest: '1011',
-            AND: [
-              {
-                pp_some: {
-                  appConsultation: {
-                    id: Number(this.settingService.user.id),
-                  },
+          jenisRequest: '1011',
+          AND: [
+            {
+              pp_some: {
+                appConsultation: {
+                  id: Number(this.settingService.user.id),
                 },
               },
-              this.q.ppName !== null
-                ? {
-                    pp_some: {
-                      appConsultation: {
-                        name_contains: this.q.ppName,
-                      },
-                    },
-                  }
-                : {},
-              this.q.clientName !== null
-                ? {
-                    applicationId: {
-                      clients_some: {
-                        personId: { namaLengkap_contains: this.q.clientName },
-                      },
-                    },
-                  }
-                : {},
-              this.q.noReg !== null
-                ? {
-                    applicationId: {
-                      noReg_contains: this.q.noReg,
-                    },
-                  }
-                : {},
-            ],
-          }
+            },
+            this.q.ppName !== null
+              ? {
+                pp_some: {
+                  appConsultation: {
+                    name_contains: this.q.ppName,
+                  },
+                },
+              }
+              : {},
+            this.q.clientName !== null
+              ? {
+                applicationId: {
+                  clients_some: {
+                    personId: { namaLengkap_contains: this.q.clientName },
+                  },
+                },
+              }
+              : {},
+            this.q.noReg !== null
+              ? {
+                applicationId: {
+                  noReg_contains: this.q.noReg,
+                },
+              }
+              : {},
+          ],
+        }
         : {},
     };
   }
@@ -642,15 +642,15 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
       caseId: data.caseId
         ? null
         : {
-            create: {
-              judulKasus: data.caseTitle,
-              caseClosed: false,
-              unlockPk: false,
-              lockDitolak: false,
-              unlockTransfer: false,
-              application: { connect: { id: data.applicationId.id } },
-            },
+          create: {
+            judulKasus: data.caseTitle,
+            caseClosed: false,
+            unlockPk: false,
+            lockDitolak: false,
+            unlockTransfer: false,
+            application: { connect: { id: data.applicationId.id } },
           },
+        },
     };
   }
 
@@ -658,7 +658,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
     data.tglRespon = null;
     data.statusRequest = '0';
     const ppIncluded = data.pp.map(val => val.id);
-    data.pp = <LogRequestAppUpdateManyWithoutLogRequestIdInput>{ deleteMany: [{ id_in: [...ppIncluded] }] };
+    data.pp = <LogRequestAppUpdateManyWithoutLogRequestIdInput>{ deleteMany: [{ id: { in: [...ppIncluded] } }] };
     return <LogRequestUpdateInput>{
       pp: data.pp,
       tglRespon: data.tglRespon,

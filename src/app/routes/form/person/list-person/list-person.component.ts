@@ -26,7 +26,7 @@ import { QueryRef } from 'apollo-angular';
 })
 export class ListPersonComponent implements OnInit, OnDestroy {
   @Input() parent: boolean;
-  @Output() dataPerson = new EventEmitter<AllPerson.Persons>();
+  @Output() dataPerson = new EventEmitter<AllPerson.People>();
   @ViewChild('card') card: ElementRef;
   @ViewChild('modalContent') modalEl: TemplateRef<{}>;
 
@@ -34,8 +34,8 @@ export class ListPersonComponent implements OnInit, OnDestroy {
     namaLengkap: null,
     nomorId: null,
   };
-  data: AllPerson.Persons[] = [];
-  dataSelected: AllPerson.Persons;
+  data: AllPerson.People[] = [];
+  dataSelected: AllPerson.People;
   mode = '';
   persons: QueryRef<AllPerson.Query, AllPerson.Variables>;
   personsObs: Subscription;
@@ -127,7 +127,7 @@ export class ListPersonComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private allPersonGQL: AllPersonGQL,
     public mtVocab: MtVocabHelper,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.persons = this.allPersonGQL.watch(this.searchGenerator(), {
@@ -136,7 +136,7 @@ export class ListPersonComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.personsObs = this.persons.valueChanges
       .pipe(
-        map(result => result.data.persons),
+        map(result => result.data.people),
         tap(() => (this.loading = false)),
       )
       .subscribe(res => {
@@ -154,7 +154,7 @@ export class ListPersonComponent implements OnInit, OnDestroy {
     this.persons
       .refetch(this.searchGenerator())
       .then(res => {
-        this.data = res.data.persons;
+        this.data = res.data.people;
       })
       .finally(() => {
         this.loading = false;
@@ -167,10 +167,10 @@ export class ListPersonComponent implements OnInit, OnDestroy {
         where: <PersonWhereInput>{
           OR: <PersonWhereInput[]>[
             {
-              namaLengkap_contains: this.q.namaLengkap === '' ? null : this.q.namaLengkap,
+              namaLengkap: { contains: this.q.namaLengkap === '' ? null : this.q.namaLengkap },
             },
             {
-              nomorId_contains: this.q.nomorId === '' ? null : this.q.nomorId,
+              nomorId: { contains: this.q.nomorId === '' ? null : this.q.nomorId },
             },
           ],
         },
@@ -196,7 +196,7 @@ export class ListPersonComponent implements OnInit, OnDestroy {
 
   add(tpl: TemplateRef<{}>, title: string) {
     this.mode = 'create';
-    this.dataSelected = <AllPerson.Persons>{};
+    this.dataSelected = <AllPerson.People>{};
     this.modalInstance = this.modalSrv.create({
       nzTitle: title,
       nzContent: tpl,

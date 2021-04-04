@@ -10,13 +10,14 @@ import {
   GetUserGQL,
   RoleWhereInput,
   GetCase,
-  CaseWhereInput,
   GetCaseGQL,
   GetLogRequestGQL,
   GetLogRequest,
   LogRequestWhereInput,
   GetNetworksGQL,
   GetClientGQL,
+  SortOrder,
+  RenamedcaseWhereInput,
 } from '@shared/graphql';
 import { valid } from 'mockjs';
 import { _ } from 'underscore';
@@ -45,7 +46,7 @@ export class MtVocabHelper {
     private getLogRequestGQL: GetLogRequestGQL,
     private getNetworksGQL: GetNetworksGQL,
     private getClientGQL: GetClientGQL,
-  ) {}
+  ) { }
 
   async findParent(kode: string) {
     const arrMtvocabs: GetMtVocabs.MtVocabs[] = [];
@@ -83,7 +84,7 @@ export class MtVocabHelper {
   private searchGenerator(kode): GetMtVocabs.Variables {
     return <GetMtVocabs.Variables>{
       where: <MtVocabWhereInput>{
-        KODE: kode,
+        KODE: { equals: kode },
       },
     };
   }
@@ -159,11 +160,11 @@ export class MtVocabHelper {
       .watch(
         {
           where: {
-            sembunyikan: false,
-            kode_induk: '0',
-            kode_list: { kode_list: kode_list },
+            sembunyikan: { equals: false },
+            kode_induk: { equals: '0' },
+            kode_list: { is: { kode_list: { equals: kode_list } } },
           },
-          orderBy: MtVocabOrderByInput.UrutanAsc,
+          orderBy: [{ urutan: SortOrder.Asc }],
         },
         { fetchPolicy: 'cache-first' },
       )
@@ -185,11 +186,11 @@ export class MtVocabHelper {
       .watch(
         {
           where: {
-            sembunyikan: false,
-            kode_induk: '0',
-            kode_list: { kode_list: kode_list },
+            sembunyikan: { equals: false },
+            kode_induk: { equals: '0' },
+            kode_list: { is: { kode_list: { equals: kode_list } } },
           },
-          orderBy: MtVocabOrderByInput.UrutanAsc,
+          orderBy: [{ urutan: SortOrder.Asc }],
         },
         { fetchPolicy: 'cache-first' },
       )
@@ -216,11 +217,11 @@ export class MtVocabHelper {
       .watch(
         {
           where: {
-            sembunyikan: false,
-            kode_induk: kode,
-            kode_list: { kode_list: kode_list },
+            sembunyikan: { equals: false },
+            kode_induk: { equals: kode },
+            kode_list: { is: { kode_list: { equals: kode_list } } },
           },
-          orderBy: MtVocabOrderByInput.UrutanAsc,
+          orderBy: [{ urutan: SortOrder.Asc }],
         },
         { fetchPolicy: 'cache-first' },
       )
@@ -242,11 +243,11 @@ export class MtVocabHelper {
       .watch(
         {
           where: {
-            sembunyikan: false,
-            kode_induk: kode,
-            kode_list: { kode_list: kode_list },
+            sembunyikan: { equals: false },
+            kode_induk: { equals: kode },
+            kode_list: { is: { kode_list: { equals: kode_list } } },
           },
-          orderBy: MtVocabOrderByInput.UrutanAsc,
+          orderBy: [{ urutan: SortOrder.Asc }],
         },
         { fetchPolicy: 'cache-first' },
       )
@@ -264,7 +265,7 @@ export class MtVocabHelper {
 
   getNetworksEnum(type: string) {
     return this.getNetworksGQL
-      .watch({ where: { AND: [{ type: type }, { status: '1' }] } }, { fetchPolicy: 'network-only' })
+      .watch({ where: { AND: [{ type: { equals: type } }, { status: { equals: '1' } }] } }, { fetchPolicy: 'network-only' })
       .valueChanges.pipe(
         map(
           result =>
@@ -281,11 +282,11 @@ export class MtVocabHelper {
 
   getClientsEnum(caseId: number) {
     return this.getCaseGQL
-      .watch({ where: { id: caseId } })
+      .watch({ where: { id: { equals: caseId } } })
       .valueChanges.pipe(
         map(
           result =>
-            result.data.cases[0].application.clients.map(res => {
+            result.data.renamedcases[0].application.clients.map(res => {
               const obj: any = {};
               obj.value = res.personId.id;
               obj.label = res.personId.namaLengkap;
@@ -317,7 +318,8 @@ export class MtVocabHelper {
     const rolesNumber = roles.map(val => Number(val));
     return this.getUserGQL
       .watch(<GetUser.Variables>{
-        where: <UserWhereInput>{ roles_type_some: <RoleWhereInput>{ type: { id_in: rolesNumber } }, status: '1' },
+        // where: <UserWhereInput>{ roles_type_some: <RoleWhereInput>{ type: { id_in: rolesNumber } }, status: '1' },
+        where: { roles_type: { some: { type: { is: { id: { in: rolesNumber } } } } }, status: { equals: '1' } }
       })
       .valueChanges.pipe(
         map(
@@ -336,11 +338,11 @@ export class MtVocabHelper {
   findPPConsultation(caseId: number, consultationId: number) {
     return this.getCaseGQL
       .watch(<GetCase.Variables>{
-        where: <CaseWhereInput>{ id: caseId, consultations_some: { id: consultationId } },
+        where: <RenamedcaseWhereInput>{ id: { equals: caseId }, consultations: { some: { id: { equals: consultationId } } } },
       })
       .valueChanges.pipe(
         map(result =>
-          result.data.cases.map(res => {
+          result.data.renamedcases.map(res => {
             const pp = res.consultations[0].apps;
             const formatText = pp.map(val => {
               return val.appConsultation.name;
@@ -361,11 +363,11 @@ export class MtVocabHelper {
   findHandlingPPString(caseId: number) {
     return this.getCaseGQL
       .watch(<GetCase.Variables>{
-        where: <CaseWhereInput>{ id: caseId },
+        where: <RenamedcaseWhereInput>{ id: { equals: caseId } },
       })
       .valueChanges.pipe(
         map(result =>
-          result.data.cases.map(res => {
+          result.data.renamedcases.map(res => {
             let pp = [];
             if (res.consultations) {
               pp = res.consultations.map(val => val.apps);
@@ -395,11 +397,11 @@ export class MtVocabHelper {
   findHandlingPPArray(caseId: number) {
     return this.getCaseGQL
       .watch(<GetCase.Variables>{
-        where: <CaseWhereInput>{ id: caseId },
+        where: <RenamedcaseWhereInput>{ id: { equals: caseId } },
       })
       .valueChanges.pipe(
         map(result =>
-          result.data.cases.map(res => {
+          result.data.renamedcases.map(res => {
             let pp = [];
             if (res.consultations) {
               pp = res.consultations.map(val => val.apps);
@@ -426,9 +428,10 @@ export class MtVocabHelper {
     return this.getLogRequestGQL
       .watch(<GetLogRequest.Variables>{
         where: <LogRequestWhereInput>{
-          tglRequest: moment().toDate(),
-          applicationId: { noReg: noReg },
-          jenisRequest: '1',
+          tglRequest: { equals: moment().toDate() },
+          applicationId: { is: { noReg: { equals: noReg } } },
+          // applicationId: { noReg: noReg },
+          jenisRequest: { equals: '1' },
         },
       })
       .valueChanges.pipe(
@@ -459,9 +462,10 @@ export class MtVocabHelper {
   private searchGeneratorEnum(kode_list: number): GetMtVocabs.Variables {
     return <GetMtVocabs.Variables>{
       where: <MtVocabWhereInput>{
-        AND: <MtVocabWhereInput[]>[{ kode_list: <MtVocabGroupWhereInput>{ kode_list: kode_list }, sembunyikan: false }],
+        // AND: <MtVocabWhereInput[]>[{ kode_list: <MtVocabGroupWhereInput>{ kode_list: kode_list }, sembunyikan: false }],
+        AND: [{ kode_list: { is: { kode_list: { equals: kode_list } } }, sembunyikan: { equals: false } }]
       },
-      orderBy: MtVocabOrderByInput.UrutanAsc,
+      orderBy: [{ urutan: SortOrder.Asc }],
     };
   }
 
@@ -469,7 +473,7 @@ export class MtVocabHelper {
     return this.getMtVocabsGQL
       .watch(<GetMtVocabs.Variables>{
         where: <MtVocabWhereInput>{
-          kode_induk: kode,
+          kode_induk: { equals: kode },
         },
       })
       .valueChanges.pipe(map(result => result.data.mtVocabs))
@@ -482,14 +486,15 @@ export class MtVocabHelper {
       return this.getMtVocabsGQL
         .watch(<GetMtVocabs.Variables>{
           where: <MtVocabWhereInput>{
-            KODE: kode,
+            // KODE: kode,
+            KODE: { equals: kode }
           },
         })
         .valueChanges.pipe(map(result => result.data.mtVocabs[0].teks))
         .pipe(take(1))
         .toPromise();
     } else {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         resolve(null);
       });
     }

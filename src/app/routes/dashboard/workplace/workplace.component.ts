@@ -14,7 +14,7 @@ import {
 import { zip, Subscription } from 'rxjs';
 import { NzMessageService, NzModalRef, NzModalService } from 'ng-zorro-antd';
 import { _HttpClient, SettingsService } from '@delon/theme';
-import { GetCase, AllPersonGQL, GetCaseGQL, CaseWhereInput, GetConsultationGQL, GetPk, GetPkGQL } from '@shared';
+import { GetCase, AllPersonGQL, GetCaseGQL, RenamedcaseWhereInput, GetConsultationGQL, GetPk, GetPkGQL } from '@shared';
 import { QueryRef } from 'apollo-angular';
 import { STComponent, STColumn, STData, STChange } from '@delon/abc';
 import * as moment from 'moment';
@@ -40,8 +40,8 @@ export class DashboardWorkplaceComponent implements OnInit, OnDestroy {
     judulKasus: null,
     noReg: null,
   };
-  data: any[] | GetCase.Cases[] = [];
-  dataSelected: GetCase.Cases;
+  data: any[] | GetCase.Renamedcases[] = [];
+  dataSelected: GetCase.Renamedcases;
   mode = '';
   cases: QueryRef<GetCase.Query, GetCase.Variables>;
   casesObs: Subscription;
@@ -147,7 +147,7 @@ export class DashboardWorkplaceComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.casesObs = this.cases.valueChanges
       .pipe(
-        map(result => result.data.cases),
+        map(result => result.data.renamedcases),
         tap(() => (this.loading = false)),
       )
       .subscribe(res => {
@@ -167,12 +167,12 @@ export class DashboardWorkplaceComponent implements OnInit, OnDestroy {
 
   agrregationCase() {
     this.aggTotalKonsultasi = this.getConsultationGQL
-      .fetch({ where: { apps_some: { appConsultation: { id: this.settingService.user.id } } } })
+      .fetch({ where: { apps: { some: { appConsultation: { is: { id: this.settingService.user.id } } } } } })
       .pipe(map(res => res.data.caseConsultations.length))
       .toPromise();
 
     this.aggTotalPendampingan = this.getPkGQL
-      .fetch({ where: { ppPendamping: { id: this.settingService.user.id } } })
+      .fetch({ where: { ppPendamping: { is: { id: this.settingService.user.id } } } })
       .pipe(map(res => res.data.casePks.length))
       .toPromise();
 
@@ -180,12 +180,12 @@ export class DashboardWorkplaceComponent implements OnInit, OnDestroy {
       .fetch({
         where: {
           OR: [
-            { consultations_some: { apps_some: { appConsultation: { id: this.settingService.user.id } } } },
-            { pk: { ppPendamping: { id: this.settingService.user.id } } },
+            { consultations: { some: { apps: { some: { appConsultation: { is: { id: this.settingService.user.id } } } } } } },
+            { pk: { is: { ppPendamping: { is: { id: this.settingService.user.id } } } } },
           ],
         },
       })
-      .pipe(map(res => res.data.cases.length))
+      .pipe(map(res => res.data.renamedcases.length))
       .toPromise();
   }
 
@@ -198,7 +198,7 @@ export class DashboardWorkplaceComponent implements OnInit, OnDestroy {
     this.cases
       .refetch(this.searchGenerator())
       .then(res => {
-        this.data = res.data.cases;
+        this.data = res.data.renamedcases;
       })
       .finally(() => {
         this.loading = false;
@@ -207,7 +207,7 @@ export class DashboardWorkplaceComponent implements OnInit, OnDestroy {
 
   searchGenerator(): GetCase.Variables {
     return <GetCase.Variables>{
-      where: <CaseWhereInput>{
+      where: <RenamedcaseWhereInput>{
         AND: [
           {
             OR: [
@@ -218,24 +218,24 @@ export class DashboardWorkplaceComponent implements OnInit, OnDestroy {
 
           this.q.judulKasus !== null
             ? {
-                judulKasus_contains: this.q.judulKasus,
-              }
+              judulKasus_contains: this.q.judulKasus,
+            }
             : {},
           this.q.clientName !== null
             ? {
-                application: {
-                  clients_some: {
-                    personId: { namaLengkap_contains: this.q.clientName },
-                  },
+              application: {
+                clients_some: {
+                  personId: { namaLengkap_contains: this.q.clientName },
                 },
-              }
+              },
+            }
             : {},
           this.q.noReg !== null
             ? {
-                application: {
-                  noReg_contains: this.q.noReg,
-                },
-              }
+              application: {
+                noReg_contains: this.q.noReg,
+              },
+            }
             : {},
         ],
       },
@@ -257,7 +257,7 @@ export class DashboardWorkplaceComponent implements OnInit, OnDestroy {
 
   add(tpl: TemplateRef<{}>, title: string) {
     this.mode = 'create';
-    this.dataSelected = <GetCase.Cases>{};
+    this.dataSelected = <GetCase.Renamedcases>{};
     this.modalInstance = this.modalSrv.create({
       nzTitle: title,
       nzContent: tpl,

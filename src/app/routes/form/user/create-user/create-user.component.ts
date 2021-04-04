@@ -10,13 +10,12 @@ import {
   PostUserGQL,
   PutUserGQL,
   UserWhereUniqueInput,
-  UserProfileCreateOneWithoutUserIdInput,
-  UserProfileCreateWithoutUserIdInput,
-  RoleCreateManyWithoutUserIdInput,
-  RoleCreateWithoutUserIdInput,
   DestroyRoles,
   DestroyRolesGQL,
-  RoleUpdateManyWithoutUserIdInput,
+  RoleUpdateManyWithoutUserInput,
+  RoleCreateNestedManyWithoutUserInput,
+  RoleCreateWithoutUserInput,
+  UserProfileCreateNestedOneWithoutUserInput,
 } from '@shared';
 import { MtVocabHelper } from '@shared/helper';
 import { SettingsService } from '@delon/theme';
@@ -38,7 +37,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     private postUserGQL: PostUserGQL,
     private putUserGQL: PutUserGQL,
     private destroyRolesGQL: DestroyRolesGQL,
-  ) {}
+  ) { }
 
   @Output() saveDone = new EventEmitter<boolean>();
   @ViewChild('sf') sf: SFComponent;
@@ -65,9 +64,9 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     return this._editData;
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
   loading = false;
 
   submit(value: any) {
@@ -75,11 +74,11 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     const processedData = this.processData(value);
     if (this.mode === 'edit') {
       this.destroyRolesGQL
-        .mutate({ where: { userId_every: { id: value.id } } })
+        .mutate({ where: { User: { every: { id: { equals: value.id } } } } })
         .toPromise()
         .then(
           res => {
-            this.dataMutationUpdate(<UserUpdateInput>processedData, <UserWhereUniqueInput>{ id: value.id });
+            this.dataMutationUpdate(processedData as UserUpdateInput, { id: value.id });
           },
           error => {
             this.msg.error(JSON.stringify(error));
@@ -92,24 +91,24 @@ export class CreateUserComponent implements OnInit, OnDestroy {
 
   processData(data: any): UserCreateInput | UserUpdateInput {
     if (this.mode === 'edit') {
-      const roles = <RoleCreateWithoutUserIdInput[]>[];
+      const roles = <RoleCreateNestedManyWithoutUserInput[]>[];
       for (const a of data.roles_type_virtual) {
         const role: any = { type: { connect: { id: a } } };
         roles.push(role);
       }
-      const rolesType = <RoleUpdateManyWithoutUserIdInput>{ create: roles };
+      const rolesType = <RoleUpdateManyWithoutUserInput>{ create: roles };
       data.roles_type = rolesType;
       const { id, createdAt, updatedAt, __typename, _values, profile, roles_type_virtual, ...newData } = data;
       return <UserUpdateInput>{ ...newData };
     } else {
       // create
-      const roles = <RoleCreateWithoutUserIdInput[]>[];
+      const roles = <RoleCreateWithoutUserInput[]>[];
       for (const a of data.roles_type_virtual) {
         const role: any = { type: { connect: { id: a } } };
         roles.push(role);
       }
-      const rolesType = <RoleCreateManyWithoutUserIdInput>{ create: roles };
-      const profile = <UserProfileCreateOneWithoutUserIdInput>{
+      const rolesType = <RoleCreateNestedManyWithoutUserInput>{ create: roles };
+      const profile = <UserProfileCreateNestedOneWithoutUserInput>{
         create: { noContact: data.phone },
       };
       data.profile = profile;

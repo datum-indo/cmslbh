@@ -1,144 +1,63 @@
 #subscription
 
-subscription subscribeToLog($where: LogRequestSubscriptionWhereInput) {
-  logRequest(where: $where) {
-    mutation
-    node {
-      ID
-      caseId {
-        id
-        judulKasus
-        transfer {
-          id
-          tglTransfer
-          network {
-            id
-            name
-          }
-        }
-        application {
-          id
-          noReg
-          clients {
-            id
-            personId {
-              id
-              namaLengkap
-            }
-          }
-        }
-        kronologiKasus
-        pk {
-          id
-          didampingi
-          tglRapat
-        }
-      }
-      isiRequest
-      tanggapanRequestIsi
-      applicationId {
-        id
-        tahap
-        noReg
-        dudukPerara
-        clients {
-          id
-          personId {
-            id
-            namaLengkap
-          }
-        }
-      }
-      jenisRequest
-      networkId {
-        id
-        name
-      }
-      personId {
-        id
-        namaLengkap
-      }
-      pp {
-        id
-        appConsultation {
-          name
-          id
-        }
-      }
-      requestBy {
-        id
-        name
-      }
-      requestTo {
-        id
-      }
-      statusRequest
-      tanggapanRequest
-      tglExpired
-      tglRequest
-      tglRespon
-    }
-  }
-}
-
 # mutation
 
 mutation destroyRoles($where: RoleWhereInput!) {
-  deleteManyRoles(where: $where) {
+  deleteManyRole(where: $where) {
     count
   }
 }
 
 mutation destroyLog($where: LogRequestWhereInput!) {
-  deleteManyLogRequests(where: $where) {
+  deleteManyLogRequest(where: $where) {
     count
   }
 }
 
 mutation destroyLit($where: CaseProgressActivityLitWhereInput!) {
-  deleteManyCaseProgressActivityLits(where: $where) {
+  deleteManyCaseProgressActivityLit(where: $where) {
     count
   }
 }
 
 mutation destroyNonlit($where: CaseProgressActivityNonlitWhereInput!) {
-  deleteManyCaseProgressActivityNonlits(where: $where) {
+  deleteManyCaseProgressActivityNonlit(where: $where) {
     count
   }
 }
 
 mutation destroyKorban($where: CaseKorbanWhereInput!) {
-  deleteManyCaseKorbans(where: $where) {
+  deleteManyCaseKorban(where: $where) {
     count
   }
 }
 
 mutation destroyPelaku($where: CasePelakuWhereInput!) {
-  deleteManyCasePelakus(where: $where) {
+  deleteManyCasePelaku(where: $where) {
     count
   }
 }
 
 mutation destroyCaseViolatedRight($where: CaseViolatedRightWhereInput!) {
-  deleteManyCaseViolatedRights(where: $where) {
+  deleteManyCaseViolatedRight(where: $where) {
     count
   }
 }
 
 mutation destroyCaseClassification($where: CaseClassificationWhereInput!) {
-  deleteManyCaseClassifications(where: $where) {
+  deleteManyCaseClassification(where: $where) {
     count
   }
 }
 
 mutation destroyCaseProgressActivity($where: CaseProgressActivityWhereInput!) {
-  deleteManyCaseProgressActivities(where: $where) {
+  deleteManyCaseProgressActivity(where: $where) {
     count
   }
 }
 
 mutation destroyCaseIssue($where: CaseIssueWhereInput!) {
-  deleteManyCaseIssues(where: $where) {
+  deleteManyCaseIssue(where: $where) {
     count
   }
 }
@@ -316,8 +235,8 @@ mutation postApplication($data: ApplicationCreateInput!) {
   }
 }
 
-mutation putCase($data: CaseUpdateInput!, $where: CaseWhereUniqueInput!) {
-  updateCase(data: $data, where: $where) {
+mutation putCase($data: RenamedcaseUpdateInput!, $where: RenamedcaseWhereUniqueInput!) {
+  updateRenamedcase(data: $data, where: $where) {
     id
     applicationId
     caseClosed
@@ -763,21 +682,15 @@ mutation postPerson($data: PersonCreateInput!) {
 
 query getLogRequest(
   $where: LogRequestWhereInput
-  $orderBy: LogRequestOrderByInput
+  $orderBy: [LogRequestOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+  $take: Int
 ) {
   logRequests(
     where: $where
     orderBy: $orderBy
     skip: $skip
-    after: $after
-    before: $before
-    first: $first
-    last: $last
+    take: $take
   ) {
     ID
     updatedAt
@@ -858,21 +771,15 @@ query getLogRequest(
 
 query getRolesType(
   $where: RolesTypeWhereInput
-  $orderBy: RolesTypeOrderByInput
+  $orderBy: [RolesTypeOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+  $take: Int
 ) {
   rolesTypes(
     where: $where
     orderBy: $orderBy
     skip: $skip
-    after: $after
-    before: $before
-    first: $first
-    last: $last
+    take: $take
   ) {
     id
     description
@@ -881,14 +788,11 @@ query getRolesType(
 
 query getNetworks(
   $where: NetworkWhereInput
-  $orderBy: NetworkOrderByInput
+  $orderBy: [NetworkOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+  $take: Int
 ) {
-  networks(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+  networks(where: $where, orderBy: $orderBy, skip: $skip, take: $take) {
     address
     contactPerson
     createdAt
@@ -906,14 +810,11 @@ query getNetworks(
 
 query getUser(
   $where: UserWhereInput
-  $orderBy: UserOrderByInput
+  $orderBy: [UserOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+ $take: Int
 ) {
-  users(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+  users(where: $where, orderBy: $orderBy, skip: $skip, take: $take) {
     address
     avatar
     createdAt
@@ -944,15 +845,12 @@ query getUser(
 }
 
 query getCase(
-  $where: CaseWhereInput
-  $orderBy: CaseOrderByInput
+  $where: RenamedcaseWhereInput
+  $orderBy: [RenamedcaseOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+  $take: Int
 ) {
-  cases(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+  renamedcases(where: $where, orderBy: $orderBy, skip: $skip, take: $take) {
     id
     applicationId
     caseClosed
@@ -1303,21 +1201,15 @@ query getCase(
 
 query getConsultation(
   $where: CaseConsultationWhereInput
-  $orderBy: CaseConsultationOrderByInput
+  $orderBy: [CaseConsultationOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+ $take: Int
 ) {
   caseConsultations(
     where: $where
     orderBy: $orderBy
     skip: $skip
-    after: $after
-    before: $before
-    first: $first
-    last: $last
+    take: $take
   ) {
     id
   }
@@ -1325,28 +1217,22 @@ query getConsultation(
 
 query getPk(
   $where: CasePkWhereInput
-  $orderBy: CasePkOrderByInput
+  $orderBy: [CasePkOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+  $take: Int
 ) {
-  casePks(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+  casePks(where: $where, orderBy: $orderBy, skip: $skip, take: $take) {
     id
   }
 }
 
 query getClient(
   $where: ClientWhereInput
-  $orderBy: ClientOrderByInput
+  $orderBy: [ClientOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+  $take: Int
 ) {
-  clients(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+  clients(where: $where, orderBy: $orderBy, skip: $skip, take: $take) {
     id
     alamatLokasi
     applicationId {
@@ -1383,21 +1269,15 @@ query getClient(
 
 query getApplications(
   $where: ApplicationWhereInput
-  $orderBy: ApplicationOrderByInput
+  $orderBy: [ApplicationOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+  $take: Int
 ) {
   applications(
     where: $where
     orderBy: $orderBy
     skip: $skip
-    after: $after
-    before: $before
-    first: $first
-    last: $last
+    take: $take
   ) {
     id
     createdAt
@@ -1468,14 +1348,11 @@ query getApplications(
 
 query getMtVocabs(
   $where: MtVocabWhereInput
-  $orderBy: MtVocabOrderByInput
+  $orderBy: [MtVocabOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+  $take: Int
 ) {
-  mtVocabs(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+  mtVocabs(where: $where, orderBy: $orderBy, skip: $skip, take: $take) {
     KODE
     kode_induk
     level
@@ -1486,14 +1363,11 @@ query getMtVocabs(
 }
 query allPerson(
   $where: PersonWhereInput
-  $orderBy: PersonOrderByInput
+  $orderBy: [PersonOrderByInput!]
   $skip: Int
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
+  $take: Int
 ) {
-  persons(where: $where, orderBy: $orderBy, skip: $skip, after: $after, before: $before, first: $first, last: $last) {
+  people(where: $where, orderBy: $orderBy, skip: $skip, take: $take) {
     id
     agama
     alamatDomisili

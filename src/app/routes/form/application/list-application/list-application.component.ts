@@ -38,7 +38,7 @@ import { ACLService } from '@delon/acl';
 })
 export class ListApplicationComponent implements OnInit, OnDestroy {
   @Input() parent: boolean;
-  @Output() dataPerson = new EventEmitter<AllPerson.Persons>();
+  @Output() dataPerson = new EventEmitter<AllPerson.People>();
   @ViewChild('card') card: ElementRef;
   @ViewChild('modalContent') modalEl: TemplateRef<{}>;
 
@@ -179,7 +179,7 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
     private settingService: SettingsService,
     private getLogRequestGQL: GetLogRequestGQL,
     public http: _HttpClient,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.applications = this.getApplicationGQL.watch(this.searchGenerator(), {
@@ -220,29 +220,29 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
         AND: <ApplicationWhereInput[]>[
           this.q.judulKasus
             ? {
-                case: {
-                  judulKasus_contains: this.q.judulKasus,
-                },
-              }
+              case: {
+                judulKasus_contains: this.q.judulKasus,
+              },
+            }
             : {},
           this.q.namaKlien
             ? {
-                clients_some: {
-                  personId: { namaLengkap_contains: this.q.namaKlien },
-                },
-              }
+              clients_some: {
+                personId: { namaLengkap_contains: this.q.namaKlien },
+              },
+            }
             : {},
           this.q.noReg
             ? {
-                noReg_contains: this.q.noReg,
-              }
+              noReg_contains: this.q.noReg,
+            }
             : {},
           this.q.namaWakil
             ? {
-                wakilId: {
-                  namaLengkap_contains: this.q.namaWakil,
-                },
-              }
+              wakilId: {
+                namaLengkap_contains: this.q.namaWakil,
+              },
+            }
             : {},
         ],
       },
@@ -298,16 +298,17 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
       .fetch(
         {
           where: {
-            applicationId: { id: item.id },
-            jenisRequest: '1011',
-            tglRequest_gte: moment()
-              .hour(0)
-              .minute(0)
-              .toDate(),
-            tglRequest_lte: moment()
-              .hour(23)
-              .minute(59)
-              .toDate(),
+            applicationId: { is: { id: item.id } },
+            jenisRequest: { equals: '1011' },
+            tglRequest: {
+              gte: moment()
+                .hour(0)
+                .minute(0)
+                .toDate(), lte: moment()
+                  .hour(23)
+                  .minute(59)
+                  .toDate()
+            },
           },
         },
         { fetchPolicy: 'network-only' },

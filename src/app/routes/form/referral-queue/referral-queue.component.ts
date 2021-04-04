@@ -25,8 +25,8 @@ import {
   PostLogRequestGQL,
   LogRequestCreateInput,
   PutLogRequestMutationVariables,
-  CaseWhereInput,
-  Case,
+  RenamedcaseWhereInput,
+  Renamedcase,
 } from '@shared';
 import { QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs';
@@ -72,11 +72,11 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
   editDataTemp: any;
   editDataKabid: any;
   query = {
-    where: <CaseWhereInput>{
+    where: <RenamedcaseWhereInput>{
       AND: [],
       OR: [
-        { consultations_some: { apps_some: { appConsultation: { id: this.settingService.user.id } } } },
-        { pk: { ppPendamping: { id: this.settingService.user.id } } },
+        { consultations: { some: { apps: { some: { appConsultation: { is: { id: { equals: this.settingService.user.id } } } } } } } },
+        { pk: { is: { ppPendamping: { is: { id: { equals: this.settingService.user.id } } } } } },
       ],
     },
   };
@@ -260,7 +260,7 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
     private settingService: SettingsService,
     private router: Router,
     private postLogRequestGQL: PostLogRequestGQL,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.users = this.getLogRequestGQL.watch(
@@ -371,26 +371,26 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
           AND: [
             this.q.ppName
               ? {
-                  requestBy: {
-                    name_contains: this.q.ppName,
-                  },
-                }
+                requestBy: {
+                  name_contains: this.q.ppName,
+                },
+              }
               : {},
             this.q.clientName
               ? {
-                  applicationId: {
-                    clients_some: {
-                      personId: { namaLengkap_contains: this.q.clientName },
-                    },
+                applicationId: {
+                  clients_some: {
+                    personId: { namaLengkap_contains: this.q.clientName },
                   },
-                }
+                },
+              }
               : {},
             this.q.noReg
               ? {
-                  applicationId: {
-                    noReg_contains: this.q.noReg,
-                  },
-                }
+                applicationId: {
+                  noReg_contains: this.q.noReg,
+                },
+              }
               : {},
           ],
         },
@@ -403,28 +403,28 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
           AND: [
             this.q.ppName
               ? {
-                  pp_some: {
-                    appConsultation: {
-                      name_contains: this.q.ppName,
-                    },
+                pp_some: {
+                  appConsultation: {
+                    name_contains: this.q.ppName,
                   },
-                }
+                },
+              }
               : {},
             this.q.clientName
               ? {
-                  applicationId: {
-                    clients_some: {
-                      personId: { namaLengkap_contains: this.q.clientName },
-                    },
+                applicationId: {
+                  clients_some: {
+                    personId: { namaLengkap_contains: this.q.clientName },
                   },
-                }
+                },
+              }
               : {},
             this.q.noReg
               ? {
-                  applicationId: {
-                    noReg_contains: this.q.noReg,
-                  },
-                }
+                applicationId: {
+                  noReg_contains: this.q.noReg,
+                },
+              }
               : {},
           ],
         },
@@ -616,15 +616,15 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
       caseId: data.caseId
         ? null
         : {
-            create: {
-              judulKasus: data.caseTitle,
-              caseClosed: false,
-              unlockPk: false,
-              lockDitolak: false,
-              unlockTransfer: false,
-              application: { connect: { id: data.applicationId.id } },
-            },
+          create: {
+            judulKasus: data.caseTitle,
+            caseClosed: false,
+            unlockPk: false,
+            lockDitolak: false,
+            unlockTransfer: false,
+            application: { connect: { id: data.applicationId.id } },
           },
+        },
     };
   }
 

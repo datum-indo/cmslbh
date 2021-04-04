@@ -145,7 +145,7 @@ export class ListNetworkComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     public mtVocab: MtVocabHelper,
     private getNetworksGQL: GetNetworksGQL,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.networks = this.getNetworksGQL.watch(this.searchGenerator(), {
@@ -187,10 +187,10 @@ export class ListNetworkComponent implements OnInit, OnDestroy {
         where: <NetworkWhereInput>{
           OR: <NetworkWhereInput[]>[
             {
-              name_contains: this.q.name === '' ? null : this.q.name,
+              name: { contains: this.q.name === '' ? null : this.q.name },
             },
             {
-              email_contains: this.q.email === '' ? null : this.q.email,
+              email: { contains: this.q.email === '' ? null : this.q.email },
             },
           ],
         },

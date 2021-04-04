@@ -6,17 +6,17 @@ import {
   GetMtVocabsGQL,
   GetMtVocabs,
   MtVocabWhereInput,
-  MtVocabGroupWhereInput,
-  MtVocabOrderByInput,
   PersonCreateInput,
   PostPersonGQL,
   PersonUpdateInput,
   PutPersonGQL,
   PersonWhereUniqueInput,
+  SortOrder,
 } from '@shared';
 import { MtVocabHelper } from '@shared/helper';
 import * as moment from 'moment';
 import { map, take } from 'rxjs/operators';
+import { mapObjIndexed } from 'ramda'
 import { AllPersonGQL } from '@shared/generated/graphql';
 
 @Component({
@@ -34,7 +34,7 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
     private postPersonGQL: PostPersonGQL,
     private settingService: SettingsService,
     private putPersonGQL: PutPersonGQL,
-  ) {}
+  ) { }
 
   @Output() saveDone = new EventEmitter<boolean>();
   @ViewChild('sf') sf: SFComponent;
@@ -203,9 +203,9 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
     return this._editData;
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
   loading = false;
 
   submit(value: any) {
@@ -243,7 +243,7 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
 
     if (this.mode === 'edit') {
       data.updatedBy = this.settingService.user.name;
-      const {
+      let {
         id,
         createdAt,
         updatedAt,
@@ -258,6 +258,7 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
         pekerjaanEnum,
         ...newData
       } = data;
+      newData = mapObjIndexed((val, key) => { return { set: key } }, newData)
       return <PersonUpdateInput>{ ...newData };
     } else {
       data.createdBy = this.settingService.user.name;
@@ -777,9 +778,9 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
   private searchTreeGenerator(kode: string, kode_list: number): GetMtVocabs.Variables {
     return <GetMtVocabs.Variables>{
       where: <MtVocabWhereInput>{
-        AND: <MtVocabWhereInput[]>[{ kode_induk: kode, kode_list: <MtVocabGroupWhereInput>{ kode_list: kode_list } }],
+        AND: <MtVocabWhereInput[]>[{ kode_induk: { equals: kode }, kode_list: { is: { kode_list: { equals: kode_list } } } }],
       },
-      orderBy: MtVocabOrderByInput.TeksAsc,
+      orderBy: [{ teks: SortOrder.Asc }],
     };
   }
 }
