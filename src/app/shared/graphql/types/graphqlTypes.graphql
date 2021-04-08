@@ -766,6 +766,11 @@ query getLogRequest(
     tglExpired
     tglRequest
     tglRespon
+  },
+  aggregateLogRequest(where:$where){
+    count{
+      ID
+    }
   }
 }
 
@@ -805,6 +810,11 @@ query getNetworks(
     type
     status
     updatedAt
+  },
+  aggregateNetwork(where:$where){
+    count{
+      id
+    }
   }
 }
 
@@ -840,6 +850,11 @@ query getUser(
         id
         description
       }
+    }
+  },
+  aggregateUser(where:$where){
+    count{
+      id
     }
   }
 }
@@ -1196,6 +1211,11 @@ query getCase(
       tglRequest
       tglRespon
     }
+  },
+  aggregateRenamedcase(where:$where){
+    count{
+      id
+    }
   }
 }
 
@@ -1343,6 +1363,11 @@ query getApplications(
       updatedBy
       usiaSaatKlien
     }
+  },
+  aggregateApplication(where: $where){
+    count{
+      id
+    }
   }
 }
 
@@ -1361,6 +1386,7 @@ query getMtVocabs(
     urutan
   }
 }
+
 query allPerson(
   $where: PersonWhereInput
   $orderBy: [PersonOrderByInput!]
@@ -1416,6 +1442,11 @@ query allPerson(
       id
       title
       file
+    }
+  }
+  aggregatePerson(where: $where){
+    count{
+      id
     }
   }
 }

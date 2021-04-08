@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
-import { NzMessageService, CascaderOption, NzTreeNode } from 'ng-zorro-antd';
+import { NzMessageService, } from 'ng-zorro-antd/message';
 import { SettingsService } from '@delon/theme';
+import { NzTreeNode } from 'ng-zorro-antd/tree';
 import { SFSchema, CascaderWidget, SFComponent, SFSchemaEnum, SFSchemaEnumType } from '@delon/form';
 import {
   GetMtVocabsGQL,
@@ -16,8 +17,8 @@ import {
 import { MtVocabHelper } from '@shared/helper';
 import * as moment from 'moment';
 import { map, take } from 'rxjs/operators';
-import { mapObjIndexed } from 'ramda'
-import { AllPersonGQL } from '@shared/generated/graphql';
+import { isNil, mapObjIndexed } from 'ramda'
+
 
 @Component({
   selector: 'app-create-person',
@@ -258,7 +259,15 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
         pekerjaanEnum,
         ...newData
       } = data;
-      newData = mapObjIndexed((val, key) => { return { set: key } }, newData)
+
+      newData = mapObjIndexed((val, _key) => {
+        if (isNil(val)) {
+          return { set: null }
+        } else {
+          return { set: val }
+        }
+
+      }, newData)
       return <PersonUpdateInput>{ ...newData };
     } else {
       data.createdBy = this.settingService.user.name;

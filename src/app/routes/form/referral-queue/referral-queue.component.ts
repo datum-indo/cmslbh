@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -28,11 +28,15 @@ import {
   PutLogRequestMutationVariables,
   RenamedcaseWhereInput,
   Renamedcase,
+  PersonOrderByInput,
+  SortOrder,
+  LogRequestOrderByInput,
 } from '@shared';
 
 import { Subscription } from 'rxjs';
-import { NzModalRef, NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { STComponent, STColumn, STData } from '@delon/abc';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzMessageService, } from 'ng-zorro-antd/message';
+import { STComponent, STColumn, STData, STPage, STChange, STColumnSort } from '@delon/abc/st';
 import * as moment from 'moment';
 import { MtVocabHelper } from '@shared/helper';
 import { ACLService } from '@delon/acl';
@@ -40,6 +44,7 @@ import { SettingsService } from '@delon/theme';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, tap, take } from 'rxjs/operators';
 import { SFSchema, SFComponent } from '@delon/form';
+import { assoc, filter, insertAll, prop } from 'ramda';
 
 @Component({
   selector: 'app-referral-queue',
@@ -63,8 +68,8 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
   dataKasus: any;
   dataSelected: GetUser.Users | any;
   mode = '';
-  users: QueryRef<GetLogRequest.Query, GetLogRequest.Variables>;
-  usersObs: Subscription;
+  logRequests: QueryRef<GetLogRequest.Query, GetLogRequest.Variables>;
+  losgRequestsObs: Subscription;
   loading = false;
   modalInstance: NzModalRef;
   @ViewChild('st', { static: true })
@@ -134,27 +139,27 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
             }
           },
         },
-        {
-          text: 'Tetapkan PP',
-          click: (item: any) => {
-            this.editData = item;
-            this.mode = 'edit';
-            this.edit(this.modalEl, 'Edit Data');
-          },
-          iif: item => {
-            if (
-              this.aclService.data.roles.find(el => el === '2') &&
-              moment().isSameOrBefore(moment(item.tglRequest), 'day') &&
-              item.statusRequest === '0'
-            ) {
-              return true;
-            } else if (this.aclService.data.roles.find(el => el === '8')) {
-              return true;
-            } else {
-              return false;
-            }
-          },
-        },
+        // {
+        //   text: 'Tetapkan PP',
+        //   click: (item: any) => {
+        //     this.editData = item;
+        //     this.mode = 'edit';
+        //     this.edit(this.modalEl, 'Edit Data');
+        //   },
+        //   iif: item => {
+        //     if (
+        //       this.aclService.data.roles.find(el => el === '2') &&
+        //       moment().isSameOrBefore(moment(item.tglRequest), 'day') &&
+        //       item.statusRequest === '0'
+        //     ) {
+        //       return true;
+        //     } else if (this.aclService.data.roles.find(el => el === '8')) {
+        //       return true;
+        //     } else {
+        //       return false;
+        //     }
+        //   },
+        // },
         {
           text: 'Hapus Antrian',
           click: (item: any) => {
@@ -162,12 +167,6 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
           },
           iif: item => {
             if (this.aclService.data.roles.find(el => el === '8')) {
-              return true;
-            } else if (
-              this.aclService.data.roles.find(el => el === '1') &&
-              moment().isSameOrBefore(moment(item.tglRequest), 'day') &&
-              item.statusRequest === '0'
-            ) {
               return true;
             } else {
               return false;
@@ -184,8 +183,8 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
       index: 'tglRequest',
       type: 'date',
       sort: {
-        default: 'ascend',
-        compare: (a: any, b: any) => moment(b.tglRequest).unix() - moment(a.tglRequest).unix(),
+        default: 'descend',
+        compare: null
       },
     },
     {
@@ -235,7 +234,8 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
       index: 'tglExpired',
       type: 'date',
       sort: {
-        compare: (a: any, b: any) => moment(b.tglRequest).unix() - moment(a.tglRequest).unix(),
+        default: null,
+        compare: null
       },
     },
     {
@@ -247,6 +247,10 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
   description = '';
   totalCallNo = 0;
   expandForm = false;
+
+  page: STPage = { front: false, show: true, showSize: true };
+
+  orderBy: LogRequestOrderByInput[] = [{ tglRequest: 'desc' as SortOrder }]
 
   constructor(
     public msg: NzMessageService,
@@ -264,7 +268,7 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.users = this.getLogRequestGQL.watch(
+    this.logRequests = this.getLogRequestGQL.watch(
       // <GetLogRequest.Variables>{ where: { pp_some: { appConsultation: { id: this.settingService.user.id } } } },
       this.searchGenerator(),
       {
@@ -273,7 +277,7 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
     );
     // console.log('sampe sini');
     this.loading = true;
-    this.usersObs = this.users.valueChanges
+    this.losgRequestsObs = this.logRequests.valueChanges
       .pipe(
         map(async result => {
           const tempLog = [];
@@ -288,17 +292,21 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
             b.tanggapanRequestTeks = await this.mtVocabHelper.translateMtVocab(b.tanggapanRequest);
             tempLog.push(b);
           }
-          return tempLog;
+          return { tempLog, aggregateLogRequest: result.data.aggregateLogRequest };
         }),
         tap(() => (this.loading = false)),
       )
       .subscribe(async res => {
-        this.data = await res;
+
+        const data = await res;
+        this.data = data.tempLog
+        this.st.total = data.aggregateLogRequest.count.ID
+        console.log(this.data)
       });
   }
 
   ngOnDestroy(): void {
-    this.usersObs.unsubscribe();
+    this.losgRequestsObs.unsubscribe();
   }
 
   getDataKasus(event) {
@@ -312,7 +320,7 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
 
   getData() {
     this.loading = true;
-    this.users
+    this.logRequests
       .refetch(this.searchGenerator())
       .then(async res => {
         const tempLog = [];
@@ -327,6 +335,7 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
           tempLog.push(b);
         }
         this.data = tempLog;
+        this.st.total = res.data.aggregateLogRequest.count.ID
       })
       .finally(() => {
         this.loading = false;
@@ -365,85 +374,104 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
     //     },
     //   };
     // }
-    if (this.settingService.user.roles_type.find(el => el.type.id === 5)) {
-      return <GetLogRequest.Variables>{
-        where: <LogRequestWhereInput>{
-          jenisRequest_in: ['2011'],
-          AND: [
-            this.q.ppName
-              ? {
-                requestBy: {
-                  name_contains: this.q.ppName,
-                },
-              }
-              : {},
-            this.q.clientName
-              ? {
-                applicationId: {
-                  clients_some: {
-                    personId: { namaLengkap_contains: this.q.clientName },
-                  },
-                },
-              }
-              : {},
-            this.q.noReg
-              ? {
-                applicationId: {
-                  noReg_contains: this.q.noReg,
-                },
-              }
-              : {},
-          ],
+    const isAdmin = this.settingService.user.roles_type.find(el => el.type.id === 5)
+    let requestByFilter = null;
+    if (isAdmin) {
+      requestByFilter = !this.q.ppName ? null : {
+        requestBy: {
+          is: { name: { contains: this.q.ppName } }
         },
-      };
+      }
     } else {
-      return <GetLogRequest.Variables>{
-        where: <LogRequestWhereInput>{
-          requestBy: { id: this.settingService.user.id },
-          jenisRequest_in: ['2011'],
-          AND: [
-            this.q.ppName
-              ? {
-                pp_some: {
-                  appConsultation: {
-                    name_contains: this.q.ppName,
+      requestByFilter = !this.q.ppName
+        ? null : {
+          pp: { some: { appConsultation: { is: { name: { contains: this.q.ppName } } } } },
+        }
+    }
+    // if (this.settingService.user.roles_type.find(el => el.type.id === 5)) {
+    return <GetLogRequest.Variables>{
+      where:
+        this.mtVocabHelper.whereHelper(<LogRequestWhereInput>
+          {
+            requestBy: isAdmin ? {} : { is: { id: { equals: this.settingService.user.id } } },
+            jenisRequest: { in: ['2011'] },
+            AND: [
+              requestByFilter,
+              !this.q.clientName
+                ? null : {
+                  applicationId: {
+                    is: { clients: { some: { personId: { is: { namaLengkap: { contains: this.q.clientName } } } } } },
                   },
                 },
-              }
-              : {},
-            this.q.clientName
-              ? {
-                applicationId: {
-                  clients_some: {
-                    personId: { namaLengkap_contains: this.q.clientName },
+              !this.q.noReg
+                ? null : {
+                  applicationId: {
+                    is: { noReg: { contains: this.q.noReg }, }
                   },
                 },
-              }
-              : {},
-            this.q.noReg
-              ? {
-                applicationId: {
-                  noReg_contains: this.q.noReg,
-                },
-              }
-              : {},
-          ],
-        },
-      };
+            ]
+              .filter(res => res),
+          }
+        )
+      ,
+      take: this.st.ps,
+      skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+      orderBy: this.orderBy
+    };
+    // } else {
+    //   return <GetLogRequest.Variables>{
+    //     where: <LogRequestWhereInput>{
+    //       requestBy: { id: this.settingService.user.id },
+    //       jenisRequest_in: ['2011'],
+    //       AND: [
+    //         this.q.ppName
+    //           ? {
+    //             pp_some: {
+    //               appConsultation: {
+    //                 name_contains: this.q.ppName,
+    //               },
+    //             },
+    //           }
+    //           : {},
+    //         this.q.clientName
+    //           ? {
+    //             applicationId: {
+    //               clients_some: {
+    //                 personId: { namaLengkap_contains: this.q.clientName },
+    //               },
+    //             },
+    //           }
+    //           : {},
+    //         this.q.noReg
+    //           ? {
+    //             applicationId: {
+    //               noReg_contains: this.q.noReg,
+    //             },
+    //           }
+    //           : {},
+    //       ],
+    //     },
+    //   };
+    // }
+  }
+
+  stChange(e: STChange) {
+    if (e.type == 'sort') {
+      const sortObj = e.sort.column.sort as STColumnSort<any>
+      this.sortOrder(sortObj.key, sortObj.default);
+      this.getData();
+    }
+    if (e.type === 'pi' || e.type === 'ps') {
+      this.getData();
     }
   }
 
-  stChange() {
-    // switch (e.type) {
-    //   // case 'checkbox':
-    //   //   this.selectedRows = e.checkbox!;
-    //   //   this.totalCallNo = this.selectedRows.reduce((total, cv) => total + cv.callNo, 0);
-    //   //   this.cdr.detectChanges();
-    //   //   break;
-    //   case 'filter':
-    //     // this.getData();
-    //     break;
-    // }
+  sortOrder(key: string, order: string | null) {
+    if (!order) {
+      this.orderBy = filter(((x) => !!!prop(key as any, x)), this.orderBy)
+      return
+    }
+    this.orderBy = insertAll(0, assoc(key, order === "ascend" ? 'asc' : 'desc', {}) as any, filter(((x) => !!!prop(key as any, x)), this.orderBy));
   }
 
   add(tpl: TemplateRef<{}>, title: string) {
@@ -487,12 +515,13 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  reset() {
+  filterSearch() {
+    this.st.pi = 1;
     setTimeout(() => this.getData());
   }
 
   destroyLog(id) {
-    this.destroyLogGQL.mutate({ where: { ID: id } }).subscribe(
+    this.destroyLogGQL.mutate({ where: { ID: { equals: id } } }).subscribe(
       () => {
         this.msg.success('Log sukses dihapus');
         this.getData();
@@ -596,45 +625,12 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
     this.dataMutationUpdate(this.processDataUpdateLogRequest(value), value.ID);
   }
 
-  processDataAssign(data): LogRequestUpdateInput {
-    const listPPAPP = <LogRequestAppCreateWithoutLogRequestIdInput[]>[];
-    for (const a of data.listAPP) {
-      const b = <LogRequestAppCreateWithoutLogRequestIdInput>{
-        appConsultation: { connect: { id: a } },
-      };
-      listPPAPP.push(b);
-    }
-    listPPAPP.push(<LogRequestAppCreateWithoutLogRequestIdInput>{
-      appConsultation: { connect: { id: data.listPP } },
-    });
-    data.tglRespon = moment().toDate();
-    data.statusRequest = '1';
-    data.pp = <LogRequestAppUpdateManyWithoutLogRequestIdInput>{ create: listPPAPP };
-    return <LogRequestUpdateInput>{
-      pp: data.pp,
-      tglRespon: data.tglRespon,
-      statusRequest: data.statusRequest,
-      caseId: data.caseId
-        ? null
-        : {
-          create: {
-            judulKasus: data.caseTitle,
-            caseClosed: false,
-            unlockPk: false,
-            lockDitolak: false,
-            unlockTransfer: false,
-            application: { connect: { id: data.applicationId.id } },
-          },
-        },
-    };
-  }
-
   processDataUpdateLogRequest(data): LogRequestUpdateInput | string {
     return <LogRequestUpdateInput>{
-      tanggapanRequest: data.tanggapanRequest,
+      tanggapanRequest: { set: data.tanggapanRequest },
       requestTo: { connect: { id: this.settingService.user.id } },
-      tanggapanRequestIsi: data.tanggapanRequestIsi,
-      tglRespon: moment().toDate(),
+      tanggapanRequestIsi: { set: data.tanggapanRequestIsi },
+      tglRespon: { set: moment().toDate() },
       caseId: {
         update: {
           referrals: {

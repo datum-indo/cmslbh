@@ -3,7 +3,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { TitleService } from '@delon/theme';
 import { VERSION as VERSION_ALAIN } from '@delon/theme';
-import { VERSION as VERSION_ZORRO, NzModalService } from 'ng-zorro-antd';
+import { VERSION as VERSION_ZORRO } from 'ng-zorro-antd/version';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-root',

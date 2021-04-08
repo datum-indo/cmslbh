@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, Input, OnDestroy } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, } from 'ng-zorro-antd/message';
 import {
   PostNetworkGQL,
   PutNetworkGQL,
@@ -10,6 +10,7 @@ import {
 import { MtVocabHelper } from '@shared/helper';
 import { SFComponent, SFSchema } from '@delon/form';
 import { take } from 'rxjs/operators';
+import { isNil, mapObjIndexed } from 'ramda';
 
 @Component({
   selector: 'app-create-network',
@@ -23,7 +24,7 @@ export class CreateNetworkComponent implements OnInit, OnDestroy {
     public mtVocabHelper: MtVocabHelper,
     private postNetworkGQL: PostNetworkGQL,
     private putNetworkGQL: PutNetworkGQL,
-  ) {}
+  ) { }
 
   @Output() saveDone = new EventEmitter<boolean>();
   @ViewChild('sf', { static: true }) sf: SFComponent;
@@ -50,9 +51,9 @@ export class CreateNetworkComponent implements OnInit, OnDestroy {
     return this._editData;
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
   loading = false;
 
   submit(value: any) {
@@ -67,7 +68,15 @@ export class CreateNetworkComponent implements OnInit, OnDestroy {
 
   processData(data: any) {
     if (this.mode === 'edit') {
-      const { id, createdAt, updatedAt, __typename, _values, ...newData } = data;
+      let { id, createdAt, updatedAt, __typename, _values, ...newData } = data;
+      newData = mapObjIndexed((val, _key) => {
+        if (isNil(val)) {
+          return { set: null }
+        } else {
+          return { set: val }
+        }
+
+      }, newData)
       return <NetworkUpdateInput>{ ...newData };
     } else {
       const { ...newData } = data;

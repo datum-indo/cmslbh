@@ -1,45 +1,50 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
-    "module": "es2020",
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
     "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "noImplicitReturns": false,
     "target": "es2015",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "module": "es2020",
+    "emitDecoratorMetadata": true,
     "lib": [
       "es2018",
       "dom",
-      "esnext.asynciterable"
     ],
-    "baseUrl": "./src/",
     "paths": {
       "tslib": [
-        "../vendor/tslib/tslib.d.ts"
+        "../../vendor/tslib/tslib.d.ts"
       ],
       "@shared": [
-        "app/shared/index"
+        "src/app/shared/index"
       ],
       "@shared/*": [
-        "app/shared/*"
+        "src/app/shared/*"
       ],
       "@core": [
-        "app/core/index"
+        "src/app/core/index"
       ],
       "@core/*": [
-        "app/core/*"
+        "src/app/core/*"
       ],
       "@env/*": [
-        "environments/*"
+        "src/environments/*"
       ]
     },
     "allowSyntheticDefaultImports": true
+  },
+  "angularCompilerOptions": {
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
 }

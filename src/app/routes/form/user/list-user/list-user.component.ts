@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -11,16 +11,16 @@ import {
   ChangeDetectorRef,
   OnDestroy,
 } from '@angular/core';
-import { GetUserGQL, GetUser, UserWhereInput } from '@shared';
+import { GetUserGQL, GetUser, UserWhereInput, PersonOrderByInput, SortOrder, UserOrderByInput } from '@shared';
 
 import { Subscription } from 'rxjs';
-import { NzModalRef, NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { STComponent, STColumn, STData } from '@delon/abc';
-import * as moment from 'moment';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzMessageService, } from 'ng-zorro-antd/message';
+import { STComponent, STColumn, STData, STPage, STColumnSort } from '@delon/abc/st';
 import { _HttpClient } from '@delon/theme';
 import { MtVocabHelper } from '@shared/helper';
 import { map, tap, concat } from 'rxjs/operators';
-import { identifier } from 'babel-types';
+import { assoc, filter, insertAll, prop } from 'ramda';
 
 @Component({
   selector: 'app-list-user',
@@ -74,22 +74,17 @@ export class ListUserComponent implements OnInit, OnDestroy {
       title: 'Nama Lengkap',
       index: 'name',
       sort: {
-        compare: (a, b) => {
-          const nameA = a.name.toUpperCase();
-          const nameB = b.name.toUpperCase();
-          if (nameA < nameB) {
-            return -1;
-          }
-          if (nameA > nameB) {
-            return 1;
-          }
-          return 0;
-        },
+        default: null,
+        compare: null
       },
     },
     {
       title: 'Email',
       index: 'email',
+      sort: {
+        default: null,
+        compare: null
+      },
     },
     {
       title: 'Posisi',
@@ -112,7 +107,7 @@ export class ListUserComponent implements OnInit, OnDestroy {
       type: 'date',
       sort: {
         default: 'descend',
-        compare: (a, b) => moment(a.updatedAt).unix() - moment(b.updatedAt).unix(),
+        compare: null
       },
     },
     {
@@ -120,7 +115,8 @@ export class ListUserComponent implements OnInit, OnDestroy {
       index: 'createdAt',
       type: 'date',
       sort: {
-        compare: (a: any, b: any) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+        default: null,
+        compare: null
       },
     },
   ];
@@ -129,28 +125,32 @@ export class ListUserComponent implements OnInit, OnDestroy {
   totalCallNo = 0;
   expandForm = false;
 
+  page: STPage = { front: false, show: true, showSize: true };
+
+  orderBy: UserOrderByInput[] = [{ updatedAt: 'desc' as SortOrder }]
+
   constructor(
     public msg: NzMessageService,
     private modalSrv: NzModalService,
     private cdr: ChangeDetectorRef,
     public mtVocab: MtVocabHelper,
     private getUserGQL: GetUserGQL,
+    private mtVocabHelper: MtVocabHelper,
   ) { }
 
   ngOnInit() {
     this.users = this.getUserGQL.watch(this.searchGenerator(), {
       fetchPolicy: 'no-cache',
     });
-    // console.log('sampe sini');
     this.loading = true;
     this.usersObs = this.users.valueChanges
       .pipe(
-        map(result => result.data.users),
+        map(result => result.data),
         tap(() => (this.loading = false)),
       )
       .subscribe(res => {
-        // console.log(res);
-        this.data = res;
+        this.data = res.users;
+        this.st.total = res.aggregateUser.count.id
         this.cdr.detectChanges();
       });
   }
@@ -165,6 +165,7 @@ export class ListUserComponent implements OnInit, OnDestroy {
       .refetch(this.searchGenerator())
       .then(res => {
         this.data = res.data.users;
+        this.st.total = res.data.aggregateUser.count.id;
       })
       .finally(() => {
         this.loading = false;
@@ -172,37 +173,43 @@ export class ListUserComponent implements OnInit, OnDestroy {
   }
 
   searchGenerator(): GetUser.Variables {
-    if (this.q.name || this.q.email) {
-      return <GetUser.Variables>{
-        where: <UserWhereInput>{
-          OR: <UserWhereInput[]>[
-            {
-              name: { contains: this.q.name === '' ? null : this.q.name },
-            },
-            {
-              email: { contains: this.q.email === '' ? null : this.q.email },
-            },
-          ],
-        },
-      };
-    }
+
     return <GetUser.Variables>{
-      where: <UserWhereInput>{},
+      where: this.mtVocabHelper.whereHelper({
+        OR: <UserWhereInput[]>[
+          !this.q.name ? null : {
+            name: { contains: this.q.name },
+          },
+          !this.q.email ? null : {
+            email: { contains: this.q.email },
+          },
+        ].filter(res => res),
+      }),
+      take: this.st.ps,
+      skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+      orderBy: this.orderBy
     };
   }
 
-  stChange() {
-    // switch (e.type) {
-    //   // case 'checkbox':
-    //   //   this.selectedRows = e.checkbox!;
-    //   //   this.totalCallNo = this.selectedRows.reduce((total, cv) => total + cv.callNo, 0);
-    //   //   this.cdr.detectChanges();
-    //   //   break;
-    //   case 'filter':
-    //     // this.getData();
-    //     break;
-    // }
+  stChange(e) {
+    if (e.type == 'sort') {
+      const sortObj = e.sort.column.sort as STColumnSort<any>
+      this.sortOrder(sortObj.key, sortObj.default);
+      this.getData();
+    }
+    if (e.type === 'pi' || e.type === 'ps') {
+      this.getData();
+    }
   }
+
+  sortOrder(key: string, order: string | null) {
+    if (!order) {
+      this.orderBy = filter(((x) => !!!prop(key as any, x)), this.orderBy)
+      return
+    }
+    this.orderBy = insertAll(0, assoc(key, order === "ascend" ? 'asc' : 'desc', {}) as any, filter(((x) => !!!prop(key as any, x)), this.orderBy));
+  }
+
 
   add(tpl: TemplateRef<{}>, title: string) {
     this.mode = 'create';
@@ -232,7 +239,8 @@ export class ListUserComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  reset() {
+  filterSearch() {
+    this.st.pi = 1;
     setTimeout(() => this.getData());
   }
 }

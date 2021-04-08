@@ -13,21 +13,22 @@
         "acl": ["8", "1", "2", "3", "4", "5", "6", "7"],
         "i18n": "menu.dashboard",
         "icon": "anticon-dashboard",
-        "children": [{
-            "text": "Dashboard",
-            "link": "/dashboard/v1",
+        "children": [
+          {
+            "text": "Main",
+            "link": "/landing",
             "i18n": "menu.dashboard.v1"
           },
           {
-            "text": "Dashboard",
+            "text": "My Cases",
             "acl": ["3", "4"],
-            "link": "/dashboard/workplace",
+            "link": "/landing/case-summary",
             "i18n": "menu.dashboard.workplace"
           },
           {
-            "text": "Dashboard",
+            "text": "All Cases",
             "acl": ["7", "5", "6", "8"],
-            "link": "/dashboard/cases",
+            "link": "/landing/cases",
             "i18n": "menu.dashboard.cases"
           },
           {
@@ -112,15 +113,6 @@
             "link": "/form/referral-queue"
           }
         ]
-      },
-      {
-        "text": "Kasus",
-        "icon": "anticon-edit",
-        "acl": ["8"],
-        "children": [{
-          "text": "List Kasus",
-          "link": "/form/case/list"
-        }]
       }
     ]
   }]

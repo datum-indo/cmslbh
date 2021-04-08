@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -24,11 +24,14 @@ import {
   PutLogRequestGQL,
   LogRequestAppUpdateManyWithoutLogRequestIdInput,
   LogRequestAppCreateWithoutLogRequestIdInput,
+  LogRequestOrderByInput,
+  SortOrder,
 } from '@shared';
 
 import { Subscription } from 'rxjs';
-import { NzModalRef, NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { STComponent, STColumn, STData } from '@delon/abc';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzMessageService, } from 'ng-zorro-antd/message';
+import { STComponent, STColumn, STData, STPage, STChange, STColumnSort } from '@delon/abc/st';
 import * as moment from 'moment';
 import { MtVocabHelper } from '@shared/helper';
 import { map, tap, take } from 'rxjs/operators';
@@ -36,6 +39,7 @@ import { ACLService } from '@delon/acl';
 import { SFSchema, SFComponent } from '@delon/form';
 import { SettingsService } from '@delon/theme';
 import { ActivatedRoute, Router } from '@angular/router';
+import { assoc, clone, filter, insertAll, prop } from 'ramda';
 
 @Component({
   selector: 'app-consultation-queue',
@@ -57,8 +61,8 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
   data: GetLogRequest.LogRequests[] = [];
   dataSelected: GetUser.Users | any;
   mode = '';
-  users: QueryRef<GetLogRequest.Query, GetLogRequest.Variables>;
-  usersObs: Subscription;
+  logRequests: QueryRef<GetLogRequest.Query, GetLogRequest.Variables>;
+  logRequestsObs: Subscription;
   loading = false;
   modalInstance: NzModalRef;
   @ViewChild('st', { static: true })
@@ -146,8 +150,8 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
       index: 'tglRequest',
       type: 'date',
       sort: {
-        default: 'ascend',
-        compare: (a: any, b: any) => moment(b.tglRequest).unix() - moment(a.tglRequest).unix(),
+        default: 'descend',
+        compare: null
       },
     },
     {
@@ -224,6 +228,10 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
   totalCallNo = 0;
   expandForm = false;
 
+  page: STPage = { front: false, show: true, showSize: true };
+
+  orderBy: LogRequestOrderByInput[] = [{ tglRequest: 'desc' as SortOrder }]
+
   constructor(
     public msg: NzMessageService,
     private modalSrv: NzModalService,
@@ -241,7 +249,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.users = this.getLogRequestGQL.watch(
+    this.logRequests = this.getLogRequestGQL.watch(
       // <GetLogRequest.Variables>{ where: { pp_some: { appConsultation: { id: this.settingService.user.id } } } },
       this.searchGenerator(),
       {
@@ -250,36 +258,44 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
     );
     // console.log('sampe sini');
     this.loading = true;
-    this.usersObs = this.users.valueChanges
+    this.logRequestsObs = this.logRequests.valueChanges
       .pipe(
         map(async result => {
           const tempLog = [];
           for (const a of result.data.logRequests) {
-            const b = <any>{ ...a };
+            let b = <any>{ ...a };
             b.noReg = a.applicationId.noReg;
             b.caseTitle = a.caseId ? a.caseId.judulKasus : '';
             b.dudukPerara = a.applicationId.dudukPerara;
-            b.applicationId.tahapTeks = await this.mtVocabHelper.translateMtVocab(b.applicationId.tahap);
+            let applicationId = clone(b.applicationId)
+
+            applicationId.tahapTeks = await this.mtVocabHelper.translateMtVocab(b.applicationId.tahap);
+
+            b.applicationId = applicationId
+
             tempLog.push(b);
           }
-          return tempLog;
+          return { tempLog, aggregateLogRequest: result.data.aggregateLogRequest };
         }),
         tap(() => (this.loading = false)),
       )
       .subscribe(async res => {
         // console.log(res);
-        this.data = await res;
+        const data = await res;
+        this.data = data.tempLog
+        this.st.total = data.aggregateLogRequest.count.ID
+        console.log(data)
         this.cdr.detectChanges();
       });
   }
 
   ngOnDestroy(): void {
-    this.usersObs.unsubscribe();
+    this.logRequestsObs.unsubscribe();
   }
 
   getData() {
     this.loading = true;
-    this.users
+    this.logRequests
       .refetch(this.searchGenerator())
       .then(async res => {
         const tempLog = [];
@@ -292,6 +308,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
           tempLog.push(b);
         }
         this.data = tempLog;
+        this.st.total = res.data.aggregateLogRequest.count.ID
       })
       .finally(() => {
         this.loading = false;
@@ -301,36 +318,31 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
   searchGenerator(): GetLogRequest.Variables {
     if (this.aclService.data.roles.find(el => el === '2' || el === '1'))
       return <GetLogRequest.Variables>{
-        where: {
+        where: this.mtVocabHelper.whereHelper({
           jenisRequest: { equals: '1011' },
           AND: [
-            this.q.ppName
-              ? {
-                pp_some: {
-                  appConsultation: {
-                    name_contains: this.q.ppName,
-                  },
-                },
-              }
-              : {},
-            this.q.clientName
-              ? {
+            !this.q.ppName
+              ? null : {
+                pp: { some: { appConsultation: { is: { name: { contains: this.q.ppName } } } } },
+              },
+            !this.q.clientName
+              ? null : {
                 applicationId: {
-                  clients_some: {
-                    personId: { namaLengkap_contains: this.q.clientName },
-                  },
+                  is: { clients: { some: { personId: { is: { namaLengkap: { contains: this.q.clientName } } } } } }
                 },
-              }
-              : {},
-            this.q.noReg
-              ? {
+              },
+            !this.q.noReg
+              ? null : {
                 applicationId: {
-                  noReg_contains: this.q.noReg,
+                  is: { noReg: { contains: this.q.noReg } }
                 },
-              }
-              : {},
-          ],
-        },
+              },
+          ].filter(res => res),
+        }),
+        take: this.st.ps,
+        skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+        orderBy: this.orderBy
+
       };
     // if (this.aclService.data.roles.find(el => el === '3' || el === '4')) console.log('nemu woy');
     // if (this.q.ppName || this.q.clientName || this.q.noReg) {
@@ -365,59 +377,56 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
     // console.log('masuk sini');
     return <GetLogRequest.Variables>{
       where: <LogRequestWhereInput>this.aclService.data.roles.find(el => el === '3' || el === '4')
-        ? {
-          jenisRequest: '1011',
+        ? this.mtVocabHelper.whereHelper({
+          jenisRequest: { equals: '1011' },
           AND: [
             {
-              pp_some: {
-                appConsultation: {
-                  id: Number(this.settingService.user.id),
+              pp: { some: { appConsultation: { is: { id: { equals: Number(this.settingService.user.id) } } } } }
+            },
+            !this.q.ppName
+              ? null : {
+                pp: { some: { appConsultation: { is: { name: { contains: this.q.ppName } } } } },
+              },
+            !this.q.clientName
+              ? null : {
+                applicationId: {
+                  is: { clients: { some: { personId: { is: { namaLengkap: { contains: this.q.clientName } } } } } }
                 },
               },
-            },
-            this.q.ppName !== null
-              ? {
-                pp_some: {
-                  appConsultation: {
-                    name_contains: this.q.ppName,
-                  },
-                },
-              }
-              : {},
-            this.q.clientName !== null
-              ? {
+            !this.q.noReg
+              ? null : {
                 applicationId: {
-                  clients_some: {
-                    personId: { namaLengkap_contains: this.q.clientName },
-                  },
+                  is: { noReg: { contains: this.q.noReg } }
                 },
-              }
-              : {},
-            this.q.noReg !== null
-              ? {
-                applicationId: {
-                  noReg_contains: this.q.noReg,
-                },
-              }
-              : {},
-          ],
-        }
+              },
+          ].filter(res => res),
+        })
         : {},
+      take: this.st.ps,
+      skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+      orderBy: this.orderBy
     };
   }
 
-  stChange() {
-    // switch (e.type) {
-    //   // case 'checkbox':
-    //   //   this.selectedRows = e.checkbox!;
-    //   //   this.totalCallNo = this.selectedRows.reduce((total, cv) => total + cv.callNo, 0);
-    //   //   this.cdr.detectChanges();
-    //   //   break;
-    //   case 'filter':
-    //     // this.getData();
-    //     break;
-    // }
+  stChange(e: STChange) {
+    if (e.type == 'sort') {
+      const sortObj = e.sort.column.sort as STColumnSort<any>
+      this.sortOrder(sortObj.key, sortObj.default);
+      this.getData();
+    }
+    if (e.type === 'pi' || e.type === 'ps') {
+      this.getData();
+    }
   }
+
+  sortOrder(key: string, order: string | null) {
+    if (!order) {
+      this.orderBy = filter(((x) => !!!prop(key as any, x)), this.orderBy)
+      return
+    }
+    this.orderBy = insertAll(0, assoc(key, order === "ascend" ? 'asc' : 'desc', {}) as any, filter(((x) => !!!prop(key as any, x)), this.orderBy));
+  }
+
 
   add(tpl: TemplateRef<{}>, title: string) {
     this.mode = 'create';
@@ -515,12 +524,14 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  reset() {
+  filterSearch() {
+    this.st.pi = 1;
     setTimeout(() => this.getData());
   }
 
+
   destroyLog(id) {
-    this.destroyLogGQL.mutate({ where: { ID: id } }).subscribe(
+    this.destroyLogGQL.mutate({ where: { ID: { equals: id } } }).subscribe(
       res => {
         this.msg.success('Log sukses dihapus');
         this.getData();
@@ -598,7 +609,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
 
   async submit(value: any) {
     // console.log(value);
-    const res = await this.users.refetch(this.searchGenerator());
+    const res = await this.logRequests.refetch(this.searchGenerator());
 
     const tempLog = [];
     for (const a of res.data.logRequests) {
@@ -633,15 +644,16 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
     listPPAPP.push(<LogRequestAppCreateWithoutLogRequestIdInput>{
       appConsultation: { connect: { id: data.listPP } },
     });
-    data.tglRespon = moment().toDate();
-    data.statusRequest = '1';
+    data.tglRespon = { set: moment().toDate() }
+    data.statusRequest = { set: '1' };
     data.pp = <LogRequestAppUpdateManyWithoutLogRequestIdInput>{ create: listPPAPP };
+    console.log(data)
     return <LogRequestUpdateInput>{
       pp: data.pp,
       tglRespon: data.tglRespon,
       statusRequest: data.statusRequest,
       caseId: data.caseId
-        ? null
+        ? undefined
         : {
           create: {
             judulKasus: data.caseTitle,
@@ -656,8 +668,8 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
   }
 
   processDataUnassign(data): LogRequestUpdateInput {
-    data.tglRespon = null;
-    data.statusRequest = '0';
+    data.tglRespon = { set: null };
+    data.statusRequest = { set: '0' };
     const ppIncluded = data.pp.map(val => val.id);
     data.pp = <LogRequestAppUpdateManyWithoutLogRequestIdInput>{ deleteMany: [{ id: { in: [...ppIncluded] } }] };
     return <LogRequestUpdateInput>{

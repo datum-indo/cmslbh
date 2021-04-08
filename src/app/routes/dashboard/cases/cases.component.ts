@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -13,11 +13,12 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { zip, Subscription } from 'rxjs';
-import { NzMessageService, NzModalRef, NzModalService } from 'ng-zorro-antd';
+import { NzMessageService, } from 'ng-zorro-antd/message';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { _HttpClient, SettingsService } from '@delon/theme';
 import { GetCase, AllPersonGQL, GetCaseGQL, RenamedcaseWhereInput, GetConsultationGQL, GetPk, GetPkGQL } from '@shared';
 
-import { STComponent, STColumn, STData, STChange } from '@delon/abc';
+import { STComponent, STColumn, STData, STChange } from '@delon/abc/st';
 import * as moment from 'moment';
 import { MtVocabHelper } from '@shared/helper';
 import { map, tap } from 'rxjs/operators';
@@ -145,12 +146,13 @@ export class CasesComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.casesObs = this.cases.valueChanges
       .pipe(
-        map(result => result.data.renamedcases),
+        map(result => result.data),
         tap(() => (this.loading = false)),
       )
       .subscribe(res => {
         // console.log(res);
-        this.data = res;
+        this.data = res.renamedcases;
+        this.st.total = res.aggregateRenamedcase.count.id;
         this.translateMtVocab();
         this.cdr.detectChanges();
       });
@@ -173,6 +175,7 @@ export class CasesComponent implements OnInit, OnDestroy {
       .refetch(this.searchGenerator())
       .then(res => {
         this.data = res.data.renamedcases;
+        this.st.total = res.data.aggregateRenamedcase.count.id;
       })
       .finally(() => {
         this.loading = false;

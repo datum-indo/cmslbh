@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -11,14 +11,16 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { NzMessageService, NzModalService, NzModalRef } from 'ng-zorro-antd';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { _HttpClient } from '@delon/theme';
 import { tap, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { STComponent, STColumn, STData, STChange } from '@delon/abc';
-import { AllPersonGQL, AllPerson, PersonWhereInput, Person } from '@shared';
+import { STComponent, STColumn, STData, STChange, STPage, STColumnSort } from '@delon/abc/st';
+import { AllPersonGQL, AllPerson, PersonWhereInput, Person, PersonOrderByInput, SortOrder } from '@shared';
 import * as moment from 'moment';
 import { MtVocabHelper } from '@shared/helper/index';
+import { assoc, dropWhile, filter, find, findIndex, insertAll, isEmpty, pickBy, prop, takeWhile } from 'ramda';
 
 @Component({
   selector: 'app-list-person',
@@ -34,6 +36,7 @@ export class ListPersonComponent implements OnInit, OnDestroy {
   q: any = {
     namaLengkap: null,
     nomorId: null,
+    noReg: null,
   };
   data: AllPerson.People[] = [];
   dataSelected: AllPerson.People;
@@ -73,17 +76,8 @@ export class ListPersonComponent implements OnInit, OnDestroy {
       title: 'Nama Lengkap',
       index: 'namaLengkap',
       sort: {
-        compare: (a, b) => {
-          const nameA = a.namaLengkap.toUpperCase();
-          const nameB = b.namaLengkap.toUpperCase();
-          if (nameA < nameB) {
-            return -1;
-          }
-          if (nameA > nameB) {
-            return 1;
-          }
-          return 0;
-        },
+        default: null,
+        compare: null
       },
     },
     {
@@ -104,7 +98,7 @@ export class ListPersonComponent implements OnInit, OnDestroy {
       type: 'date',
       sort: {
         default: 'descend',
-        compare: (a, b) => moment(a.updatedAt).unix() - moment(b.updatedAt).unix(),
+        compare: null
       },
     },
     {
@@ -112,7 +106,8 @@ export class ListPersonComponent implements OnInit, OnDestroy {
       index: 'createdAt',
       type: 'date',
       sort: {
-        compare: (a: any, b: any) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+        default: null,
+        compare: null
       },
     },
   ];
@@ -121,6 +116,10 @@ export class ListPersonComponent implements OnInit, OnDestroy {
   totalCallNo = 0;
   expandForm = false;
 
+  page: STPage = { front: false, show: true, showSize: true };
+
+  orderBy: PersonOrderByInput[] = [{ updatedAt: 'desc' as SortOrder }]
+
   constructor(
     private http: _HttpClient,
     public msg: NzMessageService,
@@ -128,6 +127,7 @@ export class ListPersonComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private allPersonGQL: AllPersonGQL,
     public mtVocab: MtVocabHelper,
+    private mtVocabHelper: MtVocabHelper,
   ) { }
 
   ngOnInit() {
@@ -137,11 +137,12 @@ export class ListPersonComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.personsObs = this.persons.valueChanges
       .pipe(
-        map(result => result.data.people),
+        map(result => result.data),
         tap(() => (this.loading = false)),
       )
       .subscribe(res => {
-        this.data = res;
+        this.data = res.people;
+        this.st.total = res.aggregatePerson.count.id;
         this.cdr.detectChanges();
       });
   }
@@ -150,12 +151,15 @@ export class ListPersonComponent implements OnInit, OnDestroy {
     this.personsObs.unsubscribe();
   }
 
+
+
   getData() {
     this.loading = true;
     this.persons
       .refetch(this.searchGenerator())
       .then(res => {
         this.data = res.data.people;
+        this.st.total = res.data.aggregatePerson.count.id;
       })
       .finally(() => {
         this.loading = false;
@@ -163,36 +167,45 @@ export class ListPersonComponent implements OnInit, OnDestroy {
   }
 
   searchGenerator(): AllPerson.Variables {
-    if (this.q.namaLengkap || this.q.nomorId) {
-      return <AllPerson.Variables>{
-        where: <PersonWhereInput>{
-          OR: <PersonWhereInput[]>[
-            {
-              namaLengkap: { contains: this.q.namaLengkap === '' ? null : this.q.namaLengkap },
+    return {
+      where: this.mtVocabHelper.whereHelper({
+        OR: <PersonWhereInput[]>[
+          !this.q.namaLengkap
+            ? null
+            : {
+              namaLengkap: { contains: this.q.namaLengkap },
             },
-            {
-              nomorId: { contains: this.q.nomorId === '' ? null : this.q.nomorId },
+          !this.q.nomorId
+            ? null
+            : {
+              nomorId: { contains: this.q.nomorId },
             },
-          ],
-        },
-      };
-    }
-    return <AllPerson.Variables>{
-      where: <PersonWhereInput>{},
+          !this.q.noReg ? null : { applications: { some: { noReg: { contains: this.q.noReg } } } },
+        ].filter(res => res),
+      }),
+      take: this.st.ps,
+      skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+      orderBy: this.orderBy
     };
   }
 
   stChange(e: STChange) {
-    // switch (e.type) {
-    //   // case 'checkbox':
-    //   //   this.selectedRows = e.checkbox!;
-    //   //   this.totalCallNo = this.selectedRows.reduce((total, cv) => total + cv.callNo, 0);
-    //   //   this.cdr.detectChanges();
-    //   //   break;
-    //   case 'filter':
-    //     // this.getData();
-    //     break;
-    // }
+    if (e.type == 'sort') {
+      const sortObj = e.sort.column.sort as STColumnSort<any>
+      this.sortOrder(sortObj.key, sortObj.default);
+      this.getData();
+    }
+    if (e.type === 'pi' || e.type === 'ps') {
+      this.getData();
+    }
+  }
+
+  sortOrder(key: string, order: string | null) {
+    if (!order) {
+      this.orderBy = filter(((x) => !!!prop(key as any, x)), this.orderBy)
+      return
+    }
+    this.orderBy = insertAll(0, assoc(key, order === "ascend" ? 'asc' : 'desc', {}) as any, filter(((x) => !!!prop(key as any, x)), this.orderBy));
   }
 
   add(tpl: TemplateRef<{}>, title: string) {
@@ -222,7 +235,9 @@ export class ListPersonComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  reset() {
+  filterSearch() {
+    this.st.pi = 1;
     setTimeout(() => this.getData());
   }
+
 }

@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { GetCaseGQL, GetCase } from '@shared';
 import { map, tap } from 'rxjs/operators';
@@ -7,15 +7,10 @@ import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormArray, Validators, FormGroup, FormControl } from '@angular/forms';
 import { _HttpClient } from '@delon/theme';
 import { MtVocabHelper } from '@shared/helper';
-import {
-  NzFormatEmitEvent,
-  NzTreeNodeOptions,
-  NzTreeBase,
-  NzTreeComponent,
-  NzTreeSelectComponent,
-} from 'ng-zorro-antd';
 import { query } from './query';
 import * as moment from 'moment';
+import { NzTreeSelectComponent } from 'ng-zorro-antd/tree-select';
+import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 @Component({
   selector: 'app-analisis',
   templateUrl: './analisis.component.html',
@@ -47,7 +42,7 @@ export class AnalisisComponent implements OnInit {
     public http: _HttpClient,
     public mtVocabHelper: MtVocabHelper,
     public cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.analisaForm = new FormGroup({
@@ -122,9 +117,8 @@ export class AnalisisComponent implements OnInit {
     // this.analisaForm.value.analisaFilter[i].fieldList = [];
     this.analisaForm.value.analisaFilter[i].fieldList = this.http
       .post(this.urlQuery, {
-        query: `select \`alias\`, \`label\`,\`field\`,\`type\`,\`source\`,\`kode_list\` from \`src_analisa\` where \`group\`= '${
-          this.analisaForm.value.analisaFilter[i].group
-        }' ORDER BY \`label\``,
+        query: `select \`alias\`, \`label\`,\`field\`,\`type\`,\`source\`,\`kode_list\` from \`src_analisa\` where \`group\`= '${this.analisaForm.value.analisaFilter[i].group
+          }' ORDER BY \`label\``,
       })
       .toPromise();
   }
@@ -137,9 +131,8 @@ export class AnalisisComponent implements OnInit {
     // this.analisaForm.value.analisaFilter[i].operatorList = [];
     this.analisaForm.value.analisaFilter[i].operatorList = this.http
       .post(this.urlQuery, {
-        query: `select \`label\`,\`operator\`,\`type\` from \`src_operator\` where \`type\`= '${
-          this.analisaForm.value.analisaFilter[i].field.type
-        }' ORDER BY \`label\``,
+        query: `select \`label\`,\`operator\`,\`type\` from \`src_operator\` where \`type\`= '${this.analisaForm.value.analisaFilter[i].field.type
+          }' ORDER BY \`label\``,
       })
       .toPromise();
   }
@@ -369,7 +362,7 @@ export class AnalisisComponent implements OnInit {
           if (res.length === 0) return sebaranPermohonan;
 
           sebaranPermohonan.totalPermohonan = res.length;
-          sebaranPermohonan.totalPenerimaManfaat = res.reduce(function(previousValue, currentValue) {
+          sebaranPermohonan.totalPenerimaManfaat = res.reduce(function (previousValue, currentValue) {
             return previousValue + currentValue.jumlah_penerima_manfaat;
           }, 0);
           return sebaranPermohonan;
@@ -436,14 +429,12 @@ export class AnalisisComponent implements OnInit {
       if (el.field.type === 'date' && nilai) {
         builtQuery =
           builtQuery +
-          ` DATE(\`${el.field.alias}\`.\`${el.field.field}\`) ${el.operator.operator} ${nilai} ${
-            el.logika ? el.logika : ''
+          ` DATE(\`${el.field.alias}\`.\`${el.field.field}\`) ${el.operator.operator} ${nilai} ${el.logika ? el.logika : ''
           }`;
       } else {
         builtQuery =
           builtQuery +
-          ` \`${el.field.alias}\`.\`${el.field.field}\` ${el.operator.operator} ${nilai ? nilai : ''} ${
-            el.logika ? el.logika : ''
+          ` \`${el.field.alias}\`.\`${el.field.field}\` ${el.operator.operator} ${nilai ? nilai : ''} ${el.logika ? el.logika : ''
           }`;
       }
     }

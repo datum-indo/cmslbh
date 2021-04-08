@@ -1,7 +1,7 @@
 <page-header *ngIf="!parent" [title]="'List Person'"></page-header>
 <div #card>
   <nz-card [nzBordered]="false">
-    <form nz-form [nzLayout]="'inline'" (ngSubmit)="getData()" class="search__form">
+    <form nz-form [nzLayout]="'inline'" (ngSubmit)="filterSearch()" class="search__form">
       <div nz-row [nzGutter]="{ xs: 8, sm: 8, md: 8, lg: 24, xl: 48, xxl: 48 }">
         <div nz-col nzMd="8" nzSm="24">
           <nz-form-item>
@@ -21,15 +21,15 @@
         </div>
         <div nz-col nzMd="8" nzSm="24" *ngIf="expandForm">
           <nz-form-item>
-            <nz-form-label nzFor="callNo">No Reg</nz-form-label>
+            <nz-form-label nzFor="noReg">No Reg</nz-form-label>
             <nz-form-control>
-              <input nz-input id="callNo" />
+              <input nz-input [(ngModel)]="q.noReg" name="noReg" placeholder="no reg" id="noReg" id="noReg" />
             </nz-form-control>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="expandForm ? 24 : 8" [class.text-right]="expandForm">
           <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="loading">Search</button>
-          <button nz-button type="reset" (click)="reset()" class="mx-sm">Reset</button>
+          <button nz-button type="reset" (click)="filterSearch()" class="mx-sm">Reset</button>
           <a (click)="expandForm = !expandForm">
             {{ expandForm ? 'Hide' : 'Expand' }}
             <i nz-icon [nzType]="expandForm ? 'up' : 'down'"></i>
@@ -43,15 +43,9 @@
         <span>New</span>
       </button>
     </div>
-    <st
-      #st
-      [columns]="columns"
-      [data]="data"
-      [loading]="loading"
-      [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
-      (change)="stChange($event)"
-      [scroll]="{ x: '1064px' }"
-    >
+    <st #st [columns]="columns" [data]="data" [loading]="loading"
+      [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }" [scroll]="{ x: '1064px' }" (change)="stChange($event)"
+      [page]="page" [multiSort]="true">
       <ng-template st-row="status" let-i>
         <nz-badge [nzStatus]="i.statusType" [nzText]="i.statusText"></nz-badge>
       </ng-template>
@@ -59,6 +53,6 @@
   </nz-card>
 </div>
 <ng-template #modalContent>
-  <app-create-person [parent]="true" [mode]="mode" [editData]="dataSelected" (saveDone)="closeModal($event)">
+  <app-create-person [parent]="true" [mode]="mode" [editData]="dataSelected" (saveDone)="closeModal()">
   </app-create-person>
 </ng-template>

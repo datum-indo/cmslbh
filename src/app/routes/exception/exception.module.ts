@@ -1,5 +1,8 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { SharedModule } from '@shared';
+import { ExceptionModule as DelonExceptionModule } from '@delon/abc/exception';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
 
 import { ExceptionRoutingModule } from './exception-routing.module';
 
@@ -9,11 +12,9 @@ import { Exception500Component } from './500.component';
 import { ExceptionTriggerComponent } from './trigger.component';
 
 const COMPONENTS = [Exception403Component, Exception404Component, Exception500Component, ExceptionTriggerComponent];
-const COMPONENTS_NOROUNT = [];
 
 @NgModule({
-  imports: [SharedModule, ExceptionRoutingModule],
-  declarations: [...COMPONENTS, ...COMPONENTS_NOROUNT],
-  entryComponents: COMPONENTS_NOROUNT,
+  imports: [CommonModule, DelonExceptionModule, NzButtonModule, NzCardModule, ExceptionRoutingModule],
+  declarations: [...COMPONENTS],
 })
 export class ExceptionModule {}

@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -27,11 +27,14 @@ import {
   LogRequestCreateInput,
   PutLogRequestMutationVariables,
   RenamedcaseWhereInput,
+  LogRequestOrderByInput,
+  SortOrder,
 } from '@shared';
 
 import { Subscription } from 'rxjs';
-import { NzModalRef, NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { STComponent, STColumn, STData } from '@delon/abc';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzMessageService, } from 'ng-zorro-antd/message';
+import { STComponent, STColumn, STData, STPage, STChange, STColumnSort } from '@delon/abc/st';
 import * as moment from 'moment';
 import { MtVocabHelper } from '@shared/helper';
 import { ACLService } from '@delon/acl';
@@ -39,6 +42,7 @@ import { SettingsService } from '@delon/theme';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, tap, take } from 'rxjs/operators';
 import { SFSchema, SFComponent } from '@delon/form';
+import { assoc, filter, insertAll, prop } from 'ramda';
 
 @Component({
   selector: 'app-rapat-queue',
@@ -73,19 +77,10 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
   query = {
     where: <RenamedcaseWhereInput>{
       AND: [
-        { consultations_some: { apps_some: { appConsultation: { id: this.settingService.user.id } } } },
-        { caseClosed: false },
-        { application: { tahap_not: '4012' } },
-        {
-          logRequests_every: {
-            OR: [
-              {
-                tanggapanRequest_not_in: ['98011'],
-              },
-              { tglExpired_lt: moment().toDate() },
-            ],
-          },
-        },
+        { consultations: { some: { apps: { some: { appConsultation: { is: { id: { equals: this.settingService.user.id } } } } } } } },
+        { caseClosed: { equals: false } },
+        { application: { is: { tahap: { not: { equals: '4012' } } } } },
+        { logRequests: { every: { OR: [{ tanggapanRequest: { notIn: ['98011'] } }, { tglExpired: { lt: moment().toDate() } }] } } }
       ],
     },
   };
@@ -192,8 +187,8 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
       index: 'tglRequest',
       type: 'date',
       sort: {
-        default: 'ascend',
-        compare: (a: any, b: any) => moment(b.tglRequest).unix() - moment(a.tglRequest).unix(),
+        default: 'descend',
+        compare: null
       },
     },
     {
@@ -247,9 +242,6 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
       title: 'Tgl Rapat PK',
       index: 'caseId.pk.tglRapat',
       type: 'date',
-      sort: {
-        compare: (a: any, b: any) => moment(b.tglRespon).unix() - moment(a.tglRespon).unix(),
-      },
       format: (item, col) => {
         if (item.caseId.pk) {
           return moment(item.caseId.pk.tglRapat).format('YYYY-MM-DD');
@@ -262,7 +254,8 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
       index: 'tglExpired',
       type: 'date',
       sort: {
-        compare: (a: any, b: any) => moment(b.tglRequest).unix() - moment(a.tglRequest).unix(),
+        default: null,
+        compare: null
       },
     },
     {
@@ -274,6 +267,10 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
   description = '';
   totalCallNo = 0;
   expandForm = false;
+
+  page: STPage = { front: false, show: true, showSize: true };
+
+  orderBy: LogRequestOrderByInput[] = [{ tglRequest: 'desc' as SortOrder }]
 
   constructor(
     public msg: NzMessageService,
@@ -315,12 +312,16 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
             b.tanggapanRequestTeks = await this.mtVocabHelper.translateMtVocab(b.tanggapanRequest);
             tempLog.push(b);
           }
-          return tempLog;
+          return { tempLog, aggregateLogRequest: result.data.aggregateLogRequest };
         }),
         tap(() => (this.loading = false)),
       )
       .subscribe(async res => {
-        this.data = await res;
+        const data = await res;
+        this.data = data.tempLog
+        this.st.total = data.aggregateLogRequest.count.ID
+        console.log(data)
+        this.cdr.detectChanges();
       });
   }
 
@@ -352,6 +353,7 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
           tempLog.push(b);
         }
         this.data = tempLog;
+        this.st.total = res.data.aggregateLogRequest.count.ID;
       })
       .finally(() => {
         this.loading = false;
@@ -392,83 +394,91 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
     // }
     if (this.settingService.user.roles_type.find(el => el.type.id === 5)) {
       return <GetLogRequest.Variables>{
-        where: <LogRequestWhereInput>{
-          jenisRequest_in: ['3111', '4111', '5111'],
-          AND: [
-            this.q.ppName !== null
-              ? {
-                requestBy: {
-                  name_contains: this.q.ppName,
-                },
-              }
-              : {},
-            this.q.clientName !== null
-              ? {
-                applicationId: {
-                  clients_some: {
-                    personId: { namaLengkap_contains: this.q.clientName },
+        where:
+          this.mtVocabHelper.whereHelper(
+            <LogRequestWhereInput>{
+              jenisRequest: { in: ['3111', '4111', '5111'] },
+              AND: [
+                !this.q.ppName
+                  ? null : {
+                    pp: { some: { appConsultation: { is: { name: { contains: this.q.ppName } } } } },
                   },
-                },
-              }
-              : {},
-            this.q.noReg !== null
-              ? {
-                applicationId: {
-                  noReg_contains: this.q.noReg,
-                },
-              }
-              : {},
-          ],
-        },
+                !this.q.clientName
+                  ? null : {
+                    applicationId: {
+                      is: { clients: { some: { personId: { is: { namaLengkap: { contains: this.q.clientName } } } } } }
+                    },
+                  },
+                !this.q.noReg
+                  ? null : {
+                    applicationId: {
+                      is: { noReg: { contains: this.q.noReg } }
+                    },
+                  },
+              ]
+                .filter(res => res)
+              ,
+            }
+          )
+        ,
+        take: this.st.ps,
+        skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+        orderBy: this.orderBy
       };
     } else {
       return <GetLogRequest.Variables>{
-        where: <LogRequestWhereInput>{
-          requestBy: { id: this.settingService.user.id },
-          jenisRequest_in: ['3111', '4111', '5111'],
-          AND: [
-            this.q.ppName
-              ? {
-                pp_some: {
-                  appConsultation: {
-                    name_contains: this.q.ppName,
+        where:
+          this.mtVocabHelper.whereHelper(
+            <LogRequestWhereInput>{
+              requestBy: { is: { id: { equals: this.settingService.user.id } } },
+              jenisRequest: { in: ['3111', '4111', '5111'] },
+              AND: [
+                !this.q.ppName
+                  ? null : {
+                    pp: { some: { appConsultation: { is: { name: { contains: this.q.ppName } } } } },
                   },
-                },
-              }
-              : {},
-            this.q.clientName
-              ? {
-                applicationId: {
-                  clients_some: {
-                    personId: { namaLengkap_contains: this.q.clientName },
+                !this.q.clientName
+                  ? null : {
+                    applicationId: {
+                      is: { clients: { some: { personId: { is: { namaLengkap: { contains: this.q.clientName } } } } } }
+                    },
                   },
-                },
-              }
-              : {},
-            this.q.noReg
-              ? {
-                applicationId: {
-                  noReg_contains: this.q.noReg,
-                },
-              }
-              : {},
-          ],
-        },
+                !this.q.noReg
+                  ? null : {
+                    applicationId: {
+                      is: { noReg: { contains: this.q.noReg } }
+                    },
+                  },
+              ]
+                .filter(res => res)
+              ,
+            }
+          )
+        ,
+        take: this.st.ps,
+        skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+        orderBy: this.orderBy
       };
     }
   }
 
-  stChange() {
-    // switch (e.type) {
-    //   // case 'checkbox':
-    //   //   this.selectedRows = e.checkbox!;
-    //   //   this.totalCallNo = this.selectedRows.reduce((total, cv) => total + cv.callNo, 0);
-    //   //   this.cdr.detectChanges();
-    //   //   break;
-    //   case 'filter':
-    //     // this.getData();
-    //     break;
-    // }
+  stChange(e: STChange) {
+    if (e.type == 'sort') {
+      const sortObj = e.sort.column.sort as STColumnSort<any>
+      this.sortOrder(sortObj.key, sortObj.default);
+      this.getData();
+    }
+    if (e.type === 'pi' || e.type === 'ps') {
+      this.getData();
+    }
+  }
+
+  sortOrder(key: string, order: string | null) {
+    if (!order) {
+      this.orderBy = filter(((x) => !!!prop(key as any, x)), this.orderBy)
+      return
+    }
+    this.orderBy = insertAll(0, assoc(key, order === "ascend" ? 'asc' : 'desc', {}) as any, filter(((x) => !!!prop(key as any, x)), this.orderBy));
   }
 
   add(tpl: TemplateRef<{}>, title: string) {
@@ -498,12 +508,13 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  reset() {
+  filterSearch() {
+    this.st.pi = 1;
     setTimeout(() => this.getData());
   }
 
   destroyLog(id) {
-    this.destroyLogGQL.mutate({ where: { ID: id } }).subscribe(
+    this.destroyLogGQL.mutate({ where: { ID: { equals: id } } }).subscribe(
       () => {
         this.msg.success('Log sukses dihapus');
         this.getData();
@@ -681,19 +692,19 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
               return 'Sudah Ada Rapat PK';
             } else {
               return <LogRequestUpdateInput>{
-                tanggapanRequest: data.tanggapanRequest,
+                tanggapanRequest: { set: data.tanggapanRequest },
                 networkId: data.networkList
                   ? { connect: { id: data.networkList } }
                   : data.networkId
                     ? { connect: { id: data.networkId.id } }
-                    : null,
+                    : undefined,
                 requestTo: { connect: { id: this.settingService.user.id } },
-                tanggapanRequestIsi: data.tanggapanRequestIsi,
-                tglRespon: moment().toDate(),
+                tanggapanRequestIsi: { set: data.tanggapanRequestIsi },
+                tglRespon: { set: moment().toDate() },
                 caseId: {
                   update: {
                     pk: {
-                      update: { updatedBy: this.settingService.user.name, tglRapat: moment(data.tglRapatPK).toDate() },
+                      update: { updatedBy: { set: this.settingService.user.name }, tglRapat: { set: moment(data.tglRapatPK).toDate() } },
                     },
                   },
                 },
@@ -701,15 +712,15 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
             }
           } else {
             return <LogRequestUpdateInput>{
-              tanggapanRequest: data.tanggapanRequest,
+              tanggapanRequest: { set: data.tanggapanRequest },
               networkId: data.networkList
                 ? { connect: { id: data.networkList } }
                 : data.networkId
                   ? { connect: { id: data.networkId.id } }
-                  : null,
+                  : undefined,
               requestTo: { connect: { id: this.settingService.user.id } },
-              tanggapanRequestIsi: data.tanggapanRequestIsi,
-              tglRespon: moment().toDate(),
+              tanggapanRequestIsi: { set: data.tanggapanRequestIsi },
+              tglRespon: { set: moment().toDate() },
               caseId: {
                 update: {
                   pk: {
@@ -727,16 +738,16 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
           if (this.editDataKabid.caseId.pk) return 'Sudah Dijadwalkan Rapat PK';
         }
         return <LogRequestUpdateInput>{
-          caseId: { update: { statusPendampingan: '4111' } },
-          tanggapanRequest: data.tanggapanRequest,
+          caseId: { update: { statusPendampingan: { set: '4111' } } },
+          tanggapanRequest: { set: data.tanggapanRequest },
           networkId: data.networkList
             ? { connect: { id: data.networkList } }
             : data.networkId
               ? { connect: { id: data.networkId.id } }
-              : null,
+              : undefined,
           requestTo: { connect: { id: this.settingService.user.id } },
-          tanggapanRequestIsi: data.tanggapanRequestIsi,
-          tglRespon: moment().toDate(),
+          tanggapanRequestIsi: { set: data.tanggapanRequestIsi },
+          tglRespon: { set: moment().toDate() },
         };
       case '5111':
         if ('pk' in this.editDataKabid.caseId) {
@@ -746,21 +757,21 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
         if ('transfer' in this.editDataKabid.caseId) {
           if (this.editDataKabid.caseId.transfer !== null)
             return <LogRequestUpdateInput>{
-              tanggapanRequest: data.tanggapanRequest,
+              tanggapanRequest: { set: data.tanggapanRequest },
               networkId: data.networkList
                 ? { connect: { id: data.networkList } }
                 : data.networkId
                   ? { connect: { id: data.networkId.id } }
-                  : null,
+                  : undefined,
               requestTo: { connect: { id: this.settingService.user.id } },
-              tanggapanRequestIsi: data.tanggapanRequestIsi,
-              tglRespon: moment().toDate(),
+              tanggapanRequestIsi: { set: data.tanggapanRequestIsi },
+              tglRespon: { set: moment().toDate() },
               caseId: {
                 update: {
-                  statusPendampingan: '5111',
+                  statusPendampingan: { set: '5111' },
                   transfer: {
                     update: {
-                      updatedBy: this.settingService.user.name,
+                      updatedBy: { set: this.settingService.user.name },
                       network: { connect: { id: data.networkList } },
                     },
                   },
@@ -769,18 +780,18 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
             };
         }
         return <LogRequestUpdateInput>{
-          tanggapanRequest: data.tanggapanRequest,
+          tanggapanRequest: { set: data.tanggapanRequest },
           networkId: data.networkList
             ? { connect: { id: data.networkList } }
             : data.networkId
               ? { connect: { id: data.networkId.id } }
-              : null,
+              : undefined,
           requestTo: { connect: { id: this.settingService.user.id } },
-          tanggapanRequestIsi: data.tanggapanRequestIsi,
-          tglRespon: moment().toDate(),
+          tanggapanRequestIsi: { set: data.tanggapanRequestIsi },
+          tglRespon: { set: moment().toDate() },
           caseId: {
             update: {
-              statusPendampingan: '5111',
+              statusPendampingan: { set: '5111' },
               transfer: {
                 create: { createdBy: this.settingService.user.name, network: { connect: { id: data.networkList } } },
               },
@@ -789,16 +800,16 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
         };
       case '99011':
         return <LogRequestUpdateInput>{
-          caseId: { update: { statusPendampingan: '4111' } },
-          tanggapanRequest: data.tanggapanRequest,
+          caseId: { update: { statusPendampingan: { set: '4111' } } },
+          tanggapanRequest: { set: data.tanggapanRequest },
           networkId: data.networkList
             ? { connect: { id: data.networkList } }
             : data.networkId
               ? { connect: { id: data.networkId.id } }
-              : null,
+              : undefined,
           requestTo: { connect: { id: this.settingService.user.id } },
-          tanggapanRequestIsi: data.tanggapanRequestIsi,
-          tglRespon: moment().toDate(),
+          tanggapanRequestIsi: { set: data.tanggapanRequestIsi },
+          tglRespon: { set: moment().toDate() },
         };
     }
   }
@@ -808,7 +819,7 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
       isiRequest: data.isiRequest,
       applicationId: { connect: { id: data.caseIdReturned.application.id } },
       jenisRequest: data.jenisRequest,
-      networkId: data.jenisRequest !== '5111' ? null : { connect: { id: data.networkList } },
+      networkId: data.jenisRequest !== '5111' ? undefined : { connect: { id: data.networkList } },
       tanggapanRequest: '98011',
       requestBy: { connect: { id: this.settingService.user.id } },
       tglExpired: moment()

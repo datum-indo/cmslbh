@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -11,15 +11,17 @@ import {
   ChangeDetectorRef,
   OnDestroy,
 } from '@angular/core';
-import { AllPerson, AllPersonGQL, PersonWhereInput, GetCaseGQL, GetCase, RenamedcaseWhereInput } from '@shared';
+import { AllPerson, AllPersonGQL, PersonWhereInput, GetCaseGQL, GetCase, RenamedcaseWhereInput, RenamedcaseOrderByInput, SortOrder } from '@shared';
 
 import { Subscription } from 'rxjs';
-import { NzModalRef, NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { STComponent, STColumn, STData, STChange } from '@delon/abc';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzMessageService, } from 'ng-zorro-antd/message';
+import { STComponent, STColumn, STData, STChange, STPage, STColumnSort } from '@delon/abc/st';
 import * as moment from 'moment';
 import { _HttpClient } from '@delon/theme';
 import { MtVocabHelper } from '@shared/helper';
 import { map, tap } from 'rxjs/operators';
+import { assoc, filter, insertAll, prop } from 'ramda';
 
 @Component({
   selector: 'app-list-case',
@@ -97,9 +99,7 @@ export class ListCaseComponent implements OnInit, OnDestroy {
       title: 'Tanggal Registrasi',
       index: 'application.regDate',
       type: 'date',
-      sort: {
-        compare: (a, b) => moment(a.application.regDate).unix() - moment(b.application.regDate).unix(),
-      },
+
     },
     {
       title: 'Klien',
@@ -116,11 +116,34 @@ export class ListCaseComponent implements OnInit, OnDestroy {
         return concattedText;
       },
     },
+    {
+      title: 'Updated At',
+      index: 'updatedAt',
+      type: 'date',
+      sort: {
+        default: 'descend',
+        compare: null
+      },
+    },
+    {
+      title: 'Created At',
+      index: 'createdAt',
+      type: 'date',
+      sort: {
+        default: null,
+        compare: null
+      },
+    },
   ];
   selectedRows: STData[] = [];
   description = '';
   totalCallNo = 0;
   expandForm = false;
+
+
+  page: STPage = { front: false, show: true, showSize: true };
+
+  orderBy: RenamedcaseOrderByInput[] = [{ updatedAt: 'desc' as SortOrder }]
 
   constructor(
     private http: _HttpClient,
@@ -133,18 +156,19 @@ export class ListCaseComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.cases = this.getCaseGQL.watch(this.query ? this.query : this.searchGenerator(), {
+    this.cases = this.getCaseGQL.watch(this.query ? this.searchGeneratorAppend(this.query) : this.searchGenerator(), {
       fetchPolicy: 'no-cache',
     });
     this.loading = true;
     this.casesObs = this.cases.valueChanges
       .pipe(
-        map(result => result.data.renamedcases),
+        map(result => result.data),
         tap(() => (this.loading = false)),
       )
       .subscribe(res => {
         // console.log(res);
-        this.data = res;
+        this.data = res.renamedcases;
+        this.st.total = res.aggregateRenamedcase.count.id;
         this.cdr.detectChanges();
       });
   }
@@ -160,6 +184,7 @@ export class ListCaseComponent implements OnInit, OnDestroy {
       .refetch(this.searchGeneratorAppend(this.query))
       .then(res => {
         this.data = res.data.renamedcases;
+        this.st.total = res.data.aggregateRenamedcase.count.id;
       })
       .finally(() => {
         this.loading = false;
@@ -171,63 +196,75 @@ export class ListCaseComponent implements OnInit, OnDestroy {
     console.log(queryVar);
     queryVar.where.AND.push({
       AND: <RenamedcaseWhereInput[]>[
-        this.q.judulKasus
-          ? {
-            judulKasus_contains: this.q.judulKasus,
-          }
-          : {},
-        this.q.namaLengkap
-          ? {
+        !this.q.judulKasus
+          ? null : {
+            judulKasus: { contains: this.q.judulKasus }
+          },
+        !this.q.namaLengkap
+          ? null : {
             application: {
-              clients_some: {
-                personId: { namaLengkap_contains: this.q.namaLengkap },
-              },
+              is: { clients: { some: { personId: { is: { namaLengkap: { contains: this.q.namaLengkap } } } } } }
             },
-          }
-          : {},
-        this.q.noReg
-          ? {
+          },
+        !this.q.noReg
+          ? null : {
             application: {
-              noReg_contains: this.q.noReg,
+              is: { noReg: { contains: this.q.noReg } }
             },
-          }
-          : {},
-      ],
+          },
+      ].filter(res => res),
     });
-    return queryVar;
+
+    return {
+      ...queryVar, take: this.st.ps,
+      skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+      orderBy: this.orderBy
+    };
   }
 
   searchGenerator(): GetCase.Variables {
-    if (this.q.namaLengkap || this.q.nomorId) {
-      return <GetCase.Variables>{
-        where: <RenamedcaseWhereInput>{
-          OR: <RenamedcaseWhereInput[]>[
-            {
-              namaLengkap_contains: this.q.namaLengkap === '' ? null : this.q.namaLengkap,
-            },
-            {
-              // nomorId_contains: this.q.nomorId === '' ? null : this.q.nomorId,
-            },
-          ],
-        },
-      };
-    }
+
     return <GetCase.Variables>{
-      where: <RenamedcaseWhereInput>{},
+      where: <RenamedcaseWhereInput>{
+        // OR: <RenamedcaseWhereInput[]>[
+        //   !this.q.nomorId
+        //     ? null
+        //     : {
+        //       nomorId: { contains: this.q.nomorId },
+        //     },
+        //   !this.q.namaLengkap
+        //     ? null
+        //     : {
+        //       namaLengkap: { contains: this.q.namaLengkap },
+        //     },
+        //   {
+        //     // nomorId_contains: this.q.nomorId === '' ? null : this.q.nomorId,
+        //   },
+        // ],
+      },
+      take: this.st.ps,
+      skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+      orderBy: this.orderBy
     };
   }
 
   stChange(e: STChange) {
-    // switch (e.type) {
-    //   // case 'checkbox':
-    //   //   this.selectedRows = e.checkbox!;
-    //   //   this.totalCallNo = this.selectedRows.reduce((total, cv) => total + cv.callNo, 0);
-    //   //   this.cdr.detectChanges();
-    //   //   break;
-    //   case 'filter':
-    //     // this.getData();
-    //     break;
-    // }
+    if (e.type == 'sort') {
+      const sortObj = e.sort.column.sort as STColumnSort<any>
+      this.sortOrder(sortObj.key, sortObj.default);
+      this.getData();
+    }
+    if (e.type === 'pi' || e.type === 'ps') {
+      this.getData();
+    }
+  }
+
+  sortOrder(key: string, order: string | null) {
+    if (!order) {
+      this.orderBy = filter(((x) => !!!prop(key as any, x)), this.orderBy)
+      return
+    }
+    this.orderBy = insertAll(0, assoc(key, order === "ascend" ? 'asc' : 'desc', {}) as any, filter(((x) => !!!prop(key as any, x)), this.orderBy));
   }
 
   add(tpl: TemplateRef<{}>, title: string) {
@@ -257,7 +294,8 @@ export class ListCaseComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  reset() {
+  filterSearch() {
+    this.st.pi = 1;
     setTimeout(() => this.getData());
   }
 }

@@ -1,5 +1,6 @@
 import { Component, HostListener, ChangeDetectionStrategy } from '@angular/core';
-import { NzModalService, NzMessageService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message'
 
 @Component({
   selector: 'header-storage',
@@ -13,7 +14,7 @@ import { NzModalService, NzMessageService } from 'ng-zorro-antd';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderStorageComponent {
-  constructor(private modalSrv: NzModalService, private messageSrv: NzMessageService) {}
+  constructor(private modalSrv: NzModalService, private messageSrv: NzMessageService) { }
 
   @HostListener('click')
   _click() {

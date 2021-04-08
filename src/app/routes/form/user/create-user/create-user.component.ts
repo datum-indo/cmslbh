@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, Input, OnDestroy } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, } from 'ng-zorro-antd/message';
 import {
   GetMtVocabsGQL,
   PostPersonGQL,
@@ -21,6 +21,7 @@ import { MtVocabHelper } from '@shared/helper';
 import { SettingsService } from '@delon/theme';
 import { SFComponent, SFSchema } from '@delon/form';
 import { take } from 'rxjs/operators';
+import { isNil, mapObjIndexed } from 'ramda';
 
 @Component({
   selector: 'app-create-user',
@@ -98,8 +99,16 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       }
       const rolesType = <RoleUpdateManyWithoutUserInput>{ create: roles };
       data.roles_type = rolesType;
-      const { id, createdAt, updatedAt, __typename, _values, profile, roles_type_virtual, ...newData } = data;
-      return <UserUpdateInput>{ ...newData };
+      let { id, createdAt, updatedAt, __typename, _values, profile, roles_type_virtual, roles_type, ...newData } = data;
+      newData = mapObjIndexed((val, _key) => {
+        if (isNil(val)) {
+          return { set: null }
+        } else {
+          return { set: val }
+        }
+
+      }, newData)
+      return <UserUpdateInput>{ ...newData, roles_type };
     } else {
       // create
       const roles = <RoleCreateWithoutUserInput[]>[];

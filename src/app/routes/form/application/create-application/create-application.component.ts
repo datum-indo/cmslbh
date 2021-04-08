@@ -9,7 +9,8 @@ import {
   TemplateRef,
   ElementRef,
 } from '@angular/core';
-import { NzMessageService, NzModalService, NzModalRef } from 'ng-zorro-antd';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzMessageService, } from 'ng-zorro-antd/message';
 import { SettingsService } from '@delon/theme';
 import { SFSchema, SFComponent, ErrorData } from '@delon/form';
 import {
@@ -29,7 +30,8 @@ import {
 import { MtVocabHelper } from '@shared/helper';
 import * as moment from 'moment';
 import { take } from 'rxjs/operators';
-import { STComponent, STColumn } from '@delon/abc';
+import { STComponent, STColumn } from '@delon/abc/st';
+import { isNil, mapObjIndexed } from 'ramda';
 
 @Component({
   selector: 'app-create-application',
@@ -141,15 +143,21 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
   processDataUpdate(data: any): ApplicationUpdateInput {
     // updatemode
     console.log(data.regDate);
-    const clients = this.processUpdateClientData(data);
+    const clientsTemp = this.processUpdateClientData(data);
     data.regDate = moment(data.regDate).toDate();
     let wakilIdTemp: any;
     if (data.statusPerwakilan !== '01000000000070') wakilIdTemp = data.wakilId.id;
     data.wakilId = undefined;
-    data.clients = clients;
-    data.updatedBy = this.settingService.user.name;
+    data.clients = clientsTemp;
+    data.updatedBy = this.settingService.user.name
     delete data.case;
-    const {
+    if (data.statusPerwakilan !== '01000000000070') {
+      data.wakilId = { connect: { id: wakilIdTemp } };
+    } else {
+      if (wakilIdTemp) data.wakilId = { disconnect: true };
+      data.relasiWakilClient = '';
+    }
+    let {
       id,
       fileList,
       createdAt,
@@ -158,16 +166,22 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
       __typename,
       _values,
       wakilId,
+      clients,
       ...applicationUpdateInput
     } = data;
-    if (data.statusPerwakilan !== '01000000000070') {
-      applicationUpdateInput.wakilId = { connect: { id: wakilIdTemp } };
-    } else {
-      if (wakilIdTemp) applicationUpdateInput.wakilId = { disconnect: true };
-      applicationUpdateInput.relasiWakilClient = '';
-    }
 
-    return <ApplicationUpdateInput>{ ...applicationUpdateInput };
+    applicationUpdateInput = mapObjIndexed((val, _key) => {
+      if (isNil(val)) {
+        return { set: null }
+      } else {
+        return { set: val }
+      }
+
+    }, applicationUpdateInput)
+    console.log(applicationUpdateInput)
+    console.log(clients)
+
+    return <ApplicationUpdateInput>{ ...applicationUpdateInput, clients, wakilId };
   }
 
   processUpdateClientData(data: any) {
@@ -184,7 +198,7 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
           obj.stmKeterangan = '';
         }
         data.updatedBy = this.settingService.user.name;
-        const {
+        let {
           fileList,
           createdBy,
           id,
@@ -196,6 +210,14 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
           personId,
           ...newData
         } = obj;
+        newData = mapObjIndexed((val, _key) => {
+          if (isNil(val)) {
+            return { set: null }
+          } else {
+            return { set: val }
+          }
+
+        }, newData)
         arrClientUpdate.push(<ClientUpdateWithWhereUniqueWithoutApplicationIdInput>{
           where: { id: obj.id },
           data: newData,
@@ -436,10 +458,11 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
         description: 'Konfirmasi data yang diisikan sudah benar',
         ui: {
           widget: 'checkbox',
-          validator: (value: any): ErrorData[] => {
+          validator: (value: any): ErrorData[] | null => {
             if (value === false) {
               return <ErrorData[]>[{ message: 'Konfirmasi Harus Di Checklist' }];
             }
+            return null
           },
         },
         default: false,

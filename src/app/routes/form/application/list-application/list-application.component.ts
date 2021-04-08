@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -21,16 +21,20 @@ import {
   PostLogRequestGQL,
   PostLogRequestMutationVariables,
   GetLogRequestGQL,
+  ApplicationOrderByInput,
+  SortOrder,
 } from '@shared';
 
 import { Subscription } from 'rxjs';
-import { NzModalRef, NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { STComponent, STColumn, STData, STChange } from '@delon/abc';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { STComponent, STColumn, STData, STChange, STPage, STColumnSort } from '@delon/abc/st';
 import * as moment from 'moment';
 import { _HttpClient, MenuService, SettingsService } from '@delon/theme';
 import { MtVocabHelper } from '@shared/helper';
 import { map, tap, take } from 'rxjs/operators';
 import { ACLService } from '@delon/acl';
+import { assoc, filter, insertAll, prop } from 'ramda';
 
 @Component({
   selector: 'app-list-application',
@@ -83,16 +87,16 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
             this.edit(this.modalEl, 'Edit Data');
           },
         },
-        {
-          text: 'Download',
-          click: async (item: any) => {
-            item.clients[0].personId.pekerjaan = await this.mtVocab.translateMtVocab(
-              item.clients[0].personId.pekerjaan,
-            );
-            this.downloadDocx(item);
-          },
-          iif: item => item.noReg,
-        },
+        // {
+        //   text: 'Download',
+        //   click: async (item: any) => {
+        //     item.clients[0].personId.pekerjaan = await this.mtVocab.translateMtVocab(
+        //       item.clients[0].personId.pekerjaan,
+        //     );
+        //     this.downloadDocx(item);
+        //   },
+        //   iif: item => item.noReg,
+        // },
         {
           text: 'Konsultasi',
           click: (item: any) => {
@@ -106,17 +110,8 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
       title: 'Nomor Registrasi',
       index: 'noReg',
       sort: {
-        compare: (a, b) => {
-          const noRegA = a.noReg.toUpperCase();
-          const noRegB = b.noReg.toUpperCase();
-          if (noRegA < noRegB) {
-            return -1;
-          }
-          if (noRegA > noRegB) {
-            return 1;
-          }
-          return 0;
-        },
+        default: null,
+        compare: null
       },
     },
     {
@@ -124,7 +119,8 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
       index: 'regDate',
       type: 'date',
       sort: {
-        compare: (a, b) => moment(a.regDate).unix() - moment(b.regDate).unix(),
+        default: null,
+        compare: null
       },
     },
     {
@@ -152,7 +148,7 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
       type: 'date',
       sort: {
         default: 'descend',
-        compare: (a, b) => moment(a.updatedAt).unix() - moment(b.updatedAt).unix(),
+        compare: null
       },
     },
     {
@@ -160,7 +156,8 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
       index: 'createdAt',
       type: 'date',
       sort: {
-        compare: (a: any, b: any) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+        default: null,
+        compare: null
       },
     },
   ];
@@ -168,6 +165,10 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
   description = '';
   totalCallNo = 0;
   expandForm = false;
+
+  page: STPage = { front: false, show: true, showSize: true };
+
+  orderBy: ApplicationOrderByInput[] = [{ updatedAt: 'desc' as SortOrder }];
 
   constructor(
     public msg: NzMessageService,
@@ -180,6 +181,7 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
     private settingService: SettingsService,
     private getLogRequestGQL: GetLogRequestGQL,
     public http: _HttpClient,
+    private mtVocabHelper: MtVocabHelper,
   ) { }
 
   ngOnInit() {
@@ -189,12 +191,13 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.personsObs = this.applications.valueChanges
       .pipe(
-        map(result => result.data.applications),
+        map(result => result.data),
         tap(() => (this.loading = false)),
       )
       .subscribe(res => {
         // console.log(res);
-        this.data = res;
+        this.data = res.applications;
+        this.st.total = res.aggregateApplication.count.id;
         this.cdr.detectChanges();
       });
   }
@@ -209,6 +212,7 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
       .refetch(this.searchGenerator())
       .then(res => {
         this.data = res.data.applications;
+        this.st.total = res.data.aggregateApplication.count.id;
       })
       .finally(() => {
         this.loading = false;
@@ -217,50 +221,53 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
 
   searchGenerator(): GetApplications.Variables {
     return <GetApplications.Variables>{
-      where: <ApplicationWhereInput>{
+      where: this.mtVocabHelper.whereHelper(<ApplicationWhereInput>{
         AND: <ApplicationWhereInput[]>[
-          this.q.judulKasus
-            ? {
+          !this.q.judulKasus
+            ? null : {
               case: {
-                judulKasus_contains: this.q.judulKasus,
+                is: { judulKasus: { contains: this.q.judulKasus } },
               },
-            }
-            : {},
-          this.q.namaKlien
-            ? {
-              clients_some: {
-                personId: { namaLengkap_contains: this.q.namaKlien },
-              },
-            }
-            : {},
-          this.q.noReg
-            ? {
-              noReg_contains: this.q.noReg,
-            }
-            : {},
-          this.q.namaWakil
-            ? {
+            },
+          !this.q.namaKlien
+            ? null : {
+              clients: { some: { personId: { is: { namaLengkap: { contains: this.q.namaKlien } } } } },
+            },
+          !this.q.noReg
+            ? null : {
+              noReg: { contains: this.q.noReg }
+            },
+          !this.q.namaWakil
+            ? null : {
               wakilId: {
-                namaLengkap_contains: this.q.namaWakil,
+                is: { namaLengkap: { contains: this.q.namaWakil, } }
               },
-            }
-            : {},
-        ],
-      },
+            },
+        ].filter(res => res),
+      }),
+      take: this.st.ps,
+      skip: this.st.ps * this.st.pi === this.st.ps ? 0 : this.st.ps * this.st.pi - this.st.ps,
+      orderBy: this.orderBy
     };
   }
 
-  stChange() {
-    // switch (e.type) {
-    //   // case 'checkbox':
-    //   //   this.selectedRows = e.checkbox!;
-    //   //   this.totalCallNo = this.selectedRows.reduce((total, cv) => total + cv.callNo, 0);
-    //   //   this.cdr.detectChanges();
-    //   //   break;
-    //   case 'filter':
-    //     // this.getData();
-    //     break;
-    // }
+  stChange(e: STChange) {
+    if (e.type == 'sort') {
+      const sortObj = e.sort.column.sort as STColumnSort<any>
+      this.sortOrder(sortObj.key, sortObj.default);
+      this.getData();
+    }
+    if (e.type === 'pi' || e.type === 'ps') {
+      this.getData();
+    }
+  }
+
+  sortOrder(key: string, order: string | null) {
+    if (!order) {
+      this.orderBy = filter(((x) => !!!prop(key as any, x)), this.orderBy)
+      return
+    }
+    this.orderBy = insertAll(0, assoc(key, order === "ascend" ? 'asc' : 'desc', {}) as any, filter(((x) => !!!prop(key as any, x)), this.orderBy));
   }
 
   add(tpl: TemplateRef<{}>, title: string) {
@@ -290,7 +297,8 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  reset() {
+  filterSearch() {
+    this.st.pi = 1;
     setTimeout(() => this.getData());
   }
 
@@ -299,16 +307,17 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
       .fetch(
         {
           where: {
-            applicationId: { is: { id: item.id } },
+            applicationId: { is: { id: { equals: item.id } } },
             jenisRequest: { equals: '1011' },
             tglRequest: {
               gte: moment()
                 .hour(0)
                 .minute(0)
-                .toDate(), lte: moment()
-                  .hour(23)
-                  .minute(59)
-                  .toDate()
+                .toDate(),
+              lte: moment()
+                .hour(23)
+                .minute(59)
+                .toDate(),
             },
           },
         },
@@ -329,7 +338,7 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
     const dataLog = <PostLogRequestMutationVariables>{
       data: {
         applicationId: { connect: { id: dataApplication.id } },
-        caseId: dataApplication.case ? { connect: { id: dataApplication.case.id } } : null,
+        caseId: dataApplication.case ? { connect: { id: dataApplication.case.id } } : undefined,
         requestBy: { connect: { id: this.settingService.user.id } },
         jenisRequest: '1011',
         statusRequest: '0',

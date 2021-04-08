@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GetMtVocabsGQL, GetMtVocabs, MtVocabWhereInput, MtVocabGroupWhereInput, MtVocabOrderByInput } from '@shared';
 import { map, tap, zip, take } from 'rxjs/operators';
-import { doWhileStatement } from 'babel-types';
 import { SFSchemaEnumType } from '@delon/form';
 import {
   GetRolesTypeGQL,
@@ -20,22 +19,23 @@ import {
   RenamedcaseWhereInput,
 } from '@shared/graphql';
 import { valid } from 'mockjs';
-import { _ } from 'underscore';
+import * as _ from 'underscore';
 import * as moment from 'moment';
+import { isEmpty, pickBy } from 'ramda';
 @Injectable({
   providedIn: 'root',
 })
 export class MtVocabHelper {
   // return array for cascade in cascader from mtvocab
-  public each(array, delegate) {
+  public each(array: any, delegate?: any) {
     return _.each(array, delegate);
   }
 
-  public flatten(array, shallow?) {
+  public flatten(array: any, shallow?: any) {
     return _.flatten(array, shallow);
   }
 
-  public uniq(array, func?) {
+  public uniq(array: any, func?: any) {
     return _.uniq(array, func);
   }
   constructor(
@@ -73,7 +73,7 @@ export class MtVocabHelper {
     return arrMtvocabs.map(mtVocabs => mtVocabs.KODE);
   }
 
-  private getData(kode) {
+  private getData(kode: string | null | undefined) {
     return this.getMtVocabsGQL
       .watch(this.searchGenerator(kode))
       .valueChanges.pipe(map(result => result.data.mtVocabs))
@@ -81,7 +81,7 @@ export class MtVocabHelper {
       .toPromise();
   }
 
-  private searchGenerator(kode): GetMtVocabs.Variables {
+  private searchGenerator(kode: string | null | undefined): GetMtVocabs.Variables {
     return <GetMtVocabs.Variables>{
       where: <MtVocabWhereInput>{
         KODE: { equals: kode },
@@ -253,7 +253,7 @@ export class MtVocabHelper {
       )
       .valueChanges.pipe(
         map(result => {
-          const arr = [];
+          const arr: any[] = [];
           result.data.mtVocabs.forEach(res => {
             arr.push(res.KODE);
           });
@@ -286,10 +286,10 @@ export class MtVocabHelper {
       .valueChanges.pipe(
         map(
           result =>
-            result.data.renamedcases[0].application.clients.map(res => {
+            result?.data?.renamedcases[0]?.application!.clients.map(res => {
               const obj: any = {};
-              obj.value = res.personId.id;
-              obj.label = res.personId.namaLengkap;
+              obj.value = res.personId?.id;
+              obj.label = res.personId?.namaLengkap;
               return obj;
             }) as SFSchemaEnumType[],
         ),
@@ -345,12 +345,12 @@ export class MtVocabHelper {
           result.data.renamedcases.map(res => {
             const pp = res.consultations[0].apps;
             const formatText = pp.map(val => {
-              return val.appConsultation.name;
+              return val.appConsultation?.name;
             });
             formatText.sort();
             let concattedText = '';
             for (const a of formatText) {
-              concattedText === '' ? (concattedText = a) : (concattedText = concattedText + ', ' + a);
+              concattedText === '' ? (concattedText = a!) : (concattedText = concattedText + ', ' + a);
             }
             return concattedText;
           }),
@@ -372,7 +372,7 @@ export class MtVocabHelper {
             if (res.consultations) {
               pp = res.consultations.map(val => val.apps);
               pp = this.flatten(pp);
-              pp = this.uniq(pp, pengacara => pengacara.appConsultation.id);
+              pp = this.uniq(pp, (pengacara: { appConsultation: { id: any; }; }) => pengacara.appConsultation.id);
 
               // console.log(pp);
               const formatText = pp.map(val => {
@@ -406,7 +406,7 @@ export class MtVocabHelper {
             if (res.consultations) {
               pp = res.consultations.map(val => val.apps);
               pp = this.flatten(pp);
-              pp = this.uniq(pp, pengacara => pengacara.appConsultation.id);
+              pp = this.uniq(pp, (pengacara: { appConsultation: { id: any; }; }) => pengacara.appConsultation.id);
               // console.log(pp);
               const ppId = pp.map(val => {
                 return val.appConsultation;
@@ -424,7 +424,7 @@ export class MtVocabHelper {
       .toPromise();
   }
 
-  findConsultationToday(noReg) {
+  findConsultationToday(noReg: any) {
     return this.getLogRequestGQL
       .watch(<GetLogRequest.Variables>{
         where: <LogRequestWhereInput>{
@@ -441,7 +441,7 @@ export class MtVocabHelper {
             if (res.pp) {
               pp = res.pp.map(val => val.appConsultation);
               pp = this.flatten(pp);
-              pp = this.uniq(pp, pengacara => pengacara.appConsultation.id);
+              pp = this.uniq(pp, (pengacara: { appConsultation: { id: any; }; }) => pengacara.appConsultation.id);
 
               // console.log(pp);
               const ppId = pp.map(val => {
@@ -469,7 +469,7 @@ export class MtVocabHelper {
     };
   }
 
-  public isThereAChild(kode) {
+  public isThereAChild(kode: any) {
     return this.getMtVocabsGQL
       .watch(<GetMtVocabs.Variables>{
         where: <MtVocabWhereInput>{
@@ -481,7 +481,7 @@ export class MtVocabHelper {
       .toPromise();
   }
 
-  translateMtVocab(kode) {
+  translateMtVocab(kode: string) {
     if (kode) {
       return this.getMtVocabsGQL
         .watch(<GetMtVocabs.Variables>{
@@ -499,4 +499,9 @@ export class MtVocabHelper {
       });
     }
   }
+
+  whereHelper(obj: any) {
+    return pickBy((val, _key) => !isEmpty(val))(obj)
+  }
+
 }

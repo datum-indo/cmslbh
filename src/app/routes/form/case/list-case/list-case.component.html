@@ -29,7 +29,7 @@
         </div>
         <div nz-col [nzSpan]="expandForm ? 24 : 8" [class.text-right]="expandForm">
           <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="loading">Search</button>
-          <button nz-button type="reset" (click)="reset()" class="mx-sm">Reset</button>
+          <button nz-button type="reset" (click)="filterSearch()" class="mx-sm">Reset</button>
           <a (click)="expandForm = !expandForm">
             {{ expandForm ? 'Hide' : 'Expand' }}
             <i nz-icon [nzType]="expandForm ? 'up' : 'down'"></i>
@@ -38,15 +38,8 @@
       </div>
     </form>
 
-    <st
-      #st
-      [columns]="columns"
-      [data]="data"
-      [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
-      [loading]="loading"
-      (change)="stChange($event)"
-      [scroll]="{ x: '1064px' }"
-    >
+    <st #st [columns]="columns" [data]="data" [widthMode]="{ type: 'strict', strictBehavior: 'wrap' }"
+      [loading]="loading" [scroll]="{ x: '1064px' }" (change)="stChange($event)" [page]="page" [multiSort]="true">
       <ng-template st-row="status" let-i>
         <nz-badge [nzStatus]="i.statusType" [nzText]="i.statusText"></nz-badge>
       </ng-template>

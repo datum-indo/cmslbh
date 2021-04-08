@@ -2,8 +2,6 @@ overwrite: true
 schema: http://localhost:3000/graphql
 documents: src/app/shared/graphql/types/*.graphql
 config:
-  scalars:
-    DateTime: Date
   avoidOptionals: false
   skipTypename: true
 generates:
@@ -11,5 +9,5 @@ generates:
     plugins:
       - typescript
       - typescript-operations
-      - typescript-apollo-angular\
+      - typescript-apollo-angular
       - typescript-compatibility

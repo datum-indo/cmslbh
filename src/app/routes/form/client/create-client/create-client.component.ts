@@ -1,4 +1,4 @@
-import {Observable} from '@apollo/client/core';
+import { Observable } from '@apollo/client/core';
 import {
   Component,
   OnInit,
@@ -10,7 +10,9 @@ import {
   ElementRef,
   TemplateRef,
 } from '@angular/core';
-import { NzMessageService, CascaderOption, NzModalService, UploadFile, NzModalRef } from 'ng-zorro-antd';
+import { NzMessageService, } from 'ng-zorro-antd/message';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { SettingsService } from '@delon/theme';
 import { SFSchema, CascaderWidget, SFComponent, SFSchemaEnumType } from '@delon/form';
 import {
@@ -24,11 +26,11 @@ import {
   PersonUpdateInput,
   PutPersonGQL,
   PersonWhereUniqueInput,
+  AllPerson,
 } from '@shared';
 import { MtVocabHelper, HelperService } from '@shared/helper';
 import * as moment from 'moment';
 import { map, take } from 'rxjs/operators';
-import { AllPersonGQL, AllPerson } from '@shared/generated/graphql';
 
 import { saveAs as importedSaveAs } from 'file-saver';
 import { environment } from '@env/environment';
@@ -40,7 +42,7 @@ import { environment } from '@env/environment';
 })
 export class CreateClientComponent implements OnInit, OnDestroy {
   private _editData: any;
-  fileList: UploadFile[] = [];
+  fileList: NzUploadFile[] = [];
   modalInstance: NzModalRef;
   uploadAction = `http://${window.location.hostname}:3000/upload`;
   constructor(
@@ -51,7 +53,7 @@ export class CreateClientComponent implements OnInit, OnDestroy {
     private putPersonGQL: PutPersonGQL,
     private modalSrv: NzModalService,
     private helper: HelperService,
-  ) {}
+  ) { }
 
   @Output() saveData = new EventEmitter<any>();
   @ViewChild('sf', { static: true }) sf: SFComponent;
@@ -75,9 +77,9 @@ export class CreateClientComponent implements OnInit, OnDestroy {
   cobajing(d) {
     // console.log(d);
   }
-  ngOnInit() {}
+  ngOnInit() { }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
   loading = false;
 
   submit(value: any) {
@@ -303,7 +305,7 @@ export class CreateClientComponent implements OnInit, OnDestroy {
   openModal() {
     this.add(this.listPerson, 'Pilih Person');
   }
-  closeModalAndSaveData(event: AllPerson.Persons) {
+  closeModalAndSaveData(event: AllPerson.People) {
     this.modalInstance.close();
     this.sf.setValue('/personId', event);
     const umur = moment().diff(moment(event.tglLahir), 'years');
@@ -311,7 +313,7 @@ export class CreateClientComponent implements OnInit, OnDestroy {
     if (umur) this.sf.setValue('/usiaSaatKlien', umur);
   }
 
-  beforeUpload = (file: UploadFile, fileList: UploadFile[]) => {
+  beforeUpload = (file: NzUploadFile, fileList: NzUploadFile[]) => {
     this.fileList.pop();
     return true;
   };
@@ -323,7 +325,7 @@ export class CreateClientComponent implements OnInit, OnDestroy {
     }
   }
 
-  preview = (file: UploadFile) => {
+  preview = (file: NzUploadFile) => {
     this.helper.downloadFile(file.name).subscribe(res => {
       importedSaveAs(res, file.name);
     });

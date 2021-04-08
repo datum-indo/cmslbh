@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from '@shared';
 import { DelonFormModule, WidgetRegistry } from '@delon/form';
+import { SharedModule } from '../shared.module';
 
 // import { TinymceWidget } from './widgets/tinymce/tinymce.widget';
 // import { UeditorWidget } from './widgets/ueditor/ueditor.widget';
@@ -12,7 +12,6 @@ export const SCHEMA_THIRDS_COMPONENTS = [
 
 @NgModule({
   declarations: SCHEMA_THIRDS_COMPONENTS,
-  entryComponents: SCHEMA_THIRDS_COMPONENTS,
   imports: [SharedModule, DelonFormModule.forRoot()],
   exports: [...SCHEMA_THIRDS_COMPONENTS],
 })

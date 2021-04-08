@@ -1,5 +1,5 @@
-import {QueryRef} from 'apollo-angular';
-import {ApolloQueryResult} from '@apollo/client/core';
+import { QueryRef } from 'apollo-angular';
+import { ApolloQueryResult } from '@apollo/client/core';
 import {
   Component,
   OnInit,
@@ -10,8 +10,11 @@ import {
   ElementRef,
   Input,
 } from '@angular/core';
-import { STColumn, STComponent } from '@delon/abc';
-import { NzMessageService, NzTabChangeEvent, NzModalService, UploadFile } from 'ng-zorro-antd';
+import { STColumn, STComponent } from '@delon/abc/st';
+import { NzTabChangeEvent } from 'ng-zorro-antd/tabs';
+import { NzUploadFile } from 'ng-zorro-antd/upload'
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService, } from 'ng-zorro-antd/message';
 import { _HttpClient, SettingsService } from '@delon/theme';
 import { saveAs as importedSaveAs } from 'file-saver';
 import {
@@ -55,7 +58,7 @@ import { Location, LocationStrategy, PathLocationStrategy } from '@angular/commo
 import { MtVocabHelper, HelperService } from '@shared/helper';
 import * as moment from 'moment';
 import { SFSchema, SFComponent } from '@delon/form';
-import { nextContext } from '@angular/core/src/render3';
+import { isNil, mapObjIndexed } from 'ramda';
 
 @Component({
   selector: 'app-view-case',
@@ -87,7 +90,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
   deletedKorban: any[] = [];
   deletedPelaku: any[] = [];
   korbanOrPelaku: string;
-  fileList: UploadFile[] = [];
+  fileList: NzUploadFile[] = [];
   dataHakTerdampak: any[] = [];
   dataKlasifikasiDokumen: any[] = [];
   dataJenisPelaku: any[] = [];
@@ -989,7 +992,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
   }
 
   submitTransfer(data) {
-    // console.log(data);
+    console.log(data);
     this.dataMutationUpdateUmum(this.processTransfer(data), { id: this.data.id });
   }
 
@@ -1041,7 +1044,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     // console.log('hoiii');
 
     this.destroyCaseClassification
-      .mutate({ where: { caseId: { is: { id: this.data.id } } } })
+      .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
       .toPromise()
       .then(
         res => {
@@ -1078,17 +1081,17 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           update: [
             {
               data: {
-                capaian: data.capaian,
-                createdBy: this.settingService.user.name,
-                hambatan: data.hambatan,
-                judulAktifitas: data.judulAktifitas,
-                position: data.position,
-                rencanaStrategi: data.rencanaStrategi,
-                targetAdvokasi: data.targetAdvokasi,
-                tglAktifitas: moment(data.tglAktifitas).toDate(),
-                activitieslit: activitieslit.length !== 0 ? { create: activitieslit } : null,
-                activitiesnonlit: activitiesnonlit.length !== 0 ? { create: activitiesnonlit } : null,
-                updatedBy: this.settingService.user.name,
+                capaian: { set: data.capaian },
+                createdBy: { set: this.settingService.user.name },
+                hambatan: { set: data.hambatan },
+                judulAktifitas: { set: data.judulAktifitas },
+                position: { set: data.position },
+                rencanaStrategi: { set: data.rencanaStrategi },
+                targetAdvokasi: { set: data.targetAdvokasi },
+                tglAktifitas: { set: moment(data.tglAktifitas).toDate() },
+                activitieslit: activitieslit.length !== 0 ? { create: activitieslit } : undefined,
+                activitiesnonlit: activitiesnonlit.length !== 0 ? { create: activitiesnonlit } : undefined,
+                updatedBy: { set: this.settingService.user.name },
               },
               where: { id: data.id },
             },
@@ -1126,8 +1129,8 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
               rencanaStrategi: data.rencanaStrategi,
               targetAdvokasi: data.targetAdvokasi,
               tglAktifitas: moment(data.tglAktifitas).toDate(),
-              activitieslit: activitieslit.length !== 0 ? { create: activitieslit } : null,
-              activitiesnonlit: activitiesnonlit.length !== 0 ? { create: activitiesnonlit } : null,
+              activitieslit: activitieslit.length !== 0 ? { create: activitieslit } : undefined,
+              activitiesnonlit: activitiesnonlit.length !== 0 ? { create: activitiesnonlit } : undefined,
             },
           ],
         },
@@ -1185,20 +1188,20 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     if ('progresses' in this.data) {
       if (this.data.progresses !== null) {
         return <RenamedcaseUpdateInput>{
-          application: { update: { tahap: '3012' } },
+          application: { update: { tahap: { set: '3012' } } },
           progresses: {
             update: {
-              catatan: data.catatan,
-              jenisPeradilan: data.jenisPeradilan,
-              updatedBy: this.settingService.user.name,
+              catatan: { set: data.catatan },
+              jenisPeradilan: { set: data.jenisPeradilan },
+              updatedBy: { set: this.settingService.user.name },
             },
           },
         };
       } else {
         // console.log('masuksini');
         return <RenamedcaseUpdateInput>{
-          application: { update: { tahap: '3012' } },
-          updatedBy: this.settingService.user.name,
+          application: { update: { tahap: { set: '3012' } } },
+          updatedBy: { set: this.settingService.user.name },
           progresses: <CaseProgressUpdateOneWithoutCaseInput>{
             create: <CaseProgressCreateWithoutCaseInput>{
               updatedBy: '',
@@ -1242,12 +1245,12 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           update: [
             {
               data: {
-                jenisDokumen: data.jenisDokumen,
-                judulDokumen: data.judulDokumen,
-                keterangan: data.keterangan,
-                link: data.link,
-                filename: filename,
-                updatedBy: this.settingService.user.name,
+                jenisDokumen: { set: data.jenisDokumen },
+                judulDokumen: { set: data.judulDokumen },
+                keterangan: { set: data.keterangan },
+                link: { set: data.link },
+                filename: { set: filename },
+                updatedBy: { set: this.settingService.user.name },
               },
               where: { id: data.id },
             },
@@ -1263,10 +1266,10 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
         return <RenamedcaseUpdateInput>{
           transfer: {
             update: {
-              catatan: data.catatan,
+              catatan: { set: data.catatan },
               network: { connect: { id: data.network } },
-              updatedBy: this.settingService.user.name,
-              tglTransfer: moment(data.tglTransfer).toDate(),
+              updatedBy: { set: this.settingService.user.name },
+              tglTransfer: { set: moment(data.tglTransfer).toDate() },
             },
           },
         };
@@ -1304,110 +1307,118 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     switch (data.didampingi) {
       case '0111':
         return <RenamedcaseUpdateInput>{
-          statusPendampingan: '0111',
-          application: { update: { tahap: '2012' } },
+          statusPendampingan: { set: '0111' },
+          application: { update: { tahap: { set: '2012' } } },
           pk: {
             update: {
-              tglRapat: moment(data.tglRapat).toDate(),
-              updatedBy: this.settingService.user.name,
-              didampingi: data.didampingi,
+              tglRapat: { set: moment(data.tglRapat).toDate() },
+              updatedBy: { set: this.settingService.user.name },
+              didampingi: { set: data.didampingi },
               ppPendamping: { connect: { id: data.ppPendamping } },
-              statusAlasanTdk: '',
-              targetAkhirAdvokasi: data.targetAkhirAdvokasi,
-              strategiAdvokasi: data.strategiAdvokasi,
+              statusAlasanTdk: { set: '' },
+              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
+              strategiAdvokasi: { set: data.strategiAdvokasi },
             },
           },
-          transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : null) : null,
+          transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : undefined) : undefined,
         };
       case '4111':
         return <RenamedcaseUpdateInput>{
-          statusPendampingan: '4111',
-          application: { update: { tahap: '2012' } },
+          statusPendampingan: { set: '4111' },
+          application: { update: { tahap: { set: '2012' } } },
           pk: {
             update: {
-              tglRapat: moment(data.tglRapat).toDate(),
-              updatedBy: this.settingService.user.name,
-              didampingi: data.didampingi,
-              targetAkhirAdvokasi: data.targetAkhirAdvokasi,
-              strategiAdvokasi: data.strategiAdvokasi,
+              tglRapat: { set: moment(data.tglRapat).toDate() },
+              updatedBy: { set: this.settingService.user.name },
+              didampingi: { set: data.didampingi },
+              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
+              strategiAdvokasi: { set: data.strategiAdvokasi },
               ppPendamping:
                 'ppPendamping' in this.data.pk
                   ? this.data.pk.ppPendamping !== null
                     ? { disconnect: true }
-                    : null
-                  : null,
-              statusAlasanTdk: data.statusAlasanTdk,
+                    : undefined
+                  : undefined,
+              statusAlasanTdk: { set: data.statusAlasanTdk },
             },
           },
-          transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : null) : null,
+          transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : undefined) : undefined,
         };
       case '5111':
         return <RenamedcaseUpdateInput>{
-          statusPendampingan: '5111',
-          application: { update: { tahap: '2012' } },
+          statusPendampingan: { set: '5111' },
+          application: { update: { tahap: { set: '2012' } } },
           pk: {
             update: {
-              tglRapat: moment(data.tglRapat).toDate(),
-              updatedBy: this.settingService.user.name,
-              didampingi: data.didampingi,
-              targetAkhirAdvokasi: data.targetAkhirAdvokasi,
-              strategiAdvokasi: data.strategiAdvokasi,
+              tglRapat: { set: moment(data.tglRapat).toDate() },
+              updatedBy: { set: this.settingService.user.name },
+              didampingi: { set: data.didampingi },
+              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
+              strategiAdvokasi: { set: data.strategiAdvokasi },
               ppPendamping:
                 'ppPendamping' in this.data.pk
                   ? this.data.pk.ppPendamping !== null
                     ? { disconnect: true }
-                    : null
-                  : null,
-              statusAlasanTdk: data.statusAlasanTdk,
+                    : undefined
+                  : undefined,
+              statusAlasanTdk: { set: data.statusAlasanTdk },
             },
           },
           transfer:
             'transfer' in this.data
               ? this.data.transfer !== null
-                ? null
+                ? undefined
                 : { create: { tglTransfer: moment().toDate() } }
               : { create: { tglTransfer: moment().toDate() } },
         };
       case '6111':
         return <RenamedcaseUpdateInput>{
-          statusPendampingan: '6111',
-          application: { update: { tahap: '2012' } },
+          statusPendampingan: { set: '6111' },
+          application: { update: { tahap: { set: '2012' } } },
           pk: {
             update: {
-              tglRapat: moment(data.tglRapat).toDate(),
-              updatedBy: this.settingService.user.name,
-              didampingi: data.didampingi,
+              tglRapat: { set: moment(data.tglRapat).toDate() },
+              updatedBy: { set: this.settingService.user.name },
+              didampingi: { set: data.didampingi },
               ppPendamping: { connect: { id: data.ppPendamping } },
-              targetAkhirAdvokasi: data.targetAkhirAdvokasi,
-              strategiAdvokasi: data.strategiAdvokasi,
-              statusAlasanTdk: '',
+              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
+              strategiAdvokasi: { set: data.strategiAdvokasi },
+              statusAlasanTdk: { set: '' },
             },
           },
-          transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : null) : null,
+          transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : undefined) : undefined,
         };
 
       case '7111':
         return <RenamedcaseUpdateInput>{
-          statusPendampingan: '7111',
-          application: { update: { tahap: '2012' } },
+          statusPendampingan: { set: '7111' },
+          application: { update: { tahap: { set: '2012' } } },
           pk: {
             update: {
-              tglRapat: moment(data.tglRapat).toDate(),
-              updatedBy: this.settingService.user.name,
-              didampingi: data.didampingi,
+              tglRapat: { set: moment(data.tglRapat).toDate() },
+              updatedBy: { set: this.settingService.user.name },
+              didampingi: { set: data.didampingi },
               ppPendamping: { connect: { id: data.ppPendamping } },
-              targetAkhirAdvokasi: data.targetAkhirAdvokasi,
-              strategiAdvokasi: data.strategiAdvokasi,
-              statusAlasanTdk: '',
+              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
+              strategiAdvokasi: { set: data.strategiAdvokasi },
+              statusAlasanTdk: { set: '' },
             },
           },
-          transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : null) : null,
+          transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : undefined) : undefined,
         };
     }
   }
 
   submitUmum(data) {
     // console.log(data);
+    data = mapObjIndexed((val, _key) => {
+      if (isNil(val)) {
+        return { set: null }
+      } else {
+        return { set: val }
+      }
+
+    }, data)
     this.dataMutationUpdateUmum(data, { id: this.data.id });
   }
 
@@ -1430,9 +1441,9 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
 
   processTerminasi(data): RenamedcaseUpdateInput | string {
     return <RenamedcaseUpdateInput>{
-      caseClosed: data.caseClosed,
-      caseClosedJenis: data.caseClosedJenis,
-      application: { update: { tahap: '4012' } },
+      caseClosed: { set: data.caseClosed },
+      caseClosedJenis: { set: data.caseClosedJenis },
+      application: { update: { tahap: { set: '4012' } } },
     };
   }
 
@@ -1972,7 +1983,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     }
 
     const dataInput = <RenamedcaseUpdateInput>{
-      logRequests: { update: [{ where: { ID: logRequestToday.ID }, data: { statusRequest: '2' } }] },
+      logRequests: { update: [{ where: { ID: logRequestToday.ID }, data: { statusRequest: { set: '2' } } }] },
       consultations: {
         create: [
           {
@@ -2002,17 +2013,17 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       appList.push(b);
     }
     const dataInput = <RenamedcaseUpdateInput>{
-      logRequests: { update: [{ where: { ID: logRequestToday.ID }, data: { statusRequest: '2' } }] },
+      logRequests: { update: [{ where: { ID: logRequestToday.ID }, data: { statusRequest: { set: '2' } } }] },
       consultations: {
         update: [
           {
             where: { id: data.id },
             data: {
-              isiKonsul: data.isiKonsul,
-              judulAktifitas: data.judulAktifitas,
-              harapan: data.harapan,
-              saranHukum: data.saranHukum,
-              rencanaTindakLanjut: data.rencanaTindakLanjut,
+              isiKonsul: { set: data.isiKonsul },
+              judulAktifitas: { set: data.judulAktifitas },
+              harapan: { set: data.harapan },
+              saranHukum: { set: data.saranHukum },
+              rencanaTindakLanjut: { set: data.rencanaTindakLanjut },
             },
           },
         ],
@@ -2078,7 +2089,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     this.dataModalTemp = data;
     if (`filename` in this.dataModalTemp) {
       if (this.dataModalTemp.filename) {
-        if (!this.fileList[0]) this.fileList.push(<UploadFile>(<unknown>{ filename: '', file: '' }));
+        if (!this.fileList[0]) this.fileList.push(<NzUploadFile>(<unknown>{ filename: '', file: '' }));
         this.fileList[0].filename = this.dataModalTemp.filename;
         this.fileList[0].name = this.dataModalTemp.filename;
       }
@@ -2395,7 +2406,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  beforeUpload = (file: UploadFile, fileList: UploadFile[]) => {
+  beforeUpload = (file: NzUploadFile, fileList: NzUploadFile[]) => {
     this.fileList.pop();
     return true;
   };
@@ -2407,7 +2418,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  preview = (file: UploadFile) => {
+  preview = (file: NzUploadFile) => {
     this.helper.downloadFile(file.name).subscribe(res => {
       importedSaveAs(res, file.name);
     });

@@ -1,26 +1,31 @@
-import { NgModule, LOCALE_ID, APP_INITIALIZER } from '@angular/core';
+import { NgModule, LOCALE_ID, APP_INITIALIZER, Type } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LinkyModule } from 'angular-linky';
+import { GlobalConfigModule } from './global-config.module';
 
 // #region default language
 // 参考：https://ng-alain.com/docs/i18n
-import { default as ngLangID } from '@angular/common/locales/id';
-import { NZ_I18N, en_US as zorroLang, NZ_DATE_LOCALE } from 'ng-zorro-antd';
+import { default as ngLang } from '@angular/common/locales/id';
 import { DELON_LOCALE, en_US as delonLang } from '@delon/theme';
+import { id as dateLang } from 'date-fns/locale';
+import { NZ_DATE_LOCALE, NZ_I18N, id_ID as zorroLang } from 'ng-zorro-antd/i18n';
 const LANG = {
-  abbr: 'en',
+  abbr: 'id',
+  ng: ngLang,
   zorro: zorroLang,
+  date: dateLang,
   delon: delonLang,
 };
 // register angular
 import { registerLocaleData } from '@angular/common';
-registerLocaleData(ngLangID, 'id');
+registerLocaleData(LANG.ng, LANG.abbr);
 const LANG_PROVIDES = [
-  { provide: LOCALE_ID, useValue: ngLangID },
-  { provide: NZ_I18N, useValue: ngLangID },
-  { provide: DELON_LOCALE, useValue: ngLangID },
+  { provide: LOCALE_ID, useValue: LANG.abbr },
+  { provide: NZ_I18N, useValue: LANG.zorro },
+  { provide: NZ_DATE_LOCALE, useValue: LANG.date },
+  { provide: DELON_LOCALE, useValue: LANG.delon },
 ];
 // #endregion
 
@@ -51,7 +56,8 @@ const I18NSERVICE_PROVIDES = [{ provide: ALAIN_I18N_TOKEN, useClass: I18NService
 
 // #region global third module
 
-const GLOBAL_THIRD_MODULES = [];
+import { BidiModule } from '@angular/cdk/bidi';
+const GLOBAL_THIRD_MODULES: Type<any>[] = [BidiModule];
 
 // #endregion
 
@@ -72,7 +78,7 @@ const INTERCEPTOR_PROVIDES = [
 
 // #region Startup Service
 import { StartupService } from '@core';
-export function StartupServiceFactory(startupService: StartupService): Function {
+export function StartupServiceFactory(startupService: StartupService): () => Promise<void> {
   return () => startupService.load();
 }
 const APPINIT_PROVIDES = [
@@ -97,16 +103,14 @@ const windowProvider: FactoryProvider = {
 };
 
 export const WINDOW_PROVIDERS = [windowProvider];
-
-import { DelonModule } from './delon.module';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { AppComponent } from './app.component';
 import { RoutesModule } from './routes/routes.module';
 import { LayoutModule } from './layout/layout.module';
 import { GraphQLModule } from './graphql.module';
-import { AgmCoreModule } from '@agm/core';
-import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
+import { STWidgetModule } from './shared/st-widget/st-widget.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -114,19 +118,17 @@ import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    DelonModule.forRoot(),
+    GlobalConfigModule.forRoot(),
     CoreModule,
     SharedModule,
     LayoutModule,
     RoutesModule,
+    STWidgetModule,
+    NzNotificationModule,
     ...I18NSERVICE_MODULES,
     ...GLOBAL_THIRD_MODULES,
     ...FORM_MODULES,
     GraphQLModule,
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyA1bbmnwu6pfsHXI8r2aXzHgNYOvq2EStI',
-    }),
-    AgmJsMarkerClustererModule,
   ],
   providers: [
     WINDOW_PROVIDERS,
@@ -137,4 +139,4 @@ import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

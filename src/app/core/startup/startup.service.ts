@@ -7,16 +7,12 @@ import { ACLService } from '@delon/acl';
 import { TranslateService } from '@ngx-translate/core';
 import { I18NService } from '../i18n/i18n.service';
 
-import { NzIconService } from 'ng-zorro-antd';
+import { NzIconService } from 'ng-zorro-antd/icon';
 import { ICONS_AUTO } from '../../../style-icons-auto';
 import { ICONS } from '../../../style-icons';
 
 import { User } from '@shared';
 
-/**
- * 用于应用启动时
- * 一般用来获取应用所需要的基础数据等
- */
 @Injectable()
 export class StartupService {
   constructor(
@@ -32,10 +28,10 @@ export class StartupService {
     iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
   }
 
-  hostname = window.location.hostname;
-  origin = window.location.origin;
+  appData: any
 
-  load(): Promise<any> {
+
+  load(): Promise<void> {
     // only works with promises
     // https://github.com/angular/angular/issues/15088
     return new Promise(resolve => {
@@ -44,10 +40,10 @@ export class StartupService {
         this.httpClient.get('assets/tmp/app-data.json'),
       )
         .pipe(
-          // 接收其他拦截器后产生的异常消息
-          catchError(([langData, appData]) => {
-            resolve(null);
-            return [langData, appData];
+          catchError((res) => {
+            console.warn(`StartupService.load: Network request failed`, res);
+            resolve();
+            return [];
           }),
         )
         .subscribe(
@@ -57,30 +53,30 @@ export class StartupService {
             this.translate.setDefaultLang(this.i18n.defaultLang);
 
             // application data
-            const res: any = appData;
-            // 应用信息：包括站点名、描述、年份
-            this.settingService.setApp(res.app);
-            // 用户信息：包括姓名、头像、邮箱地址
-            // this.settingService.setUser(res.user);
-            // // ACL：设置权限为全量
-            // console.log(this.settingService.user.roles_type);
+            this.appData = appData
+            this.settingService.setApp(this.appData.app);
+
+
+            this.aclService.setFull(false);
+            console.log(this.settingService.user.roles_type)
             if (this.settingService.user.roles_type) {
               if (this.settingService.user.roles_type.find(el => el.type.id === 8)) {
                 this.aclService.setFull(true);
-              } else this.aclService.setFull(false);
+              }
               const roles_type = this.settingService.user.roles_type.map(val => val.type.id.toString());
               this.aclService.setRole([...roles_type]);
             }
-            // 初始化菜单
+            console.log('here')
+            console.log(this.appData.menu)
             this.menuService.clear();
-            this.menuService.add(res.menu);
-            // 设置页面标题的后缀
+            this.menuService.add(this.appData.menu);
+
             this.titleService.default = '';
-            this.titleService.suffix = res.app.name;
+            this.titleService.suffix = this.appData.app.name;
           },
-          () => {},
+          () => { },
           () => {
-            resolve(null);
+            resolve();
           },
         );
     });
@@ -93,5 +89,7 @@ export class StartupService {
     } else this.aclService.setFull(false);
     const roles_type = user.roles_type.map(val => val.type.id.toString());
     this.aclService.setRole([...roles_type]);
+    this.menuService.clear();
+    this.menuService.add(this.appData.menu);
   }
 }

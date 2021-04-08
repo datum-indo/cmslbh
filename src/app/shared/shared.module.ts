@@ -1,29 +1,27 @@
-import { NgModule } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { NgModule, Type } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-// delon
-import { AlainThemeModule } from '@delon/theme';
-import { DelonABCModule } from '@delon/abc';
-import { DelonChartModule } from '@delon/chart';
 import { DelonACLModule } from '@delon/acl';
 import { DelonFormModule } from '@delon/form';
-// i18n
+import { AlainThemeModule } from '@delon/theme';
 import { TranslateModule } from '@ngx-translate/core';
-
-// #region third libs
-import { NgZorroAntdModule } from 'ng-zorro-antd';
-import { CountdownModule } from 'ngx-countdown';
-import { UEditorModule } from 'ngx-ueditor';
-import { NgxTinymceModule } from 'ngx-tinymce';
 import { LinkyModule } from 'angular-linky';
 
-const THIRDMODULES = [NgZorroAntdModule, CountdownModule, UEditorModule, NgxTinymceModule];
+import { SHARED_DELON_MODULES } from './shared-delon.module';
+import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
+
+// #region third libs
+// import { NgxTinymceModule } from 'ngx-tinymce';
+// import { UEditorModule } from 'ngx-ueditor';
+
+const THIRDMODULES: Type<any>[] = [];
 // #endregion
 
 // #region your componets & directives
-const COMPONENTS = [];
-const DIRECTIVES = [];
+const COMPONENTS: Type<any>[] = [];
+const DIRECTIVES: Type<any>[] = [];
 // #endregion
 
 @NgModule({
@@ -34,10 +32,11 @@ const DIRECTIVES = [];
     RouterModule,
     ReactiveFormsModule,
     AlainThemeModule.forChild(),
-    DelonABCModule,
-    DelonChartModule,
     DelonACLModule,
     DelonFormModule,
+    LinkyModule,
+    ...SHARED_DELON_MODULES,
+    ...SHARED_ZORRO_MODULES,
     // third libs
     ...THIRDMODULES,
   ],
@@ -47,18 +46,17 @@ const DIRECTIVES = [];
     ...DIRECTIVES,
   ],
   exports: [
-    LinkyModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
     AlainThemeModule,
-    DelonABCModule,
-    DelonChartModule,
     DelonACLModule,
     DelonFormModule,
-    // i18n
     TranslateModule,
+    LinkyModule,
+    ...SHARED_DELON_MODULES,
+    ...SHARED_ZORRO_MODULES,
     // third libs
     ...THIRDMODULES,
     // your components
@@ -66,4 +64,4 @@ const DIRECTIVES = [];
     ...DIRECTIVES,
   ],
 })
-export class SharedModule {}
+export class SharedModule { }

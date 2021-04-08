@@ -1,0 +1,18 @@
+schema: 
+  - "http://localhost:3000/graphql"
+documents: src/app/shared/graphql/types/*.graphql
+extensions:
+  customDirectives:
+    - directive @client on FIELD 
+  codegen:
+    generates:
+      ./graphql.schema.json:
+        plugins:
+          - introspection
+      src/core/typings/graphql.ts:
+        plugins:
+          - typescript
+          - typescript-operations
+          - typescript-apollo-angular
+          - typescript-graphql-files-modules
+    overwrite: true

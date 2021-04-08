@@ -12,14 +12,13 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Router, NavigationEnd, RouteConfigLoadStart, NavigationError, NavigationCancel } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { updateHostClass } from '@delon/util';
 import { SettingsService } from '@delon/theme';
 
 import { environment } from '@env/environment';
-import { SettingDrawerComponent } from './setting-drawer/setting-drawer.component';
 
 @Component({
   selector: 'layout-default',
@@ -75,12 +74,12 @@ export class LayoutDefaultComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngAfterViewInit(): void {
     // Setting componet for only developer
-    if (!environment.production) {
-      setTimeout(() => {
-        const settingFactory = this.resolver.resolveComponentFactory(SettingDrawerComponent);
-        this.settingHost.createComponent(settingFactory);
-      }, 22);
-    }
+    // if (!environment.production) {
+    //   setTimeout(() => {
+    //     const settingFactory = this.resolver.resolveComponentFactory(SettingDrawerComponent);
+    //     this.settingHost.createComponent(settingFactory);
+    //   }, 22);
+    // }
   }
 
   ngOnInit() {

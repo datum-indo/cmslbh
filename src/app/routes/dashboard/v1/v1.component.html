@@ -86,68 +86,41 @@
 <nz-card [nzBordered]="false" [nzTitle]="'Grafik'">
   <div nz-row nzGutter="16">
     <div nz-col nzSpan="12">
-      <ngx-charts-bar-horizontal
-        [schemeType]="hakTerlanggarOption.schemeType"
-        [results]="hakTerlanggar"
-        [gradient]="hakTerlanggarOption.gradient"
-        [xAxis]="hakTerlanggarOption.showXAxis"
-        [yAxis]="hakTerlanggarOption.showYAxis"
-        [legend]="hakTerlanggarOption.showLegend"
-        [showXAxisLabel]="hakTerlanggarOption.showXAxisLabel"
-        [showYAxisLabel]="hakTerlanggarOption.showYAxisLabel"
-        [xAxisLabel]="hakTerlanggarOption.xAxisLabel"
-        [yAxisLabel]="hakTerlanggarOption.yAxisLabel"
-        [showGridLines]="hakTerlanggarOption.showGridLines"
-        [legendTitle]="hakTerlanggarOption.legendTitle"
-      ></ngx-charts-bar-horizontal>
+      <!-- <ngx-charts-bar-horizontal [schemeType]="hakTerlanggarOption.schemeType" [results]="hakTerlanggar"
+        [gradient]="hakTerlanggarOption.gradient" [xAxis]="hakTerlanggarOption.showXAxis"
+        [yAxis]="hakTerlanggarOption.showYAxis" [legend]="hakTerlanggarOption.showLegend"
+        [showXAxisLabel]="hakTerlanggarOption.showXAxisLabel" [showYAxisLabel]="hakTerlanggarOption.showYAxisLabel"
+        [xAxisLabel]="hakTerlanggarOption.xAxisLabel" [yAxisLabel]="hakTerlanggarOption.yAxisLabel"
+        [showGridLines]="hakTerlanggarOption.showGridLines" [legendTitle]="hakTerlanggarOption.legendTitle">
+      </ngx-charts-bar-horizontal> -->
     </div>
     <div nz-col nzSpan="12">
-      <ngx-charts-bar-vertical
-        [schemeType]="unitSatuanOption.schemeType"
-        [results]="unitSatuan"
-        [gradient]="unitSatuanOption.gradient"
-        [xAxis]="unitSatuanOption.showXAxis"
-        [yAxis]="unitSatuanOption.showYAxis"
-        [legend]="unitSatuanOption.showLegend"
-        [showXAxisLabel]="unitSatuanOption.showXAxisLabel"
-        [showYAxisLabel]="unitSatuanOption.showYAxisLabel"
-        [xAxisLabel]="unitSatuanOption.xAxisLabel"
-        [yAxisLabel]="unitSatuanOption.yAxisLabel"
-        [showGridLines]="unitSatuanOption.showGridLines"
-        [legendTitle]="unitSatuanOption.legendTitle"
-      ></ngx-charts-bar-vertical>
+      <!-- <ngx-charts-bar-vertical [schemeType]="unitSatuanOption.schemeType" [results]="unitSatuan"
+        [gradient]="unitSatuanOption.gradient" [xAxis]="unitSatuanOption.showXAxis" [yAxis]="unitSatuanOption.showYAxis"
+        [legend]="unitSatuanOption.showLegend" [showXAxisLabel]="unitSatuanOption.showXAxisLabel"
+        [showYAxisLabel]="unitSatuanOption.showYAxisLabel" [xAxisLabel]="unitSatuanOption.xAxisLabel"
+        [yAxisLabel]="unitSatuanOption.yAxisLabel" [showGridLines]="unitSatuanOption.showGridLines"
+        [legendTitle]="unitSatuanOption.legendTitle"></ngx-charts-bar-vertical> -->
     </div>
   </div>
   <div nz-row nzGutter="16">
     <div nz-col nzSpan="12">
-      <ngx-charts-bar-vertical
-        [schemeType]="jenisPeradilanOption.schemeType"
-        [results]="jenisPeradilan"
-        [gradient]="jenisPeradilanOption.gradient"
-        [xAxis]="jenisPeradilanOption.showXAxis"
-        [yAxis]="jenisPeradilanOption.showYAxis"
-        [legend]="jenisPeradilanOption.showLegend"
-        [showXAxisLabel]="jenisPeradilanOption.showXAxisLabel"
-        [showYAxisLabel]="jenisPeradilanOption.showYAxisLabel"
-        [xAxisLabel]="jenisPeradilanOption.xAxisLabel"
-        [yAxisLabel]="jenisPeradilanOption.yAxisLabel"
-        [showGridLines]="jenisPeradilanOption.showGridLines"
-        [legendTitle]="jenisPeradilanOption.legendTitle"
-      ></ngx-charts-bar-vertical>
+      <!-- <ngx-charts-bar-vertical [schemeType]="jenisPeradilanOption.schemeType" [results]="jenisPeradilan"
+        [gradient]="jenisPeradilanOption.gradient" [xAxis]="jenisPeradilanOption.showXAxis"
+        [yAxis]="jenisPeradilanOption.showYAxis" [legend]="jenisPeradilanOption.showLegend"
+        [showXAxisLabel]="jenisPeradilanOption.showXAxisLabel" [showYAxisLabel]="jenisPeradilanOption.showYAxisLabel"
+        [xAxisLabel]="jenisPeradilanOption.xAxisLabel" [yAxisLabel]="jenisPeradilanOption.yAxisLabel"
+        [showGridLines]="jenisPeradilanOption.showGridLines" [legendTitle]="jenisPeradilanOption.legendTitle">
+      </ngx-charts-bar-vertical> -->
     </div>
     <div nz-col nzSpan="12">
-      <ngx-charts-pie-chart
-        [schemeType]="issueLokalOption.schemeType"
-        [results]="issueLokal"
-        [gradient]="issueLokalOption.gradient"
-        [legend]="issueLokalOption.showLegend"
-        [labels]="issueLokalOption.labels"
-        [legendTitle]="issueLokalOption.legendTitle"
-      ></ngx-charts-pie-chart>
+      <!-- <ngx-charts-pie-chart [schemeType]="issueLokalOption.schemeType" [results]="issueLokal"
+        [gradient]="issueLokalOption.gradient" [legend]="issueLokalOption.showLegend" [labels]="issueLokalOption.labels"
+        [legendTitle]="issueLokalOption.legendTitle"></ngx-charts-pie-chart> -->
     </div>
   </div>
 </nz-card>
-<nz-card [nzBordered]="false" [nzTitle]="'Peta Sebaran Klien'">
+<!-- <nz-card [nzBordered]="false" [nzTitle]="'Peta Sebaran Klien'">
   <div nz-row nzGutter="16">
     <div nz-col nzSpan="24">
       <agm-map style="height: 300px" [latitude]="-0.78927" [longitude]="113.921327" [zoom]="5">
@@ -161,7 +134,7 @@
       </agm-map>
     </div>
   </div>
-</nz-card>
+</nz-card> -->
 <!-- <pre> {{ dateRange | json }}</pre> -->
 <!-- <div nz-row nzGutter="16">
   <div nz-col nzXs="24" nzMd="12">

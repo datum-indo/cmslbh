@@ -1,4 +1,4 @@
-import {QueryRef} from 'apollo-angular';
+import { QueryRef } from 'apollo-angular';
 import {
   Component,
   OnInit,
@@ -13,11 +13,12 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { zip, Subscription } from 'rxjs';
-import { NzMessageService, NzModalRef, NzModalService } from 'ng-zorro-antd';
+import { NzMessageService, } from 'ng-zorro-antd/message';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { _HttpClient, SettingsService } from '@delon/theme';
 import { GetCase, AllPersonGQL, GetCaseGQL, RenamedcaseWhereInput, GetConsultationGQL, GetPk, GetPkGQL } from '@shared';
 
-import { STComponent, STColumn, STData, STChange } from '@delon/abc';
+import { STComponent, STColumn, STData, STChange } from '@delon/abc/st';
 import * as moment from 'moment';
 import { MtVocabHelper } from '@shared/helper';
 import { map, tap } from 'rxjs/operators';
