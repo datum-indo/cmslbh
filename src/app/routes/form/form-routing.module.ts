@@ -15,7 +15,7 @@ import { ListCaseComponent } from './case/list-case/list-case.component';
 import { ViewCaseComponent } from './case/view-case/view-case.component';
 import { RapatQueueComponent } from './rapat-queue/rapat-queue.component';
 import { ReferralQueueComponent } from './referral-queue/referral-queue.component';
-import { AnalisisComponent } from './analisis/analisis.component';
+// import { AnalisisComponent } from './analisis/analisis.component';
 import { CreateNetworkComponent } from './network/create-network/create-network.component';
 import { ListNetworkComponent } from './network/list-network/list-network.component';
 
@@ -46,10 +46,10 @@ const routes: Routes = [
     path: 'consultation-queue',
     component: ConsultationQueueComponent,
   },
-  {
-    path: 'analisa',
-    component: AnalisisComponent,
-  },
+  // {
+  //   path: 'analisa',
+  //   component: AnalisisComponent,
+  // },
   {
     path: 'rapat-queue',
     component: RapatQueueComponent,
@@ -68,4 +68,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class FormRoutingModule {}
+export class FormRoutingModule { }

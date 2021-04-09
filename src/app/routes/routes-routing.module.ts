@@ -3,15 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { SimpleGuard, JWTGuard } from '@delon/auth';
 import { environment } from '@env/environment';
 // layout
-import { LayoutFullScreenComponent } from '../layout/fullscreen/fullscreen.component';
 import { LayoutPassportComponent } from '../layout/passport/passport.component';
 // dashboard pages
-import { DashboardV1Component } from './dashboard/v1/v1.component';
+// import { DashboardV1Component } from './dashboard/v1/v1.component';
 import { DashboardWorkplaceComponent } from './dashboard/workplace/workplace.component';
 // passport pages
 import { UserLoginComponent } from './passport/login/login.component';
 // single pages
-import { UserLockComponent } from './passport/lock/lock.component';
+// import { UserLockComponent } from './passport/lock/lock.component';
 import { CasesComponent } from './dashboard/cases/cases.component';
 import { LayoutBasicComponent } from '../layout/basic/basic.component';
 import { LayoutBlankComponent } from '../layout/blank/blank.component';
@@ -25,7 +24,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'landing', pathMatch: 'full' },
       { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full' },
-      { path: 'dashboard/v1', component: DashboardV1Component },
+      // { path: 'dashboard/v1', component: DashboardV1Component },
       { path: 'dashboard/cases', component: CasesComponent },
       { path: 'landing', loadChildren: () => import('../routes/landing/landing.module').then(m => m.LandingModule) },
       // Exception
@@ -43,11 +42,11 @@ const routes: Routes = [
         component: UserLoginComponent,
         data: { title: '登录', titleI18n: 'app.login.login' },
       },
-      {
-        path: 'lock',
-        component: UserLockComponent,
-        data: { title: '锁屏', titleI18n: 'app.lock' },
-      },
+      // {
+      //   path: 'lock',
+      //   component: UserLockComponent,
+      //   data: { title: '锁屏', titleI18n: 'app.lock' },
+      // },
     ],
   },
   { path: '**', redirectTo: 'exception/404' },

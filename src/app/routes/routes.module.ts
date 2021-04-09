@@ -2,21 +2,21 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '@shared';
 import { RouteRoutingModule } from './routes-routing.module';
 // dashboard pages
-import { DashboardV1Component } from './dashboard/v1/v1.component';
+// import { DashboardV1Component } from './dashboard/v1/v1.component';
 import { DashboardWorkplaceComponent } from './dashboard/workplace/workplace.component';
 // passport pages
 import { UserLoginComponent } from './passport/login/login.component';
 // single pages
-import { UserLockComponent } from './passport/lock/lock.component';
+// import { UserLockComponent } from './passport/lock/lock.component';
 import { FormModule } from './form/form.module';
 import { CasesComponent } from './dashboard/cases/cases.component';
 const COMPONENTS = [
-  DashboardV1Component,
+  // DashboardV1Component,
   DashboardWorkplaceComponent,
   // passport pages
   UserLoginComponent,
   // single pages
-  UserLockComponent,
+  // UserLockComponent,
 ];
 const COMPONENTS_NOROUNT = [];
 

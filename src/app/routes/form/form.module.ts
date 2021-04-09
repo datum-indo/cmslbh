@@ -19,7 +19,7 @@ import { CaseDocumentComponent } from './case/case-document/case-document.compon
 import { CaseConsultationComponent } from './case/case-consultation/case-consultation.component';
 import { RapatQueueComponent } from './rapat-queue/rapat-queue.component';
 import { ReferralQueueComponent } from './referral-queue/referral-queue.component';
-import { AnalisisComponent } from './analisis/analisis.component';
+// import { AnalisisComponent } from './analisis/analisis.component';
 import { CreateNetworkComponent } from './network/create-network/create-network.component';
 import { ListNetworkComponent } from './network/list-network/list-network.component';
 
@@ -43,11 +43,11 @@ const COMPONENTS = [ListPersonComponent, CreatePersonComponent];
     CaseConsultationComponent,
     RapatQueueComponent,
     ReferralQueueComponent,
-    AnalisisComponent,
+    // AnalisisComponent,
     CreateNetworkComponent,
     ListNetworkComponent,
   ],
   entryComponents: [],
   exports: [...COMPONENTS],
 })
-export class FormModule {}
+export class FormModule { }
