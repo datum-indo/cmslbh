@@ -189,6 +189,51 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
         editData.pekerjaanEnum = longEnumPekerjaan;
       }
 
+      if (editData.pekerjaanLokal) {
+        const arrPekerjaan = (await this.mtVocabHelper.findParent(editData.pekerjaanLokal)).reverse();
+        // console.log(arrPekerjaan);
+        let longEnumPekerjaan: any;
+        let ind = -1;
+        for (const b of arrPekerjaan) {
+          const titleAsync = await this.mtVocabHelper.translateMtVocab(b);
+          ind++;
+          switch (ind) {
+            case 0:
+              longEnumPekerjaan = {
+                title: titleAsync,
+                key: b,
+                children: [],
+              };
+              break;
+            case 1:
+              longEnumPekerjaan.children.push({
+                title: titleAsync,
+                key: b,
+                children: [],
+              });
+              break;
+            case 2:
+              longEnumPekerjaan.children[0].children.push({
+                title: titleAsync,
+                key: b,
+                children: [],
+              });
+              break;
+            case 3:
+              longEnumPekerjaan.children[0].children[0].children.push({
+                title: titleAsync,
+                key: b,
+              });
+              break;
+
+            default:
+              break;
+          }
+        }
+
+        editData.pekerjaanLokalEnum = longEnumPekerjaan;
+      }
+
       const jenisDomisili: any[] = await this.mtVocabHelper.getMtVocabEnum(71, 'teks').toPromise();
 
       if (!jenisDomisili.find(res => res.value === editData.jenisDomisili)) {
@@ -257,6 +302,7 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
         distrikIdEnum,
         distrikDomisiliEnum,
         pekerjaanEnum,
+        pekerjaanLokalEnum,
         ...newData
       } = data;
 
@@ -279,6 +325,7 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
         distrikIdEnum,
         distrikDomisiliEnum,
         pekerjaanEnum,
+        pekerjaanLokalEnum,
         ...createData
       } = data;
       return <PersonCreateInput>{ ...createData };
@@ -362,6 +409,17 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
         ui: {
           widget: 'radio',
           asyncData: () => this.mtVocabHelper.getMtVocabEnum(74, 'teks'),
+          visibleIf: {
+            unitSatuan: (value: any) => value === '01000000000007' && value !== null,
+          },
+        },
+      },
+      orientasiSeksual: {
+        type: 'string',
+        title: 'Orientasi Seksual',
+        ui: {
+          widget: 'select',
+          asyncData: () => this.mtVocabHelper.getMtVocabEnum(31, 'teks'),
           visibleIf: {
             unitSatuan: (value: any) => value === '01000000000007' && value !== null,
           },
@@ -701,6 +759,40 @@ export class CreatePersonComponent implements OnInit, OnDestroy {
             // console.log(e);
             this.loading = true;
             return this.mtVocabHelper.getMtVocabChildTree(10, e.node.key).pipe(res => {
+              this.loading = false;
+              return res;
+            });
+          },
+          visibleIf: {
+            unitSatuan: (value: any) => value === '01000000000007' && value !== null,
+          },
+        },
+      },
+      pekerjaanLokal: {
+        type: 'string',
+        title: 'Pekerjaan (lokal)',
+        ui: {
+          widget: 'tree-select',
+          allowClear: true,
+          dropdownStyle: { 'max-height': '300px' },
+          asyncData: () => {
+            this.loading = true;
+            if (this.mode === 'edit') {
+              // console.log(this.editData);
+              return this.mtVocabHelper.getMtVocabWithChildren(32, this.editData.pekerjaanLokalEnum).pipe(res => {
+                this.loading = false;
+                return res;
+              });
+            }
+            return this.mtVocabHelper.getMtVocabParentTree(32).pipe(res => {
+              this.loading = false;
+              return res;
+            });
+          },
+          expandChange: e => {
+            // console.log(e);
+            this.loading = true;
+            return this.mtVocabHelper.getMtVocabChildTree(32, e.node.key).pipe(res => {
               this.loading = false;
               return res;
             });

@@ -48,17 +48,26 @@ import {
   CaseIssueCreateWithoutCaseIdInput,
   CaseViolatedRightCreateWithoutCaseIdInput,
   CaseClassificationCreateWithoutCaseIdInput,
+  DestroyCaseCategoryGQL,
+  DestroyCaseViolenceMethodGQL,
+  DestroyCaseModusGQL,
+  DestroyCaseIncidentLocationGQL,
+  CaseCategoryCreateWithoutCaseIdInput,
+  CaseIncidentLocationCreateWithoutCaseIdInput,
+  CaseModusCreateWithoutCaseIdInput,
+  CaseViolenceMethodCreateWithoutCaseIdInput,
 } from '@shared';
 
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { switchMap, map, tap, take, delay } from 'rxjs/operators';
-import { Subscription, Observable, of, from } from 'rxjs';
+import { Subscription, Observable, of, from, merge, zip } from 'rxjs';
 
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { MtVocabHelper, HelperService } from '@shared/helper';
 import * as moment from 'moment';
 import { SFSchema, SFComponent } from '@delon/form';
 import { isNil, mapObjIndexed } from 'ramda';
+import { ACLService } from '@delon/acl';
 
 @Component({
   selector: 'app-view-case',
@@ -92,7 +101,11 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
   korbanOrPelaku: string;
   fileList: NzUploadFile[] = [];
   dataHakTerdampak: any[] = [];
+  dataKategoriKasus: any[] = [];
+  dataMetodeKekerasan: any[] = [];
+  dataJenisLokasiKejadian: any[] = [];
   dataKlasifikasiDokumen: any[] = [];
+  dataRelasiKorbanPelaku: any[] = [];
   dataJenisPelaku: any[] = [];
   uploadAction = `http://${window.location.hostname}:3000/upload`;
   downloadAction = `http://${window.location.hostname}:3000/files/`;
@@ -135,13 +148,18 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     private settingService: SettingsService,
     private destoryCaseProgressActivity: DestroyCaseProgressActivityGQL,
     private destroyKorban: DestroyKorbanGQL,
+    private destroyCaseModus: DestroyCaseModusGQL,
+    private destroyCaseViolenceMethod: DestroyCaseViolenceMethodGQL,
     private destroyPelaku: DestroyPelakuGQL,
     private destroyCaseViolatedRight: DestroyCaseViolatedRightGQL,
     private destroyCaseClassification: DestroyCaseClassificationGQL,
     private destroyCaseIssue: DestroyCaseIssueGQL,
+    private destroyCaseCategory: DestroyCaseCategoryGQL,
+    private destroyIncidentLocation: DestroyCaseIncidentLocationGQL,
     private destroyLitGQL: DestroyLitGQL,
     private destroyNonlitGQL: DestroyNonlitGQL,
     private helper: HelperService,
+    private aclService: ACLService,
   ) {
     if ((this.kabid = this.settingService.user.roles_type.find(el => el.type.id === 5))) {
       this.kabid = true;
@@ -311,6 +329,11 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
         this.data.caseClosedJenisTeks = this.mtVocabHelper.translateMtVocab(this.data.caseClosedJenis);
       }
     }
+    if ('pelakuKorbanRelasi' in this.data) {
+      if (this.data.pelakuKorbanRelasi) {
+        this.data.pelakuKorbanRelasiTeks = this.mtVocabHelper.translateMtVocab(this.data.pelakuKorbanRelasi);
+      }
+    }
     if ('violatedrights' in this.data) {
       if (this.data.violatedrights) {
         if (this.data.violatedrights.length > 0) {
@@ -320,10 +343,46 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
         }
       }
     }
+    if ('categories' in this.data) {
+      if (this.data.categories) {
+        if (this.data.categories.length > 0) {
+          this.data.categories.forEach(async element => {
+            element.mtvocabteks = await this.mtVocabHelper.translateMtVocab(element.kodeMt);
+          });
+        }
+      }
+    }
+    if ('violenceMethods' in this.data) {
+      if (this.data.violenceMethods) {
+        if (this.data.violenceMethods.length > 0) {
+          this.data.violenceMethods.forEach(async element => {
+            element.mtvocabteks = await this.mtVocabHelper.translateMtVocab(element.kodeMt);
+          });
+        }
+      }
+    }
+    if ('incidentLocations' in this.data) {
+      if (this.data.incidentLocations) {
+        if (this.data.incidentLocations.length > 0) {
+          this.data.incidentLocations.forEach(async element => {
+            element.mtvocabteks = await this.mtVocabHelper.translateMtVocab(element.kodeMt);
+          });
+        }
+      }
+    }
     if ('issues' in this.data) {
       if (this.data.issues) {
         if (this.data.issues.length > 0) {
           this.data.issues.forEach(async element => {
+            element.mtvocabteks = await this.mtVocabHelper.translateMtVocab(element.kodeMt);
+          });
+        }
+      }
+    }
+    if ('moduses' in this.data) {
+      if (this.data.moduses) {
+        if (this.data.moduses.length > 0) {
+          this.data.moduses.forEach(async element => {
             element.mtvocabteks = await this.mtVocabHelper.translateMtVocab(element.kodeMt);
           });
         }
@@ -395,9 +454,77 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     return concattedText;
   }
 
+  translateKategoriKasus() {
+    if (!this.data.categories) return '';
+    const formatText = this.data.categories.map(val => {
+      return val.mtvocabteks;
+    });
+
+    formatText.sort();
+    let concattedText = '';
+    for (const a of formatText) {
+      concattedText === '' ? (concattedText = a) : (concattedText = concattedText + ', ' + a);
+    }
+    return concattedText;
+  }
+  translateViolenceMethod() {
+    if (!this.data.violenceMethods) return '';
+    const formatText = this.data.violenceMethods.map(val => {
+      return val.mtvocabteks;
+    });
+
+    formatText.sort();
+    let concattedText = '';
+    for (const a of formatText) {
+      concattedText === '' ? (concattedText = a) : (concattedText = concattedText + ', ' + a);
+    }
+    return concattedText;
+  }
+
+  translateJenisLokasiKejadian() {
+    if (!this.data.incidentLocations) return '';
+    const formatText = this.data.incidentLocations.map(val => {
+      return val.mtvocabteks;
+    });
+
+    formatText.sort();
+    let concattedText = '';
+    for (const a of formatText) {
+      concattedText === '' ? (concattedText = a) : (concattedText = concattedText + ', ' + a);
+    }
+    return concattedText;
+  }
+
   translateCaseIssues() {
     if (!this.data.issues) return '';
     const formatText = this.data.issues.map(val => {
+      return val.mtvocabteks;
+    });
+
+    formatText.sort();
+    let concattedText = '';
+    for (const a of formatText) {
+      concattedText === '' ? (concattedText = a) : (concattedText = concattedText + ', ' + a);
+    }
+    return concattedText;
+  }
+  translateCaseModuses() {
+    if (!this.data.moduses) return '';
+    const formatText = this.data.moduses.map(val => {
+      return val.mtvocabteks;
+    });
+
+    formatText.sort();
+    let concattedText = '';
+    for (const a of formatText) {
+      concattedText === '' ? (concattedText = a) : (concattedText = concattedText + ', ' + a);
+    }
+    return concattedText;
+  }
+
+  translateRelasiKorbanPelaku() {
+    if (!this.data.pelakuKorbanRelasi) return '';
+    const formatText = this.data.pelakuKorbanRelasi.map(val => {
       return val.mtvocabteks;
     });
 
@@ -790,6 +917,26 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           widget: 'custom',
         },
       },
+      pelakuKorbanRelasi: {
+        type: 'string',
+        title: 'Relasi Korban dan Pelaku',
+        ui: {
+          widget: 'tree-select',
+          multiple: false,
+          allowClear: true,
+          dropdownStyle: { 'max-height': '300px' },
+          asyncData: () => {
+            return of(this.dataRelasiKorbanPelaku);
+          },
+          expandChange: e => {
+            this.loading = true;
+            return this.mtVocabHelper.getMtVocabChildTree(33, e.node.key).pipe(res => {
+              this.loading = false;
+              return res;
+            });
+          },
+        },
+      },
       issues: {
         type: 'string',
         title: 'Issue Lokal',
@@ -820,7 +967,80 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           },
         },
       },
+      kategoriKasus: {
+        type: 'string',
+        title: 'Kategori Kasus',
+        ui: {
+          widget: 'tree-select',
+          multiple: true,
+          allowClear: true,
+          dropdownStyle: { 'max-height': '300px' },
+          asyncData: () => {
+            return of(this.dataKategoriKasus);
+          },
+          expandChange: e => {
+            this.loading = true;
+            // console.log(e);
+            return this.mtVocabHelper.getMtVocabChildTree(30, e.node.key).pipe(res => {
+              this.loading = false;
+              return res;
+            });
+          },
+        },
+      },
+      lokasiKejadian: {
+        type: 'string',
+        title: 'Jenis Lokasi Kejadian',
+        ui: {
+          widget: 'tree-select',
+          multiple: true,
+          allowClear: true,
+          dropdownStyle: { 'max-height': '300px' },
+          asyncData: () => {
+            return of(this.dataJenisLokasiKejadian);
+          },
+          expandChange: e => {
+            this.loading = true;
+            // console.log(e);
+            return this.mtVocabHelper.getMtVocabChildTree(34, e.node.key).pipe(res => {
+              this.loading = false;
+              return res;
+            });
+          },
+        },
+      },
+      modus: {
+        type: 'string',
+        title: 'Modus',
+        ui: {
+          widget: 'select',
+          mode: 'multiple',
+          asyncData: () => this.mtVocabHelper.getMtVocabEnum(36, 'kode'),
+        },
+      },
+      violenceMethod: {
+        type: 'string',
+        title: 'Metode Kekerasan',
+        ui: {
+          widget: 'tree-select',
+          multiple: true,
+          allowClear: true,
+          dropdownStyle: { 'max-height': '300px' },
+          asyncData: () => {
+            return of(this.dataMetodeKekerasan);
+          },
+          expandChange: e => {
+            this.loading = true;
+            // console.log(e);
+            return this.mtVocabHelper.getMtVocabChildTree(35, e.node.key).pipe(res => {
+              this.loading = false;
+              return res;
+            });
+          },
+        },
+      },
     },
+
     ui: {
       size: 'large',
     },
@@ -926,64 +1146,81 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     // console.log(this.korbanData);
 
     // console.log('hoiii');
+    // this.loading = true;
+    // this.destroyCaseIssue
+    //   .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
+    //   .toPromise()
+    //   .then(
+    //     res => {
+    //       this.loading = false;
+    //       this.loading = true;
+    //       this.destroyKorban
+    //         .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
+    //         .toPromise()
+    //         .then(
+    //           res => {
+    //             this.loading = false;
+    //             this.loading = true;
+    //             this.destroyPelaku
+    //               .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
+    //               .toPromise()
+    //               .then(
+    //                 // tslint:disable-next-line: no-shadowed-variable
+    //                 res => {
+    //                   this.loading = false;
+    //                   this.loading = true;
+    //                   this.destroyCaseViolatedRight
+    //                     .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
+    //                     .toPromise()
+    //                     .then(
+    //                       // tslint:disable-next-line: no-shadowed-variable
+    //                       res => {
+    //                         this.loading = false;
+    //                         // console.log('siniwoii');
+    //                         this.dataMutationUpdateUmum(this.processAnalisa(data), { id: this.data.id });
+    //                       },
+    //                       error => {
+    //                         this.loading = false;
+    //                         this.msg.error(JSON.stringify(error));
+    //                       },
+    //                     );
+    //                   // this.dataMutationUpdateUmum(this.processAktifitasPendampingan(data), { id: this.data.id });
+    //                 },
+    //                 error => {
+    //                   this.loading = false;
+    //                   this.msg.error(JSON.stringify(error));
+    //                 },
+    //               );
+    //             // this.dataMutationUpdateUmum(this.processAktifitasPendampingan(data), { id: this.data.id });
+    //           },
+    //           error => {
+    //             this.loading = false;
+    //             this.msg.error(JSON.stringify(error));
+    //           },
+    //         );
+    //     },
+    //     error => {
+    //       this.loading = false;
+    //       this.msg.error(JSON.stringify(error));
+    //     },
+    //   );
+
+    const whereQuery = { where: { caseId: { is: { id: { equals: this.data.id } } } } }
     this.loading = true;
-    this.destroyCaseIssue
-      .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
-      .toPromise()
-      .then(
-        res => {
-          this.loading = false;
-          this.loading = true;
-          this.destroyKorban
-            .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
-            .toPromise()
-            .then(
-              res => {
-                this.loading = false;
-                this.loading = true;
-                this.destroyPelaku
-                  .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
-                  .toPromise()
-                  .then(
-                    // tslint:disable-next-line: no-shadowed-variable
-                    res => {
-                      this.loading = false;
-                      this.loading = true;
-                      this.destroyCaseViolatedRight
-                        .mutate({ where: { caseId: { is: { id: { equals: this.data.id } } } } })
-                        .toPromise()
-                        .then(
-                          // tslint:disable-next-line: no-shadowed-variable
-                          res => {
-                            this.loading = false;
-                            // console.log('siniwoii');
-                            this.dataMutationUpdateUmum(this.processAnalisa(data), { id: this.data.id });
-                          },
-                          error => {
-                            this.loading = false;
-                            this.msg.error(JSON.stringify(error));
-                          },
-                        );
-                      // this.dataMutationUpdateUmum(this.processAktifitasPendampingan(data), { id: this.data.id });
-                    },
-                    error => {
-                      this.loading = false;
-                      this.msg.error(JSON.stringify(error));
-                    },
-                  );
-                // this.dataMutationUpdateUmum(this.processAktifitasPendampingan(data), { id: this.data.id });
-              },
-              error => {
-                this.loading = false;
-                this.msg.error(JSON.stringify(error));
-              },
-            );
-        },
-        error => {
-          this.loading = false;
-          this.msg.error(JSON.stringify(error));
-        },
-      );
+    zip(
+      this.destroyCaseIssue.mutate(whereQuery),
+      this.destroyKorban.mutate(whereQuery),
+      this.destroyPelaku.mutate(whereQuery),
+      this.destroyCaseViolatedRight.mutate(whereQuery),
+      this.destroyCaseCategory.mutate(whereQuery),
+      this.destroyIncidentLocation.mutate(whereQuery),
+      this.destroyCaseModus.mutate(whereQuery),
+      this.destroyCaseViolenceMethod.mutate(whereQuery),
+    ).subscribe(res => {
+      this.loading = false;
+      this.dataMutationUpdateUmum(this.processAnalisa(data), { id: this.data.id });
+    })
+
   }
 
   submitRapatPK(data) {
@@ -992,7 +1229,6 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
   }
 
   submitTransfer(data) {
-    console.log(data);
     this.dataMutationUpdateUmum(this.processTransfer(data), { id: this.data.id });
   }
 
@@ -1143,6 +1379,10 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     const pelaku = <CasePelakuCreateWithoutCaseIdInput[]>[];
     const issues = <CaseIssueCreateWithoutCaseIdInput[]>[];
     const violatedRight = <CaseViolatedRightCreateWithoutCaseIdInput[]>[];
+    const caseCategory = <CaseCategoryCreateWithoutCaseIdInput[]>[];
+    const incidentLocation = <CaseIncidentLocationCreateWithoutCaseIdInput[]>[];
+    const modus = <CaseModusCreateWithoutCaseIdInput[]>[];
+    const violenceMethod = <CaseViolenceMethodCreateWithoutCaseIdInput[]>[];
     for (const a of this.korbanData) {
       korban.push({ personId: { connect: { id: a.id } } });
     }
@@ -1160,15 +1400,31 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     for (const a of data.hakTerdampak) {
       violatedRight.push({ kodeMt: a });
     }
+    for (const a of data.kategoriKasus) {
+      caseCategory.push({ kodeMt: a });
+    }
+    for (const a of data.violenceMethod) {
+      violenceMethod.push({ kodeMt: a });
+    }
+    for (const a of data.lokasiKejadian) {
+      incidentLocation.push({ kodeMt: a });
+    }
     for (const a of data.issues) {
       issues.push({ kodeMt: a });
     }
-
+    for (const a of data.modus) {
+      modus.push({ kodeMt: a });
+    }
     return <RenamedcaseUpdateInput>{
       korbans: { create: korban },
       pelakus: { create: pelaku },
       violatedrights: { create: violatedRight },
       issues: { create: issues },
+      moduses: { create: modus },
+      categories: { create: caseCategory },
+      violenceMethods: { create: violenceMethod },
+      incidentLocations: { create: incidentLocation },
+      pelakuKorbanRelasi: { set: data.pelakuKorbanRelasi }
     };
   }
 
@@ -1292,14 +1548,12 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
   processDataRapatPK(data): RenamedcaseUpdateInput | string {
     if ('progresses' in this.data) {
       if (this.data.progresses) {
-        console.log(this.data.progresses);
         return 'Status penanganan lebih lanjut tidak bisa dirubah karena sudah ada aktifitas pendampingan';
       }
     }
     if ('activities' in this.data) {
       if (this.data.activities) {
         if (this.data.activities.length > 0) {
-          console.log(this.data.activities);
           return 'Status penanganan lebih lanjut tidak bisa dirubah karena sudah ada aktifitas pendampingan';
         }
       }
@@ -1479,23 +1733,23 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       this.loading = false;
       return;
     }
-    if (!this.data.pk) {
-      this.msg.info('Tidak Ada Jadwal Rapat PK');
-      this.loading = false;
-      return;
-    }
+    // if (!this.data.pk) {
+    //   this.msg.info('Tidak Ada Jadwal Rapat PK');
+    //   this.loading = false;
+    //   return;
+    // }
 
-    if (!this.data.pk.tglRapat) {
-      this.msg.info('Tidak Ada Jadwal Rapat PK');
-      this.loading = false;
-      return;
-    }
+    // if (!this.data.pk.tglRapat) {
+    //   this.msg.info('Tidak Ada Jadwal Rapat PK');
+    //   this.loading = false;
+    //   return;
+    // }
 
-    if (!moment().isSameOrAfter(moment(this.data.pk.tglRapat), 'day')) {
-      this.msg.info('Hasil Rapat PK Baru Bisa Diedit Di Hari Rapat PK atau Setelahnya');
-      this.loading = false;
-      return;
-    }
+    // if (!moment().isSameOrAfter(moment(this.data.pk.tglRapat), 'day')) {
+    //   this.msg.info('Hasil Rapat PK Baru Bisa Diedit Di Hari Rapat PK atau Setelahnya');
+    //   this.loading = false;
+    //   return;
+    // }
 
     if ('pk' in this.data) {
       if (this.data.pk) {
@@ -1539,13 +1793,19 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       this.loading = false;
       return;
     }
-    const ppList = await this.mtVocabHelper.findHandlingPPArray(this.data.id);
 
-    if (!ppList[0].find(el => el.id === this.settingService.user.id)) {
-      this.msg.info('Anda Tidak Pernah Menangani Kasus Ini');
+    if (!this.aclService.data.roles.find(el => el === '3' || el === '4' || el === '5')) {
+      this.msg.info('Hanya Pengacara dan Kabid yang bisa mengupdate');
       this.loading = false;
       return;
     }
+    // const ppList = await this.mtVocabHelper.findHandlingPPArray(this.data.id);
+
+    // if (!ppList[0].find(el => el.id === this.settingService.user.id)) {
+    //   this.msg.info('Anda Tidak Pernah Menangani Kasus Ini');
+    //   this.loading = false;
+    //   return;
+    // }
 
     this.korbanData = this.data.korbans.map(res => res.personId);
     this.pelakuData = this.data.pelakus.map(res => res);
@@ -1560,14 +1820,40 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       arrHakTerdampak.push(a.kodeMt);
     }
 
+    const arrKategoriKasus = [];
+    for (const a of this.data.categories) {
+      arrKategoriKasus.push(a.kodeMt);
+    }
+
+    const arrViolenceMethods = [];
+    for (const a of this.data.violenceMethods) {
+      arrViolenceMethods.push(a.kodeMt);
+    }
+
+    const arrJenisLokasiKejadian = [];
+    for (const a of this.data.incidentLocations) {
+      arrJenisLokasiKejadian.push(a.kodeMt);
+    }
+
     const arrCaseIssues = [];
     for (const a of this.data.issues) {
       arrCaseIssues.push(a.kodeMt);
     }
 
+    const arrCaseModuses = [];
+    for (const a of this.data.moduses) {
+      arrCaseModuses.push(a.kodeMt);
+    }
+
+
     this.dataModalTemp = {
       hakTerdampak: arrHakTerdampak,
       issues: arrCaseIssues,
+      modus: arrCaseModuses,
+      violenceMethod: arrViolenceMethods,
+      kategoriKasus: arrKategoriKasus,
+      lokasiKejadian: arrJenisLokasiKejadian,
+      pelakuKorbanRelasi: this.data.pelakuKorbanRelasi
     };
     // console.log(this.dataModalTemp);
     // this.sfUmum. formData = {
@@ -1578,6 +1864,19 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
 
     if (this.dataHakTerdampak.length === 0) {
       this.dataHakTerdampak = await this.mtVocabHelper.getAllTree(3);
+    }
+    if (this.dataKategoriKasus.length === 0) {
+      this.dataKategoriKasus = await this.mtVocabHelper.getAllTree(30);
+    }
+    if (this.dataMetodeKekerasan.length === 0) {
+      this.dataMetodeKekerasan = await this.mtVocabHelper.getAllTree(35);
+    }
+    if (this.dataJenisLokasiKejadian.length === 0) {
+      this.dataJenisLokasiKejadian = await this.mtVocabHelper.getAllTree(34);
+    }
+
+    if (this.dataRelasiKorbanPelaku.length === 0) {
+      this.dataRelasiKorbanPelaku = await this.mtVocabHelper.getAllTree(33);
     }
 
     this.editUmum(template, 'Edit Data Analisa');
@@ -1644,32 +1943,37 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       this.loading = false;
       return;
     }
-    if (!this.settingService.user.roles_type.find(el => el.type.id === 5)) {
-      this.msg.info('Hanya Kabid yang bisa mengedit form Transfer');
+    if (!this.aclService.data.roles.find(el => el === '3' || el === '4' || el === '5')) {
+      this.msg.info('Hanya Pengacara dan Kabid yang bisa mengupdate');
       this.loading = false;
       return;
     }
-    if ('pk' in this.data) {
-      if (this.data.pk !== null) {
-        if (this.data.pk.didampingi !== '5111') {
-          this.msg.info('Hasil Rapat PK harus menjadi transfer untuk mengedit Form ini');
-          this.loading = false;
-          return;
-        }
-      } else {
-        if (this.data.statusPendampingan !== '5111') {
-          this.msg.info('Status penanganan lebih lanjut bukan untuk di transfer');
-          this.loading = false;
-          return;
-        }
-      }
-    } else {
-      if (this.data.statusPendampingan !== '5111') {
-        this.msg.info('Status penanganan lebih lanjut bukan untuk di transfer');
-        this.loading = false;
-        return;
-      }
-    }
+    // if (!this.settingService.user.roles_type.find(el => el.type.id === 5)) {
+    //   this.msg.info('Hanya Kabid yang bisa mengedit form Transfer');
+    //   this.loading = false;
+    //   return;
+    // }
+    // if ('pk' in this.data) {
+    //   if (this.data.pk !== null) {
+    //     if (this.data.pk.didampingi !== '5111') {
+    //       this.msg.info('Hasil Rapat PK harus menjadi transfer untuk mengedit Form ini');
+    //       this.loading = false;
+    //       return;
+    //     }
+    //   } else {
+    //     if (this.data.statusPendampingan !== '5111') {
+    //       this.msg.info('Status penanganan lebih lanjut bukan untuk di transfer');
+    //       this.loading = false;
+    //       return;
+    //     }
+    //   }
+    // } else {
+    //   if (this.data.statusPendampingan !== '5111') {
+    //     this.msg.info('Status penanganan lebih lanjut bukan untuk di transfer');
+    //     this.loading = false;
+    //     return;
+    //   }
+    // }
 
     if ('transfer' in this.data) {
       if (this.data.transfer) {
@@ -1696,25 +2000,31 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       this.loading = false;
       return;
     }
-    if (this.data.pk !== null) {
-      if ('ppPendamping' in this.data.pk) {
-        if (this.data.pk.ppPendamping) {
-          if (this.data.pk.ppPendamping.id !== this.settingService.user.id) {
-            this.msg.info('Hanya PP Pendamping Yang Bisa Menambahkan Catatan Pendampingan');
-            this.loading = false;
-            return;
-          }
-        } else {
-          this.msg.info('Hanya PP Pendamping Yang Bisa Menambahkan Catatan Pendampingan');
-          this.loading = false;
-          return;
-        }
-      }
-    } else {
-      this.msg.info('PP Pendamping Belum Ditentukan');
+
+    if (!this.aclService.data.roles.find(el => el === '3' || el === '4' || el === '5')) {
+      this.msg.info('Hanya Pengacara dan Kabid yang bisa mengupdate');
       this.loading = false;
       return;
     }
+    // if (this.data.pk !== null) {
+    //   if ('ppPendamping' in this.data.pk) {
+    //     if (this.data.pk.ppPendamping) {
+    //       if (this.data.pk.ppPendamping.id !== this.settingService.user.id) {
+    //         this.msg.info('Hanya PP Pendamping Yang Bisa Menambahkan Catatan Pendampingan');
+    //         this.loading = false;
+    //         return;
+    //       }
+    //     } else {
+    //       this.msg.info('Hanya PP Pendamping Yang Bisa Menambahkan Catatan Pendampingan');
+    //       this.loading = false;
+    //       return;
+    //     }
+    //   }
+    // } else {
+    //   this.msg.info('PP Pendamping Belum Ditentukan');
+    //   this.loading = false;
+    //   return;
+    // }
     if ('progresses' in this.data) {
       if (this.data.progresses) {
         this.dataModalTemp = JSON.parse(JSON.stringify(this.data.progresses));
@@ -1766,24 +2076,30 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       this.loading = false;
       return;
     }
-    if (this.data.pk !== null) {
-      if ('ppPendamping' in this.data.pk) {
-        if (!this.data.pk.ppPendamping) {
-          this.msg.info('Hanya PP Pendamping Yang Bisa Menambahkan Catatan Pendampingan');
-          this.loading = false;
-          return;
-        }
-        if (this.data.pk.ppPendamping.id !== this.settingService.user.id) {
-          this.msg.info('Hanya PP Pendamping Yang Bisa Menambahkan Catatan Pendampingan');
-          this.loading = false;
-          return;
-        }
-      }
-    } else {
-      this.msg.info('PP Pendamping Belum Ditentukan');
+
+    if (!this.aclService.data.roles.find(el => el === '3' || el === '4' || el === '5')) {
+      this.msg.info('Hanya Pengacara dan Kabid yang bisa mengupdate');
       this.loading = false;
       return;
     }
+    // if (this.data.pk !== null) {
+    //   if ('ppPendamping' in this.data.pk) {
+    //     if (!this.data.pk.ppPendamping) {
+    //       this.msg.info('Hanya PP Pendamping Yang Bisa Menambahkan Catatan Pendampingan');
+    //       this.loading = false;
+    //       return;
+    //     }
+    //     if (this.data.pk.ppPendamping.id !== this.settingService.user.id) {
+    //       this.msg.info('Hanya PP Pendamping Yang Bisa Menambahkan Catatan Pendampingan');
+    //       this.loading = false;
+    //       return;
+    //     }
+    //   }
+    // } else {
+    //   this.msg.info('PP Pendamping Belum Ditentukan');
+    //   this.loading = false;
+    //   return;
+    // }
     if ('activities' in this.data) {
       if (this.data.activities) {
         if (this.data.activities.length > 0) {
@@ -1800,11 +2116,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
 
   async openLampiranDokumenAdd(template: TemplateRef<{}>) {
     this.fileList = [];
-    if (!this.settingService.user.roles_type.find(el => el.type.id === 6)) {
-      this.msg.info('Hanya Dokumentalis yang bisa menambah Dokumen');
-      this.loading = false;
-      return;
-    }
+
     this.loading = true;
 
     this.modeEditModal = 'add';
@@ -1822,13 +2134,19 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const ppList = await this.mtVocabHelper.findHandlingPPArray(this.data.id);
-
-    if (!ppList[0].find(el => el.id === this.settingService.user.id)) {
-      this.msg.info('Anda Tidak Pernah Menangani Kasus Ini');
+    if (!this.aclService.data.roles.find(el => el === '3' || el === '4' || el === '5')) {
+      this.msg.info('Hanya Pengacara dan Kabid yang bisa mengupdate');
       this.loading = false;
       return;
     }
+
+    // const ppList = await this.mtVocabHelper.findHandlingPPArray(this.data.id);
+
+    // if (!ppList[0].find(el => el.id === this.settingService.user.id)) {
+    //   this.msg.info('Anda Tidak Pernah Menangani Kasus Ini');
+    //   this.loading = false;
+    //   return;
+    // }
 
     this.dataModalTemp = {
       judulKasus: this.data.judulKasus,
@@ -1847,11 +2165,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
 
   async openModalKlasifikasiDokumen(template: TemplateRef<{}>) {
     this.loading = true;
-    if (!this.settingService.user.roles_type.find(el => el.type.id === 6)) {
-      this.msg.info('Hanya Dokumentalis yang bisa mengedit Dokumen');
-      this.loading = false;
-      return;
-    }
+
     const arrKlasifikasiDokumen = [];
     for (const a of this.data.classifications) {
       arrKlasifikasiDokumen.push(a.kodeMt);
@@ -2278,11 +2592,8 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
             this.openModalAktifitasEdit(this.modalContentAktifitasPendampingan, item);
           },
           iif: (item: any) => {
-            if (!(`ppPendamping` in this.data.pk)) return false;
-            if (!this.data.pk.ppPendamping) return false;
-            if (!this.data.pk.ppPendamping.id) return false;
             return (
-              this.data.pk.ppPendamping.id === this.settingService.user.id && this.data.application.tahap !== '4012'
+              this.aclService.data.roles.find(el => el === '3' || el === '4' || el === '5') && this.data.application.tahap !== '4012'
             );
           },
         },
@@ -2309,6 +2620,14 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       title: 'Judul Aktifitas',
       index: 'judulAktifitas',
     },
+    {
+      title: 'Created By',
+      index: 'createdBy',
+    },
+    {
+      title: 'Updated By',
+      index: 'updatedBy',
+    }
   ];
 
   columnsLampiranDokumen: STColumn[] = [
@@ -2320,13 +2639,6 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           click: (item: any) => {
             // console.log(item);
             this.openModalLampiranDokumenEdit(this.modalLampiranDokumen, item);
-          },
-          iif: (item: any) => {
-            if (!this.settingService.user.roles_type.find(el => el.type.id === 6)) {
-              return false;
-            } else {
-              return true;
-            }
           },
         },
         {
@@ -2426,7 +2738,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
 
   async openModalClient(client: any, template: TemplateRef<{}>) {
     this.loading = true;
-    console.log(client);
+    // console.log(client);
     if ('tglLahir' in client.personId) {
       if (client.personId.tglLahir) {
         client.personId.tglLahirTeks = moment(client.personId.tglLahir).format('DD-MM-YYYY');

@@ -87,7 +87,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
           },
           iif: item => {
             if (
-              this.aclService.data.roles.find(el => el === '2') &&
+              this.aclService.data.roles.find(el => el === '1') &&
               moment().isSame(moment(item.tglRequest), 'day') &&
               item.statusRequest === '1'
             ) {
@@ -110,7 +110,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
           },
           iif: item => {
             if (
-              this.aclService.data.roles.find(el => el === '2') &&
+              (this.aclService.data.roles.find(el => el === '5')) &&
               moment().isSame(moment(item.tglRequest), 'day') &&
               item.statusRequest === '0'
             ) {
@@ -316,7 +316,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
   }
 
   searchGenerator(): GetLogRequest.Variables {
-    if (this.aclService.data.roles.find(el => el === '2' || el === '1'))
+    if (this.aclService.data.roles.find(el => el === '5'))
       return <GetLogRequest.Variables>{
         where: this.mtVocabHelper.whereHelper({
           jenisRequest: { equals: '1011' },

@@ -30,6 +30,14 @@ export type AggregateApplication = {
   max?: Maybe<ApplicationMaxAggregate>;
 };
 
+export type AggregateCaseCategory = {
+  count?: Maybe<CaseCategoryCountAggregate>;
+  avg?: Maybe<CaseCategoryAvgAggregate>;
+  sum?: Maybe<CaseCategorySumAggregate>;
+  min?: Maybe<CaseCategoryMinAggregate>;
+  max?: Maybe<CaseCategoryMaxAggregate>;
+};
+
 export type AggregateCaseClassification = {
   count?: Maybe<CaseClassificationCountAggregate>;
   avg?: Maybe<CaseClassificationAvgAggregate>;
@@ -62,6 +70,14 @@ export type AggregateCaseDocument = {
   max?: Maybe<CaseDocumentMaxAggregate>;
 };
 
+export type AggregateCaseIncidentLocation = {
+  count?: Maybe<CaseIncidentLocationCountAggregate>;
+  avg?: Maybe<CaseIncidentLocationAvgAggregate>;
+  sum?: Maybe<CaseIncidentLocationSumAggregate>;
+  min?: Maybe<CaseIncidentLocationMinAggregate>;
+  max?: Maybe<CaseIncidentLocationMaxAggregate>;
+};
+
 export type AggregateCaseIssue = {
   count?: Maybe<CaseIssueCountAggregate>;
   avg?: Maybe<CaseIssueAvgAggregate>;
@@ -76,6 +92,14 @@ export type AggregateCaseKorban = {
   sum?: Maybe<CaseKorbanSumAggregate>;
   min?: Maybe<CaseKorbanMinAggregate>;
   max?: Maybe<CaseKorbanMaxAggregate>;
+};
+
+export type AggregateCaseModus = {
+  count?: Maybe<CaseModusCountAggregate>;
+  avg?: Maybe<CaseModusAvgAggregate>;
+  sum?: Maybe<CaseModusSumAggregate>;
+  min?: Maybe<CaseModusMinAggregate>;
+  max?: Maybe<CaseModusMaxAggregate>;
 };
 
 export type AggregateCasePelaku = {
@@ -156,6 +180,14 @@ export type AggregateCaseViolatedRight = {
   sum?: Maybe<CaseViolatedRightSumAggregate>;
   min?: Maybe<CaseViolatedRightMinAggregate>;
   max?: Maybe<CaseViolatedRightMaxAggregate>;
+};
+
+export type AggregateCaseViolenceMethod = {
+  count?: Maybe<CaseViolenceMethodCountAggregate>;
+  avg?: Maybe<CaseViolenceMethodAvgAggregate>;
+  sum?: Maybe<CaseViolenceMethodSumAggregate>;
+  min?: Maybe<CaseViolenceMethodMinAggregate>;
+  max?: Maybe<CaseViolenceMethodMaxAggregate>;
 };
 
 export type AggregateClient = {
@@ -991,6 +1023,145 @@ export type BoolFieldUpdateOperationsInput = {
 export type BoolFilter = {
   equals?: Maybe<Scalars['Boolean']>;
   not?: Maybe<NestedBoolFilter>;
+};
+
+export type CaseCategory = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+  caseId?: Maybe<Renamedcase>;
+};
+
+export type CaseCategoryAvgAggregate = {
+  id: Scalars['Float'];
+  case_id?: Maybe<Scalars['Float']>;
+};
+
+export type CaseCategoryCountAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['Int']>;
+  case_id?: Maybe<Scalars['Int']>;
+  _all: Scalars['Int'];
+};
+
+export type CaseCategoryCreateInput = {
+  kodeMt?: Maybe<Scalars['String']>;
+  caseId?: Maybe<RenamedcaseCreateNestedOneWithoutCategoriesInput>;
+};
+
+export type CaseCategoryCreateNestedManyWithoutCaseIdInput = {
+  create?: Maybe<Array<CaseCategoryCreateWithoutCaseIdInput>>;
+  connectOrCreate?: Maybe<Array<CaseCategoryCreateOrConnectWithoutCaseIdInput>>;
+  connect?: Maybe<Array<CaseCategoryWhereUniqueInput>>;
+};
+
+export type CaseCategoryCreateOrConnectWithoutCaseIdInput = {
+  where: CaseCategoryWhereUniqueInput;
+  create: CaseCategoryCreateWithoutCaseIdInput;
+};
+
+export type CaseCategoryCreateWithoutCaseIdInput = {
+  kodeMt?: Maybe<Scalars['String']>;
+};
+
+export type CaseCategoryListRelationFilter = {
+  every?: Maybe<CaseCategoryWhereInput>;
+  some?: Maybe<CaseCategoryWhereInput>;
+  none?: Maybe<CaseCategoryWhereInput>;
+};
+
+export type CaseCategoryMaxAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseCategoryMinAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseCategoryOrderByInput = {
+  id?: Maybe<SortOrder>;
+  kodeMt?: Maybe<SortOrder>;
+  case_id?: Maybe<SortOrder>;
+};
+
+export enum CaseCategoryScalarFieldEnum {
+  Id = 'id',
+  KodeMt = 'kodeMt',
+  CaseId = 'case_id'
+}
+
+export type CaseCategoryScalarWhereInput = {
+  AND?: Maybe<Array<CaseCategoryScalarWhereInput>>;
+  OR?: Maybe<Array<CaseCategoryScalarWhereInput>>;
+  NOT?: Maybe<Array<CaseCategoryScalarWhereInput>>;
+  id?: Maybe<IntFilter>;
+  kodeMt?: Maybe<StringNullableFilter>;
+  case_id?: Maybe<IntNullableFilter>;
+};
+
+export type CaseCategorySumAggregate = {
+  id: Scalars['Int'];
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseCategoryUpdateInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  caseId?: Maybe<RenamedcaseUpdateOneWithoutCategoriesInput>;
+};
+
+export type CaseCategoryUpdateManyMutationInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type CaseCategoryUpdateManyWithWhereWithoutCaseIdInput = {
+  where: CaseCategoryScalarWhereInput;
+  data: CaseCategoryUpdateManyMutationInput;
+};
+
+export type CaseCategoryUpdateManyWithoutCaseIdInput = {
+  create?: Maybe<Array<CaseCategoryCreateWithoutCaseIdInput>>;
+  connectOrCreate?: Maybe<Array<CaseCategoryCreateOrConnectWithoutCaseIdInput>>;
+  upsert?: Maybe<Array<CaseCategoryUpsertWithWhereUniqueWithoutCaseIdInput>>;
+  connect?: Maybe<Array<CaseCategoryWhereUniqueInput>>;
+  set?: Maybe<Array<CaseCategoryWhereUniqueInput>>;
+  disconnect?: Maybe<Array<CaseCategoryWhereUniqueInput>>;
+  delete?: Maybe<Array<CaseCategoryWhereUniqueInput>>;
+  update?: Maybe<Array<CaseCategoryUpdateWithWhereUniqueWithoutCaseIdInput>>;
+  updateMany?: Maybe<Array<CaseCategoryUpdateManyWithWhereWithoutCaseIdInput>>;
+  deleteMany?: Maybe<Array<CaseCategoryScalarWhereInput>>;
+};
+
+export type CaseCategoryUpdateWithWhereUniqueWithoutCaseIdInput = {
+  where: CaseCategoryWhereUniqueInput;
+  data: CaseCategoryUpdateWithoutCaseIdInput;
+};
+
+export type CaseCategoryUpdateWithoutCaseIdInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type CaseCategoryUpsertWithWhereUniqueWithoutCaseIdInput = {
+  where: CaseCategoryWhereUniqueInput;
+  update: CaseCategoryUpdateWithoutCaseIdInput;
+  create: CaseCategoryCreateWithoutCaseIdInput;
+};
+
+export type CaseCategoryWhereInput = {
+  AND?: Maybe<Array<CaseCategoryWhereInput>>;
+  OR?: Maybe<Array<CaseCategoryWhereInput>>;
+  NOT?: Maybe<Array<CaseCategoryWhereInput>>;
+  id?: Maybe<IntFilter>;
+  kodeMt?: Maybe<StringNullableFilter>;
+  case_id?: Maybe<IntNullableFilter>;
+  caseId?: Maybe<RenamedcaseRelationFilter>;
+};
+
+export type CaseCategoryWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
 };
 
 export type CaseClassification = {
@@ -1941,6 +2112,145 @@ export type CaseDocumentWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
 };
 
+export type CaseIncidentLocation = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+  caseId?: Maybe<Renamedcase>;
+};
+
+export type CaseIncidentLocationAvgAggregate = {
+  id: Scalars['Float'];
+  case_id?: Maybe<Scalars['Float']>;
+};
+
+export type CaseIncidentLocationCountAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['Int']>;
+  case_id?: Maybe<Scalars['Int']>;
+  _all: Scalars['Int'];
+};
+
+export type CaseIncidentLocationCreateInput = {
+  kodeMt?: Maybe<Scalars['String']>;
+  caseId?: Maybe<RenamedcaseCreateNestedOneWithoutIncidentLocationsInput>;
+};
+
+export type CaseIncidentLocationCreateNestedManyWithoutCaseIdInput = {
+  create?: Maybe<Array<CaseIncidentLocationCreateWithoutCaseIdInput>>;
+  connectOrCreate?: Maybe<Array<CaseIncidentLocationCreateOrConnectWithoutCaseIdInput>>;
+  connect?: Maybe<Array<CaseIncidentLocationWhereUniqueInput>>;
+};
+
+export type CaseIncidentLocationCreateOrConnectWithoutCaseIdInput = {
+  where: CaseIncidentLocationWhereUniqueInput;
+  create: CaseIncidentLocationCreateWithoutCaseIdInput;
+};
+
+export type CaseIncidentLocationCreateWithoutCaseIdInput = {
+  kodeMt?: Maybe<Scalars['String']>;
+};
+
+export type CaseIncidentLocationListRelationFilter = {
+  every?: Maybe<CaseIncidentLocationWhereInput>;
+  some?: Maybe<CaseIncidentLocationWhereInput>;
+  none?: Maybe<CaseIncidentLocationWhereInput>;
+};
+
+export type CaseIncidentLocationMaxAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseIncidentLocationMinAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseIncidentLocationOrderByInput = {
+  id?: Maybe<SortOrder>;
+  kodeMt?: Maybe<SortOrder>;
+  case_id?: Maybe<SortOrder>;
+};
+
+export enum CaseIncidentLocationScalarFieldEnum {
+  Id = 'id',
+  KodeMt = 'kodeMt',
+  CaseId = 'case_id'
+}
+
+export type CaseIncidentLocationScalarWhereInput = {
+  AND?: Maybe<Array<CaseIncidentLocationScalarWhereInput>>;
+  OR?: Maybe<Array<CaseIncidentLocationScalarWhereInput>>;
+  NOT?: Maybe<Array<CaseIncidentLocationScalarWhereInput>>;
+  id?: Maybe<IntFilter>;
+  kodeMt?: Maybe<StringNullableFilter>;
+  case_id?: Maybe<IntNullableFilter>;
+};
+
+export type CaseIncidentLocationSumAggregate = {
+  id: Scalars['Int'];
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseIncidentLocationUpdateInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  caseId?: Maybe<RenamedcaseUpdateOneWithoutIncidentLocationsInput>;
+};
+
+export type CaseIncidentLocationUpdateManyMutationInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type CaseIncidentLocationUpdateManyWithWhereWithoutCaseIdInput = {
+  where: CaseIncidentLocationScalarWhereInput;
+  data: CaseIncidentLocationUpdateManyMutationInput;
+};
+
+export type CaseIncidentLocationUpdateManyWithoutCaseIdInput = {
+  create?: Maybe<Array<CaseIncidentLocationCreateWithoutCaseIdInput>>;
+  connectOrCreate?: Maybe<Array<CaseIncidentLocationCreateOrConnectWithoutCaseIdInput>>;
+  upsert?: Maybe<Array<CaseIncidentLocationUpsertWithWhereUniqueWithoutCaseIdInput>>;
+  connect?: Maybe<Array<CaseIncidentLocationWhereUniqueInput>>;
+  set?: Maybe<Array<CaseIncidentLocationWhereUniqueInput>>;
+  disconnect?: Maybe<Array<CaseIncidentLocationWhereUniqueInput>>;
+  delete?: Maybe<Array<CaseIncidentLocationWhereUniqueInput>>;
+  update?: Maybe<Array<CaseIncidentLocationUpdateWithWhereUniqueWithoutCaseIdInput>>;
+  updateMany?: Maybe<Array<CaseIncidentLocationUpdateManyWithWhereWithoutCaseIdInput>>;
+  deleteMany?: Maybe<Array<CaseIncidentLocationScalarWhereInput>>;
+};
+
+export type CaseIncidentLocationUpdateWithWhereUniqueWithoutCaseIdInput = {
+  where: CaseIncidentLocationWhereUniqueInput;
+  data: CaseIncidentLocationUpdateWithoutCaseIdInput;
+};
+
+export type CaseIncidentLocationUpdateWithoutCaseIdInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type CaseIncidentLocationUpsertWithWhereUniqueWithoutCaseIdInput = {
+  where: CaseIncidentLocationWhereUniqueInput;
+  update: CaseIncidentLocationUpdateWithoutCaseIdInput;
+  create: CaseIncidentLocationCreateWithoutCaseIdInput;
+};
+
+export type CaseIncidentLocationWhereInput = {
+  AND?: Maybe<Array<CaseIncidentLocationWhereInput>>;
+  OR?: Maybe<Array<CaseIncidentLocationWhereInput>>;
+  NOT?: Maybe<Array<CaseIncidentLocationWhereInput>>;
+  id?: Maybe<IntFilter>;
+  kodeMt?: Maybe<StringNullableFilter>;
+  case_id?: Maybe<IntNullableFilter>;
+  caseId?: Maybe<RenamedcaseRelationFilter>;
+};
+
+export type CaseIncidentLocationWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+};
+
 export type CaseIssue = {
   id: Scalars['Int'];
   kodeMt?: Maybe<Scalars['String']>;
@@ -2282,6 +2592,145 @@ export type CaseKorbanWhereInput = {
 };
 
 export type CaseKorbanWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseModus = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+  caseId?: Maybe<Renamedcase>;
+};
+
+export type CaseModusAvgAggregate = {
+  id: Scalars['Float'];
+  case_id?: Maybe<Scalars['Float']>;
+};
+
+export type CaseModusCountAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['Int']>;
+  case_id?: Maybe<Scalars['Int']>;
+  _all: Scalars['Int'];
+};
+
+export type CaseModusCreateInput = {
+  kodeMt?: Maybe<Scalars['String']>;
+  caseId?: Maybe<RenamedcaseCreateNestedOneWithoutModusesInput>;
+};
+
+export type CaseModusCreateNestedManyWithoutCaseIdInput = {
+  create?: Maybe<Array<CaseModusCreateWithoutCaseIdInput>>;
+  connectOrCreate?: Maybe<Array<CaseModusCreateOrConnectWithoutCaseIdInput>>;
+  connect?: Maybe<Array<CaseModusWhereUniqueInput>>;
+};
+
+export type CaseModusCreateOrConnectWithoutCaseIdInput = {
+  where: CaseModusWhereUniqueInput;
+  create: CaseModusCreateWithoutCaseIdInput;
+};
+
+export type CaseModusCreateWithoutCaseIdInput = {
+  kodeMt?: Maybe<Scalars['String']>;
+};
+
+export type CaseModusListRelationFilter = {
+  every?: Maybe<CaseModusWhereInput>;
+  some?: Maybe<CaseModusWhereInput>;
+  none?: Maybe<CaseModusWhereInput>;
+};
+
+export type CaseModusMaxAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseModusMinAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseModusOrderByInput = {
+  id?: Maybe<SortOrder>;
+  kodeMt?: Maybe<SortOrder>;
+  case_id?: Maybe<SortOrder>;
+};
+
+export enum CaseModusScalarFieldEnum {
+  Id = 'id',
+  KodeMt = 'kodeMt',
+  CaseId = 'case_id'
+}
+
+export type CaseModusScalarWhereInput = {
+  AND?: Maybe<Array<CaseModusScalarWhereInput>>;
+  OR?: Maybe<Array<CaseModusScalarWhereInput>>;
+  NOT?: Maybe<Array<CaseModusScalarWhereInput>>;
+  id?: Maybe<IntFilter>;
+  kodeMt?: Maybe<StringNullableFilter>;
+  case_id?: Maybe<IntNullableFilter>;
+};
+
+export type CaseModusSumAggregate = {
+  id: Scalars['Int'];
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseModusUpdateInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  caseId?: Maybe<RenamedcaseUpdateOneWithoutModusesInput>;
+};
+
+export type CaseModusUpdateManyMutationInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type CaseModusUpdateManyWithWhereWithoutCaseIdInput = {
+  where: CaseModusScalarWhereInput;
+  data: CaseModusUpdateManyMutationInput;
+};
+
+export type CaseModusUpdateManyWithoutCaseIdInput = {
+  create?: Maybe<Array<CaseModusCreateWithoutCaseIdInput>>;
+  connectOrCreate?: Maybe<Array<CaseModusCreateOrConnectWithoutCaseIdInput>>;
+  upsert?: Maybe<Array<CaseModusUpsertWithWhereUniqueWithoutCaseIdInput>>;
+  connect?: Maybe<Array<CaseModusWhereUniqueInput>>;
+  set?: Maybe<Array<CaseModusWhereUniqueInput>>;
+  disconnect?: Maybe<Array<CaseModusWhereUniqueInput>>;
+  delete?: Maybe<Array<CaseModusWhereUniqueInput>>;
+  update?: Maybe<Array<CaseModusUpdateWithWhereUniqueWithoutCaseIdInput>>;
+  updateMany?: Maybe<Array<CaseModusUpdateManyWithWhereWithoutCaseIdInput>>;
+  deleteMany?: Maybe<Array<CaseModusScalarWhereInput>>;
+};
+
+export type CaseModusUpdateWithWhereUniqueWithoutCaseIdInput = {
+  where: CaseModusWhereUniqueInput;
+  data: CaseModusUpdateWithoutCaseIdInput;
+};
+
+export type CaseModusUpdateWithoutCaseIdInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type CaseModusUpsertWithWhereUniqueWithoutCaseIdInput = {
+  where: CaseModusWhereUniqueInput;
+  update: CaseModusUpdateWithoutCaseIdInput;
+  create: CaseModusCreateWithoutCaseIdInput;
+};
+
+export type CaseModusWhereInput = {
+  AND?: Maybe<Array<CaseModusWhereInput>>;
+  OR?: Maybe<Array<CaseModusWhereInput>>;
+  NOT?: Maybe<Array<CaseModusWhereInput>>;
+  id?: Maybe<IntFilter>;
+  kodeMt?: Maybe<StringNullableFilter>;
+  case_id?: Maybe<IntNullableFilter>;
+  caseId?: Maybe<RenamedcaseRelationFilter>;
+};
+
+export type CaseModusWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
 };
 
@@ -4630,6 +5079,145 @@ export type CaseViolatedRightWhereInput = {
 };
 
 export type CaseViolatedRightWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseViolenceMethod = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+  caseId?: Maybe<Renamedcase>;
+};
+
+export type CaseViolenceMethodAvgAggregate = {
+  id: Scalars['Float'];
+  case_id?: Maybe<Scalars['Float']>;
+};
+
+export type CaseViolenceMethodCountAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['Int']>;
+  case_id?: Maybe<Scalars['Int']>;
+  _all: Scalars['Int'];
+};
+
+export type CaseViolenceMethodCreateInput = {
+  kodeMt?: Maybe<Scalars['String']>;
+  caseId?: Maybe<RenamedcaseCreateNestedOneWithoutViolenceMethodsInput>;
+};
+
+export type CaseViolenceMethodCreateNestedManyWithoutCaseIdInput = {
+  create?: Maybe<Array<CaseViolenceMethodCreateWithoutCaseIdInput>>;
+  connectOrCreate?: Maybe<Array<CaseViolenceMethodCreateOrConnectWithoutCaseIdInput>>;
+  connect?: Maybe<Array<CaseViolenceMethodWhereUniqueInput>>;
+};
+
+export type CaseViolenceMethodCreateOrConnectWithoutCaseIdInput = {
+  where: CaseViolenceMethodWhereUniqueInput;
+  create: CaseViolenceMethodCreateWithoutCaseIdInput;
+};
+
+export type CaseViolenceMethodCreateWithoutCaseIdInput = {
+  kodeMt?: Maybe<Scalars['String']>;
+};
+
+export type CaseViolenceMethodListRelationFilter = {
+  every?: Maybe<CaseViolenceMethodWhereInput>;
+  some?: Maybe<CaseViolenceMethodWhereInput>;
+  none?: Maybe<CaseViolenceMethodWhereInput>;
+};
+
+export type CaseViolenceMethodMaxAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseViolenceMethodMinAggregate = {
+  id: Scalars['Int'];
+  kodeMt?: Maybe<Scalars['String']>;
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseViolenceMethodOrderByInput = {
+  id?: Maybe<SortOrder>;
+  kodeMt?: Maybe<SortOrder>;
+  case_id?: Maybe<SortOrder>;
+};
+
+export enum CaseViolenceMethodScalarFieldEnum {
+  Id = 'id',
+  KodeMt = 'kodeMt',
+  CaseId = 'case_id'
+}
+
+export type CaseViolenceMethodScalarWhereInput = {
+  AND?: Maybe<Array<CaseViolenceMethodScalarWhereInput>>;
+  OR?: Maybe<Array<CaseViolenceMethodScalarWhereInput>>;
+  NOT?: Maybe<Array<CaseViolenceMethodScalarWhereInput>>;
+  id?: Maybe<IntFilter>;
+  kodeMt?: Maybe<StringNullableFilter>;
+  case_id?: Maybe<IntNullableFilter>;
+};
+
+export type CaseViolenceMethodSumAggregate = {
+  id: Scalars['Int'];
+  case_id?: Maybe<Scalars['Int']>;
+};
+
+export type CaseViolenceMethodUpdateInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  caseId?: Maybe<RenamedcaseUpdateOneWithoutViolenceMethodsInput>;
+};
+
+export type CaseViolenceMethodUpdateManyMutationInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type CaseViolenceMethodUpdateManyWithWhereWithoutCaseIdInput = {
+  where: CaseViolenceMethodScalarWhereInput;
+  data: CaseViolenceMethodUpdateManyMutationInput;
+};
+
+export type CaseViolenceMethodUpdateManyWithoutCaseIdInput = {
+  create?: Maybe<Array<CaseViolenceMethodCreateWithoutCaseIdInput>>;
+  connectOrCreate?: Maybe<Array<CaseViolenceMethodCreateOrConnectWithoutCaseIdInput>>;
+  upsert?: Maybe<Array<CaseViolenceMethodUpsertWithWhereUniqueWithoutCaseIdInput>>;
+  connect?: Maybe<Array<CaseViolenceMethodWhereUniqueInput>>;
+  set?: Maybe<Array<CaseViolenceMethodWhereUniqueInput>>;
+  disconnect?: Maybe<Array<CaseViolenceMethodWhereUniqueInput>>;
+  delete?: Maybe<Array<CaseViolenceMethodWhereUniqueInput>>;
+  update?: Maybe<Array<CaseViolenceMethodUpdateWithWhereUniqueWithoutCaseIdInput>>;
+  updateMany?: Maybe<Array<CaseViolenceMethodUpdateManyWithWhereWithoutCaseIdInput>>;
+  deleteMany?: Maybe<Array<CaseViolenceMethodScalarWhereInput>>;
+};
+
+export type CaseViolenceMethodUpdateWithWhereUniqueWithoutCaseIdInput = {
+  where: CaseViolenceMethodWhereUniqueInput;
+  data: CaseViolenceMethodUpdateWithoutCaseIdInput;
+};
+
+export type CaseViolenceMethodUpdateWithoutCaseIdInput = {
+  kodeMt?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type CaseViolenceMethodUpsertWithWhereUniqueWithoutCaseIdInput = {
+  where: CaseViolenceMethodWhereUniqueInput;
+  update: CaseViolenceMethodUpdateWithoutCaseIdInput;
+  create: CaseViolenceMethodCreateWithoutCaseIdInput;
+};
+
+export type CaseViolenceMethodWhereInput = {
+  AND?: Maybe<Array<CaseViolenceMethodWhereInput>>;
+  OR?: Maybe<Array<CaseViolenceMethodWhereInput>>;
+  NOT?: Maybe<Array<CaseViolenceMethodWhereInput>>;
+  id?: Maybe<IntFilter>;
+  kodeMt?: Maybe<StringNullableFilter>;
+  case_id?: Maybe<IntNullableFilter>;
+  caseId?: Maybe<RenamedcaseRelationFilter>;
+};
+
+export type CaseViolenceMethodWhereUniqueInput = {
   id?: Maybe<Scalars['Int']>;
 };
 
@@ -7242,6 +7830,12 @@ export type Mutation = {
   deleteManyApplication: AffectedRowsOutput;
   updateManyApplication: AffectedRowsOutput;
   upsertApplication: Application;
+  createCaseCategory: CaseCategory;
+  deleteCaseCategory?: Maybe<CaseCategory>;
+  updateCaseCategory?: Maybe<CaseCategory>;
+  deleteManyCaseCategory: AffectedRowsOutput;
+  updateManyCaseCategory: AffectedRowsOutput;
+  upsertCaseCategory: CaseCategory;
   createCaseClassification: CaseClassification;
   deleteCaseClassification?: Maybe<CaseClassification>;
   updateCaseClassification?: Maybe<CaseClassification>;
@@ -7266,6 +7860,12 @@ export type Mutation = {
   deleteManyCaseDocument: AffectedRowsOutput;
   updateManyCaseDocument: AffectedRowsOutput;
   upsertCaseDocument: CaseDocument;
+  createCaseIncidentLocation: CaseIncidentLocation;
+  deleteCaseIncidentLocation?: Maybe<CaseIncidentLocation>;
+  updateCaseIncidentLocation?: Maybe<CaseIncidentLocation>;
+  deleteManyCaseIncidentLocation: AffectedRowsOutput;
+  updateManyCaseIncidentLocation: AffectedRowsOutput;
+  upsertCaseIncidentLocation: CaseIncidentLocation;
   createCaseIssue: CaseIssue;
   deleteCaseIssue?: Maybe<CaseIssue>;
   updateCaseIssue?: Maybe<CaseIssue>;
@@ -7278,6 +7878,12 @@ export type Mutation = {
   deleteManyCaseKorban: AffectedRowsOutput;
   updateManyCaseKorban: AffectedRowsOutput;
   upsertCaseKorban: CaseKorban;
+  createCaseModus: CaseModus;
+  deleteCaseModus?: Maybe<CaseModus>;
+  updateCaseModus?: Maybe<CaseModus>;
+  deleteManyCaseModus: AffectedRowsOutput;
+  updateManyCaseModus: AffectedRowsOutput;
+  upsertCaseModus: CaseModus;
   createCasePelaku: CasePelaku;
   deleteCasePelaku?: Maybe<CasePelaku>;
   updateCasePelaku?: Maybe<CasePelaku>;
@@ -7338,6 +7944,12 @@ export type Mutation = {
   deleteManyCaseViolatedRight: AffectedRowsOutput;
   updateManyCaseViolatedRight: AffectedRowsOutput;
   upsertCaseViolatedRight: CaseViolatedRight;
+  createCaseViolenceMethod: CaseViolenceMethod;
+  deleteCaseViolenceMethod?: Maybe<CaseViolenceMethod>;
+  updateCaseViolenceMethod?: Maybe<CaseViolenceMethod>;
+  deleteManyCaseViolenceMethod: AffectedRowsOutput;
+  updateManyCaseViolenceMethod: AffectedRowsOutput;
+  upsertCaseViolenceMethod: CaseViolenceMethod;
   createClient: Client;
   deleteClient?: Maybe<Client>;
   updateClient?: Maybe<Client>;
@@ -7489,6 +8101,40 @@ export type MutationUpsertApplicationArgs = {
 };
 
 
+export type MutationCreateCaseCategoryArgs = {
+  data: CaseCategoryCreateInput;
+};
+
+
+export type MutationDeleteCaseCategoryArgs = {
+  where: CaseCategoryWhereUniqueInput;
+};
+
+
+export type MutationUpdateCaseCategoryArgs = {
+  data: CaseCategoryUpdateInput;
+  where: CaseCategoryWhereUniqueInput;
+};
+
+
+export type MutationDeleteManyCaseCategoryArgs = {
+  where?: Maybe<CaseCategoryWhereInput>;
+};
+
+
+export type MutationUpdateManyCaseCategoryArgs = {
+  data: CaseCategoryUpdateManyMutationInput;
+  where?: Maybe<CaseCategoryWhereInput>;
+};
+
+
+export type MutationUpsertCaseCategoryArgs = {
+  where: CaseCategoryWhereUniqueInput;
+  create: CaseCategoryCreateInput;
+  update: CaseCategoryUpdateInput;
+};
+
+
 export type MutationCreateCaseClassificationArgs = {
   data: CaseClassificationCreateInput;
 };
@@ -7625,6 +8271,40 @@ export type MutationUpsertCaseDocumentArgs = {
 };
 
 
+export type MutationCreateCaseIncidentLocationArgs = {
+  data: CaseIncidentLocationCreateInput;
+};
+
+
+export type MutationDeleteCaseIncidentLocationArgs = {
+  where: CaseIncidentLocationWhereUniqueInput;
+};
+
+
+export type MutationUpdateCaseIncidentLocationArgs = {
+  data: CaseIncidentLocationUpdateInput;
+  where: CaseIncidentLocationWhereUniqueInput;
+};
+
+
+export type MutationDeleteManyCaseIncidentLocationArgs = {
+  where?: Maybe<CaseIncidentLocationWhereInput>;
+};
+
+
+export type MutationUpdateManyCaseIncidentLocationArgs = {
+  data: CaseIncidentLocationUpdateManyMutationInput;
+  where?: Maybe<CaseIncidentLocationWhereInput>;
+};
+
+
+export type MutationUpsertCaseIncidentLocationArgs = {
+  where: CaseIncidentLocationWhereUniqueInput;
+  create: CaseIncidentLocationCreateInput;
+  update: CaseIncidentLocationUpdateInput;
+};
+
+
 export type MutationCreateCaseIssueArgs = {
   data: CaseIssueCreateInput;
 };
@@ -7690,6 +8370,40 @@ export type MutationUpsertCaseKorbanArgs = {
   where: CaseKorbanWhereUniqueInput;
   create: CaseKorbanCreateInput;
   update: CaseKorbanUpdateInput;
+};
+
+
+export type MutationCreateCaseModusArgs = {
+  data: CaseModusCreateInput;
+};
+
+
+export type MutationDeleteCaseModusArgs = {
+  where: CaseModusWhereUniqueInput;
+};
+
+
+export type MutationUpdateCaseModusArgs = {
+  data: CaseModusUpdateInput;
+  where: CaseModusWhereUniqueInput;
+};
+
+
+export type MutationDeleteManyCaseModusArgs = {
+  where?: Maybe<CaseModusWhereInput>;
+};
+
+
+export type MutationUpdateManyCaseModusArgs = {
+  data: CaseModusUpdateManyMutationInput;
+  where?: Maybe<CaseModusWhereInput>;
+};
+
+
+export type MutationUpsertCaseModusArgs = {
+  where: CaseModusWhereUniqueInput;
+  create: CaseModusCreateInput;
+  update: CaseModusUpdateInput;
 };
 
 
@@ -8030,6 +8744,40 @@ export type MutationUpsertCaseViolatedRightArgs = {
   where: CaseViolatedRightWhereUniqueInput;
   create: CaseViolatedRightCreateInput;
   update: CaseViolatedRightUpdateInput;
+};
+
+
+export type MutationCreateCaseViolenceMethodArgs = {
+  data: CaseViolenceMethodCreateInput;
+};
+
+
+export type MutationDeleteCaseViolenceMethodArgs = {
+  where: CaseViolenceMethodWhereUniqueInput;
+};
+
+
+export type MutationUpdateCaseViolenceMethodArgs = {
+  data: CaseViolenceMethodUpdateInput;
+  where: CaseViolenceMethodWhereUniqueInput;
+};
+
+
+export type MutationDeleteManyCaseViolenceMethodArgs = {
+  where?: Maybe<CaseViolenceMethodWhereInput>;
+};
+
+
+export type MutationUpdateManyCaseViolenceMethodArgs = {
+  data: CaseViolenceMethodUpdateManyMutationInput;
+  where?: Maybe<CaseViolenceMethodWhereInput>;
+};
+
+
+export type MutationUpsertCaseViolenceMethodArgs = {
+  where: CaseViolenceMethodWhereUniqueInput;
+  create: CaseViolenceMethodCreateInput;
+  update: CaseViolenceMethodUpdateInput;
 };
 
 
@@ -9176,12 +9924,14 @@ export type Person = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9292,12 +10042,14 @@ export type PersonCountAggregate = {
   golDarah?: Maybe<Scalars['Int']>;
   jenisDisabilitas?: Maybe<Scalars['Int']>;
   jenisDomisili?: Maybe<Scalars['Int']>;
+  orientasiSeksual?: Maybe<Scalars['Int']>;
   jenisId?: Maybe<Scalars['Int']>;
   jenisKelamin?: Maybe<Scalars['Int']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['Int']>;
   nomorId?: Maybe<Scalars['Int']>;
   pekerjaan?: Maybe<Scalars['Int']>;
+  pekerjaanLokal?: Maybe<Scalars['Int']>;
   pendidikan?: Maybe<Scalars['Int']>;
   statusPernikahan?: Maybe<Scalars['Int']>;
   telepon?: Maybe<Scalars['Int']>;
@@ -9326,12 +10078,14 @@ export type PersonCreateInput = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9443,12 +10197,14 @@ export type PersonCreateWithoutApplicationsInput = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9482,12 +10238,14 @@ export type PersonCreateWithoutCaseKorbanInput = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9521,12 +10279,14 @@ export type PersonCreateWithoutCasePelakuInput = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9560,12 +10320,14 @@ export type PersonCreateWithoutCaseReferralInput = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9599,12 +10361,14 @@ export type PersonCreateWithoutClientsInput = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9638,12 +10402,14 @@ export type PersonCreateWithoutDocumentsInput = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9677,12 +10443,14 @@ export type PersonCreateWithoutLogRequestInput = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9912,12 +10680,14 @@ export type PersonMaxAggregate = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9946,12 +10716,14 @@ export type PersonMinAggregate = {
   golDarah?: Maybe<Scalars['String']>;
   jenisDisabilitas?: Maybe<Scalars['String']>;
   jenisDomisili?: Maybe<Scalars['String']>;
+  orientasiSeksual?: Maybe<Scalars['String']>;
   jenisId?: Maybe<Scalars['String']>;
   jenisKelamin?: Maybe<Scalars['String']>;
   jmlAnggota?: Maybe<Scalars['Int']>;
   namaLengkap?: Maybe<Scalars['String']>;
   nomorId?: Maybe<Scalars['String']>;
   pekerjaan?: Maybe<Scalars['String']>;
+  pekerjaanLokal?: Maybe<Scalars['String']>;
   pendidikan?: Maybe<Scalars['String']>;
   statusPernikahan?: Maybe<Scalars['String']>;
   telepon?: Maybe<Scalars['String']>;
@@ -9980,12 +10752,14 @@ export type PersonOrderByInput = {
   golDarah?: Maybe<SortOrder>;
   jenisDisabilitas?: Maybe<SortOrder>;
   jenisDomisili?: Maybe<SortOrder>;
+  orientasiSeksual?: Maybe<SortOrder>;
   jenisId?: Maybe<SortOrder>;
   jenisKelamin?: Maybe<SortOrder>;
   jmlAnggota?: Maybe<SortOrder>;
   namaLengkap?: Maybe<SortOrder>;
   nomorId?: Maybe<SortOrder>;
   pekerjaan?: Maybe<SortOrder>;
+  pekerjaanLokal?: Maybe<SortOrder>;
   pendidikan?: Maybe<SortOrder>;
   statusPernikahan?: Maybe<SortOrder>;
   telepon?: Maybe<SortOrder>;
@@ -10019,12 +10793,14 @@ export enum PersonScalarFieldEnum {
   GolDarah = 'golDarah',
   JenisDisabilitas = 'jenisDisabilitas',
   JenisDomisili = 'jenisDomisili',
+  OrientasiSeksual = 'orientasiSeksual',
   JenisId = 'jenisId',
   JenisKelamin = 'jenisKelamin',
   JmlAnggota = 'jmlAnggota',
   NamaLengkap = 'namaLengkap',
   NomorId = 'nomorId',
   Pekerjaan = 'pekerjaan',
+  PekerjaanLokal = 'pekerjaanLokal',
   Pendidikan = 'pendidikan',
   StatusPernikahan = 'statusPernikahan',
   Telepon = 'telepon',
@@ -10057,12 +10833,14 @@ export type PersonUpdateInput = {
   golDarah?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDisabilitas?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDomisili?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  orientasiSeksual?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisKelamin?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jmlAnggota?: Maybe<NullableIntFieldUpdateOperationsInput>;
   namaLengkap?: Maybe<NullableStringFieldUpdateOperationsInput>;
   nomorId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pekerjaan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pekerjaanLokal?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pendidikan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   statusPernikahan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   telepon?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -10097,12 +10875,14 @@ export type PersonUpdateManyMutationInput = {
   golDarah?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDisabilitas?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDomisili?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  orientasiSeksual?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisKelamin?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jmlAnggota?: Maybe<NullableIntFieldUpdateOperationsInput>;
   namaLengkap?: Maybe<NullableStringFieldUpdateOperationsInput>;
   nomorId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pekerjaan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pekerjaanLokal?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pendidikan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   statusPernikahan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   telepon?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -10200,12 +10980,14 @@ export type PersonUpdateWithoutApplicationsInput = {
   golDarah?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDisabilitas?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDomisili?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  orientasiSeksual?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisKelamin?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jmlAnggota?: Maybe<NullableIntFieldUpdateOperationsInput>;
   namaLengkap?: Maybe<NullableStringFieldUpdateOperationsInput>;
   nomorId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pekerjaan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pekerjaanLokal?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pendidikan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   statusPernikahan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   telepon?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -10239,12 +11021,14 @@ export type PersonUpdateWithoutCaseKorbanInput = {
   golDarah?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDisabilitas?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDomisili?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  orientasiSeksual?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisKelamin?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jmlAnggota?: Maybe<NullableIntFieldUpdateOperationsInput>;
   namaLengkap?: Maybe<NullableStringFieldUpdateOperationsInput>;
   nomorId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pekerjaan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pekerjaanLokal?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pendidikan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   statusPernikahan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   telepon?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -10278,12 +11062,14 @@ export type PersonUpdateWithoutCasePelakuInput = {
   golDarah?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDisabilitas?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDomisili?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  orientasiSeksual?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisKelamin?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jmlAnggota?: Maybe<NullableIntFieldUpdateOperationsInput>;
   namaLengkap?: Maybe<NullableStringFieldUpdateOperationsInput>;
   nomorId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pekerjaan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pekerjaanLokal?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pendidikan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   statusPernikahan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   telepon?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -10317,12 +11103,14 @@ export type PersonUpdateWithoutCaseReferralInput = {
   golDarah?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDisabilitas?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDomisili?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  orientasiSeksual?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisKelamin?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jmlAnggota?: Maybe<NullableIntFieldUpdateOperationsInput>;
   namaLengkap?: Maybe<NullableStringFieldUpdateOperationsInput>;
   nomorId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pekerjaan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pekerjaanLokal?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pendidikan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   statusPernikahan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   telepon?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -10356,12 +11144,14 @@ export type PersonUpdateWithoutClientsInput = {
   golDarah?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDisabilitas?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDomisili?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  orientasiSeksual?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisKelamin?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jmlAnggota?: Maybe<NullableIntFieldUpdateOperationsInput>;
   namaLengkap?: Maybe<NullableStringFieldUpdateOperationsInput>;
   nomorId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pekerjaan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pekerjaanLokal?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pendidikan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   statusPernikahan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   telepon?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -10395,12 +11185,14 @@ export type PersonUpdateWithoutDocumentsInput = {
   golDarah?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDisabilitas?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDomisili?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  orientasiSeksual?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisKelamin?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jmlAnggota?: Maybe<NullableIntFieldUpdateOperationsInput>;
   namaLengkap?: Maybe<NullableStringFieldUpdateOperationsInput>;
   nomorId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pekerjaan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pekerjaanLokal?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pendidikan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   statusPernikahan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   telepon?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -10434,12 +11226,14 @@ export type PersonUpdateWithoutLogRequestInput = {
   golDarah?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDisabilitas?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisDomisili?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  orientasiSeksual?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jenisKelamin?: Maybe<NullableStringFieldUpdateOperationsInput>;
   jmlAnggota?: Maybe<NullableIntFieldUpdateOperationsInput>;
   namaLengkap?: Maybe<NullableStringFieldUpdateOperationsInput>;
   nomorId?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pekerjaan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pekerjaanLokal?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pendidikan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   statusPernikahan?: Maybe<NullableStringFieldUpdateOperationsInput>;
   telepon?: Maybe<NullableStringFieldUpdateOperationsInput>;
@@ -10512,12 +11306,14 @@ export type PersonWhereInput = {
   golDarah?: Maybe<StringNullableFilter>;
   jenisDisabilitas?: Maybe<StringNullableFilter>;
   jenisDomisili?: Maybe<StringNullableFilter>;
+  orientasiSeksual?: Maybe<StringNullableFilter>;
   jenisId?: Maybe<StringNullableFilter>;
   jenisKelamin?: Maybe<StringNullableFilter>;
   jmlAnggota?: Maybe<IntNullableFilter>;
   namaLengkap?: Maybe<StringNullableFilter>;
   nomorId?: Maybe<StringNullableFilter>;
   pekerjaan?: Maybe<StringNullableFilter>;
+  pekerjaanLokal?: Maybe<StringNullableFilter>;
   pendidikan?: Maybe<StringNullableFilter>;
   statusPernikahan?: Maybe<StringNullableFilter>;
   telepon?: Maybe<StringNullableFilter>;
@@ -10545,6 +11341,10 @@ export type Query = {
   findFirstApplication?: Maybe<Application>;
   applications: Array<Application>;
   aggregateApplication: AggregateApplication;
+  caseCategory?: Maybe<CaseCategory>;
+  findFirstCaseCategory?: Maybe<CaseCategory>;
+  caseCategories: Array<CaseCategory>;
+  aggregateCaseCategory: AggregateCaseCategory;
   caseClassification?: Maybe<CaseClassification>;
   findFirstCaseClassification?: Maybe<CaseClassification>;
   caseClassifications: Array<CaseClassification>;
@@ -10561,6 +11361,10 @@ export type Query = {
   findFirstCaseDocument?: Maybe<CaseDocument>;
   caseDocuments: Array<CaseDocument>;
   aggregateCaseDocument: AggregateCaseDocument;
+  caseIncidentLocation?: Maybe<CaseIncidentLocation>;
+  findFirstCaseIncidentLocation?: Maybe<CaseIncidentLocation>;
+  caseIncidentLocations: Array<CaseIncidentLocation>;
+  aggregateCaseIncidentLocation: AggregateCaseIncidentLocation;
   caseIssue?: Maybe<CaseIssue>;
   findFirstCaseIssue?: Maybe<CaseIssue>;
   caseIssues: Array<CaseIssue>;
@@ -10569,6 +11373,10 @@ export type Query = {
   findFirstCaseKorban?: Maybe<CaseKorban>;
   caseKorbans: Array<CaseKorban>;
   aggregateCaseKorban: AggregateCaseKorban;
+  caseModus?: Maybe<CaseModus>;
+  findFirstCaseModus?: Maybe<CaseModus>;
+  caseModuses: Array<CaseModus>;
+  aggregateCaseModus: AggregateCaseModus;
   casePelaku?: Maybe<CasePelaku>;
   findFirstCasePelaku?: Maybe<CasePelaku>;
   casePelakus: Array<CasePelaku>;
@@ -10609,6 +11417,10 @@ export type Query = {
   findFirstCaseViolatedRight?: Maybe<CaseViolatedRight>;
   caseViolatedRights: Array<CaseViolatedRight>;
   aggregateCaseViolatedRight: AggregateCaseViolatedRight;
+  caseViolenceMethod?: Maybe<CaseViolenceMethod>;
+  findFirstCaseViolenceMethod?: Maybe<CaseViolenceMethod>;
+  caseViolenceMethods: Array<CaseViolenceMethod>;
+  aggregateCaseViolenceMethod: AggregateCaseViolenceMethod;
   client?: Maybe<Client>;
   findFirstClient?: Maybe<Client>;
   clients: Array<Client>;
@@ -10717,6 +11529,40 @@ export type QueryAggregateApplicationArgs = {
   where?: Maybe<ApplicationWhereInput>;
   orderBy?: Maybe<Array<ApplicationOrderByInput>>;
   cursor?: Maybe<ApplicationWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryCaseCategoryArgs = {
+  where: CaseCategoryWhereUniqueInput;
+};
+
+
+export type QueryFindFirstCaseCategoryArgs = {
+  where?: Maybe<CaseCategoryWhereInput>;
+  orderBy?: Maybe<Array<CaseCategoryOrderByInput>>;
+  cursor?: Maybe<CaseCategoryWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseCategoryScalarFieldEnum>>;
+};
+
+
+export type QueryCaseCategoriesArgs = {
+  where?: Maybe<CaseCategoryWhereInput>;
+  orderBy?: Maybe<Array<CaseCategoryOrderByInput>>;
+  cursor?: Maybe<CaseCategoryWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseCategoryScalarFieldEnum>>;
+};
+
+
+export type QueryAggregateCaseCategoryArgs = {
+  where?: Maybe<CaseCategoryWhereInput>;
+  orderBy?: Maybe<Array<CaseCategoryOrderByInput>>;
+  cursor?: Maybe<CaseCategoryWhereUniqueInput>;
   take?: Maybe<Scalars['Int']>;
   skip?: Maybe<Scalars['Int']>;
 };
@@ -10858,6 +11704,40 @@ export type QueryAggregateCaseDocumentArgs = {
 };
 
 
+export type QueryCaseIncidentLocationArgs = {
+  where: CaseIncidentLocationWhereUniqueInput;
+};
+
+
+export type QueryFindFirstCaseIncidentLocationArgs = {
+  where?: Maybe<CaseIncidentLocationWhereInput>;
+  orderBy?: Maybe<Array<CaseIncidentLocationOrderByInput>>;
+  cursor?: Maybe<CaseIncidentLocationWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseIncidentLocationScalarFieldEnum>>;
+};
+
+
+export type QueryCaseIncidentLocationsArgs = {
+  where?: Maybe<CaseIncidentLocationWhereInput>;
+  orderBy?: Maybe<Array<CaseIncidentLocationOrderByInput>>;
+  cursor?: Maybe<CaseIncidentLocationWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseIncidentLocationScalarFieldEnum>>;
+};
+
+
+export type QueryAggregateCaseIncidentLocationArgs = {
+  where?: Maybe<CaseIncidentLocationWhereInput>;
+  orderBy?: Maybe<Array<CaseIncidentLocationOrderByInput>>;
+  cursor?: Maybe<CaseIncidentLocationWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+};
+
+
 export type QueryCaseIssueArgs = {
   where: CaseIssueWhereUniqueInput;
 };
@@ -10921,6 +11801,40 @@ export type QueryAggregateCaseKorbanArgs = {
   where?: Maybe<CaseKorbanWhereInput>;
   orderBy?: Maybe<Array<CaseKorbanOrderByInput>>;
   cursor?: Maybe<CaseKorbanWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryCaseModusArgs = {
+  where: CaseModusWhereUniqueInput;
+};
+
+
+export type QueryFindFirstCaseModusArgs = {
+  where?: Maybe<CaseModusWhereInput>;
+  orderBy?: Maybe<Array<CaseModusOrderByInput>>;
+  cursor?: Maybe<CaseModusWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseModusScalarFieldEnum>>;
+};
+
+
+export type QueryCaseModusesArgs = {
+  where?: Maybe<CaseModusWhereInput>;
+  orderBy?: Maybe<Array<CaseModusOrderByInput>>;
+  cursor?: Maybe<CaseModusWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseModusScalarFieldEnum>>;
+};
+
+
+export type QueryAggregateCaseModusArgs = {
+  where?: Maybe<CaseModusWhereInput>;
+  orderBy?: Maybe<Array<CaseModusOrderByInput>>;
+  cursor?: Maybe<CaseModusWhereUniqueInput>;
   take?: Maybe<Scalars['Int']>;
   skip?: Maybe<Scalars['Int']>;
 };
@@ -11261,6 +12175,40 @@ export type QueryAggregateCaseViolatedRightArgs = {
   where?: Maybe<CaseViolatedRightWhereInput>;
   orderBy?: Maybe<Array<CaseViolatedRightOrderByInput>>;
   cursor?: Maybe<CaseViolatedRightWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryCaseViolenceMethodArgs = {
+  where: CaseViolenceMethodWhereUniqueInput;
+};
+
+
+export type QueryFindFirstCaseViolenceMethodArgs = {
+  where?: Maybe<CaseViolenceMethodWhereInput>;
+  orderBy?: Maybe<Array<CaseViolenceMethodOrderByInput>>;
+  cursor?: Maybe<CaseViolenceMethodWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseViolenceMethodScalarFieldEnum>>;
+};
+
+
+export type QueryCaseViolenceMethodsArgs = {
+  where?: Maybe<CaseViolenceMethodWhereInput>;
+  orderBy?: Maybe<Array<CaseViolenceMethodOrderByInput>>;
+  cursor?: Maybe<CaseViolenceMethodWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseViolenceMethodScalarFieldEnum>>;
+};
+
+
+export type QueryAggregateCaseViolenceMethodArgs = {
+  where?: Maybe<CaseViolenceMethodWhereInput>;
+  orderBy?: Maybe<Array<CaseViolenceMethodOrderByInput>>;
+  cursor?: Maybe<CaseViolenceMethodWhereUniqueInput>;
   take?: Maybe<Scalars['Int']>;
   skip?: Maybe<Scalars['Int']>;
 };
@@ -11928,6 +12876,7 @@ export type Renamedcase = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt: Scalars['DateTime'];
   updatedBy?: Maybe<Scalars['String']>;
   case_progresses?: Maybe<Scalars['Int']>;
@@ -11948,6 +12897,10 @@ export type Renamedcase = {
   transferreferrals: Array<CaseTransferReferral>;
   violatedrights: Array<CaseViolatedRight>;
   logRequests: Array<LogRequest>;
+  categories: Array<CaseCategory>;
+  incidentLocations: Array<CaseIncidentLocation>;
+  moduses: Array<CaseModus>;
+  violenceMethods: Array<CaseViolenceMethod>;
 };
 
 
@@ -12060,6 +13013,46 @@ export type RenamedcaseLogRequestsArgs = {
   distinct?: Maybe<Array<LogRequestScalarFieldEnum>>;
 };
 
+
+export type RenamedcaseCategoriesArgs = {
+  where?: Maybe<CaseCategoryWhereInput>;
+  orderBy?: Maybe<Array<CaseCategoryOrderByInput>>;
+  cursor?: Maybe<CaseCategoryWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseCategoryScalarFieldEnum>>;
+};
+
+
+export type RenamedcaseIncidentLocationsArgs = {
+  where?: Maybe<CaseIncidentLocationWhereInput>;
+  orderBy?: Maybe<Array<CaseIncidentLocationOrderByInput>>;
+  cursor?: Maybe<CaseIncidentLocationWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseIncidentLocationScalarFieldEnum>>;
+};
+
+
+export type RenamedcaseModusesArgs = {
+  where?: Maybe<CaseModusWhereInput>;
+  orderBy?: Maybe<Array<CaseModusOrderByInput>>;
+  cursor?: Maybe<CaseModusWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseModusScalarFieldEnum>>;
+};
+
+
+export type RenamedcaseViolenceMethodsArgs = {
+  where?: Maybe<CaseViolenceMethodWhereInput>;
+  orderBy?: Maybe<Array<CaseViolenceMethodOrderByInput>>;
+  cursor?: Maybe<CaseViolenceMethodWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<CaseViolenceMethodScalarFieldEnum>>;
+};
+
 export type RenamedcaseAvgAggregate = {
   id: Scalars['Float'];
   applicationId?: Maybe<Scalars['Float']>;
@@ -12085,6 +13078,7 @@ export type RenamedcaseCountAggregate = {
   targetAdvokasi?: Maybe<Scalars['Int']>;
   unlockPk?: Maybe<Scalars['Int']>;
   unlockTransfer?: Maybe<Scalars['Int']>;
+  pelakuKorbanRelasi?: Maybe<Scalars['Int']>;
   updatedAt?: Maybe<Scalars['Int']>;
   updatedBy?: Maybe<Scalars['Int']>;
   case_progresses?: Maybe<Scalars['Int']>;
@@ -12109,6 +13103,7 @@ export type RenamedcaseCreateInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12126,6 +13121,10 @@ export type RenamedcaseCreateInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateNestedOneWithoutActivitiesInput = {
@@ -12137,6 +13136,12 @@ export type RenamedcaseCreateNestedOneWithoutActivitiesInput = {
 export type RenamedcaseCreateNestedOneWithoutApplicationInput = {
   create?: Maybe<RenamedcaseCreateWithoutApplicationInput>;
   connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutApplicationInput>;
+  connect?: Maybe<RenamedcaseWhereUniqueInput>;
+};
+
+export type RenamedcaseCreateNestedOneWithoutCategoriesInput = {
+  create?: Maybe<RenamedcaseCreateWithoutCategoriesInput>;
+  connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutCategoriesInput>;
   connect?: Maybe<RenamedcaseWhereUniqueInput>;
 };
 
@@ -12158,6 +13163,12 @@ export type RenamedcaseCreateNestedOneWithoutDocumentsInput = {
   connect?: Maybe<RenamedcaseWhereUniqueInput>;
 };
 
+export type RenamedcaseCreateNestedOneWithoutIncidentLocationsInput = {
+  create?: Maybe<RenamedcaseCreateWithoutIncidentLocationsInput>;
+  connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutIncidentLocationsInput>;
+  connect?: Maybe<RenamedcaseWhereUniqueInput>;
+};
+
 export type RenamedcaseCreateNestedOneWithoutIssuesInput = {
   create?: Maybe<RenamedcaseCreateWithoutIssuesInput>;
   connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutIssuesInput>;
@@ -12173,6 +13184,12 @@ export type RenamedcaseCreateNestedOneWithoutKorbansInput = {
 export type RenamedcaseCreateNestedOneWithoutLogRequestsInput = {
   create?: Maybe<RenamedcaseCreateWithoutLogRequestsInput>;
   connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutLogRequestsInput>;
+  connect?: Maybe<RenamedcaseWhereUniqueInput>;
+};
+
+export type RenamedcaseCreateNestedOneWithoutModusesInput = {
+  create?: Maybe<RenamedcaseCreateWithoutModusesInput>;
+  connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutModusesInput>;
   connect?: Maybe<RenamedcaseWhereUniqueInput>;
 };
 
@@ -12218,6 +13235,12 @@ export type RenamedcaseCreateNestedOneWithoutViolatedrightsInput = {
   connect?: Maybe<RenamedcaseWhereUniqueInput>;
 };
 
+export type RenamedcaseCreateNestedOneWithoutViolenceMethodsInput = {
+  create?: Maybe<RenamedcaseCreateWithoutViolenceMethodsInput>;
+  connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutViolenceMethodsInput>;
+  connect?: Maybe<RenamedcaseWhereUniqueInput>;
+};
+
 export type RenamedcaseCreateOrConnectWithoutActivitiesInput = {
   where: RenamedcaseWhereUniqueInput;
   create: RenamedcaseCreateWithoutActivitiesInput;
@@ -12226,6 +13249,11 @@ export type RenamedcaseCreateOrConnectWithoutActivitiesInput = {
 export type RenamedcaseCreateOrConnectWithoutApplicationInput = {
   where: RenamedcaseWhereUniqueInput;
   create: RenamedcaseCreateWithoutApplicationInput;
+};
+
+export type RenamedcaseCreateOrConnectWithoutCategoriesInput = {
+  where: RenamedcaseWhereUniqueInput;
+  create: RenamedcaseCreateWithoutCategoriesInput;
 };
 
 export type RenamedcaseCreateOrConnectWithoutClassificationsInput = {
@@ -12243,6 +13271,11 @@ export type RenamedcaseCreateOrConnectWithoutDocumentsInput = {
   create: RenamedcaseCreateWithoutDocumentsInput;
 };
 
+export type RenamedcaseCreateOrConnectWithoutIncidentLocationsInput = {
+  where: RenamedcaseWhereUniqueInput;
+  create: RenamedcaseCreateWithoutIncidentLocationsInput;
+};
+
 export type RenamedcaseCreateOrConnectWithoutIssuesInput = {
   where: RenamedcaseWhereUniqueInput;
   create: RenamedcaseCreateWithoutIssuesInput;
@@ -12256,6 +13289,11 @@ export type RenamedcaseCreateOrConnectWithoutKorbansInput = {
 export type RenamedcaseCreateOrConnectWithoutLogRequestsInput = {
   where: RenamedcaseWhereUniqueInput;
   create: RenamedcaseCreateWithoutLogRequestsInput;
+};
+
+export type RenamedcaseCreateOrConnectWithoutModusesInput = {
+  where: RenamedcaseWhereUniqueInput;
+  create: RenamedcaseCreateWithoutModusesInput;
 };
 
 export type RenamedcaseCreateOrConnectWithoutPelakusInput = {
@@ -12293,6 +13331,11 @@ export type RenamedcaseCreateOrConnectWithoutViolatedrightsInput = {
   create: RenamedcaseCreateWithoutViolatedrightsInput;
 };
 
+export type RenamedcaseCreateOrConnectWithoutViolenceMethodsInput = {
+  where: RenamedcaseWhereUniqueInput;
+  create: RenamedcaseCreateWithoutViolenceMethodsInput;
+};
+
 export type RenamedcaseCreateWithoutActivitiesInput = {
   applicationId?: Maybe<Scalars['Int']>;
   caseClosed: Scalars['Boolean'];
@@ -12309,6 +13352,7 @@ export type RenamedcaseCreateWithoutActivitiesInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12325,6 +13369,10 @@ export type RenamedcaseCreateWithoutActivitiesInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutApplicationInput = {
@@ -12343,6 +13391,7 @@ export type RenamedcaseCreateWithoutApplicationInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12359,6 +13408,49 @@ export type RenamedcaseCreateWithoutApplicationInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
+};
+
+export type RenamedcaseCreateWithoutCategoriesInput = {
+  applicationId?: Maybe<Scalars['Int']>;
+  caseClosed: Scalars['Boolean'];
+  caseClosedJenis?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  createdBy?: Maybe<Scalars['String']>;
+  hakTerlanggar?: Maybe<Scalars['String']>;
+  issue?: Maybe<Scalars['String']>;
+  judulKasus?: Maybe<Scalars['String']>;
+  klasifikasiDok?: Maybe<Scalars['String']>;
+  kronologiKasus?: Maybe<Scalars['String']>;
+  lockDitolak: Scalars['Boolean'];
+  statusPendampingan?: Maybe<Scalars['String']>;
+  targetAdvokasi?: Maybe<Scalars['String']>;
+  unlockPk: Scalars['Boolean'];
+  unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  updatedBy?: Maybe<Scalars['String']>;
+  pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
+  progresses?: Maybe<CaseProgressCreateNestedOneWithoutCaseInput>;
+  transfer?: Maybe<CaseTransferCreateNestedOneWithoutCaseInput>;
+  application?: Maybe<ApplicationCreateNestedOneWithoutCaseInput>;
+  referrals?: Maybe<CaseReferralCreateNestedManyWithoutCaseInput>;
+  classifications?: Maybe<CaseClassificationCreateNestedManyWithoutCaseIdInput>;
+  consultations?: Maybe<CaseConsultationCreateNestedManyWithoutCaseIdInput>;
+  documents?: Maybe<CaseDocumentCreateNestedManyWithoutCaseInput>;
+  issues?: Maybe<CaseIssueCreateNestedManyWithoutCaseIdInput>;
+  korbans?: Maybe<CaseKorbanCreateNestedManyWithoutCaseIdInput>;
+  pelakus?: Maybe<CasePelakuCreateNestedManyWithoutCaseIdInput>;
+  activities?: Maybe<CaseProgressActivityCreateNestedManyWithoutCaseIdInput>;
+  transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
+  violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
+  logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutClassificationsInput = {
@@ -12377,6 +13469,7 @@ export type RenamedcaseCreateWithoutClassificationsInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12393,6 +13486,10 @@ export type RenamedcaseCreateWithoutClassificationsInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutConsultationsInput = {
@@ -12411,6 +13508,7 @@ export type RenamedcaseCreateWithoutConsultationsInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12427,6 +13525,10 @@ export type RenamedcaseCreateWithoutConsultationsInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutDocumentsInput = {
@@ -12445,6 +13547,7 @@ export type RenamedcaseCreateWithoutDocumentsInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12461,6 +13564,49 @@ export type RenamedcaseCreateWithoutDocumentsInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
+};
+
+export type RenamedcaseCreateWithoutIncidentLocationsInput = {
+  applicationId?: Maybe<Scalars['Int']>;
+  caseClosed: Scalars['Boolean'];
+  caseClosedJenis?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  createdBy?: Maybe<Scalars['String']>;
+  hakTerlanggar?: Maybe<Scalars['String']>;
+  issue?: Maybe<Scalars['String']>;
+  judulKasus?: Maybe<Scalars['String']>;
+  klasifikasiDok?: Maybe<Scalars['String']>;
+  kronologiKasus?: Maybe<Scalars['String']>;
+  lockDitolak: Scalars['Boolean'];
+  statusPendampingan?: Maybe<Scalars['String']>;
+  targetAdvokasi?: Maybe<Scalars['String']>;
+  unlockPk: Scalars['Boolean'];
+  unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  updatedBy?: Maybe<Scalars['String']>;
+  pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
+  progresses?: Maybe<CaseProgressCreateNestedOneWithoutCaseInput>;
+  transfer?: Maybe<CaseTransferCreateNestedOneWithoutCaseInput>;
+  application?: Maybe<ApplicationCreateNestedOneWithoutCaseInput>;
+  referrals?: Maybe<CaseReferralCreateNestedManyWithoutCaseInput>;
+  classifications?: Maybe<CaseClassificationCreateNestedManyWithoutCaseIdInput>;
+  consultations?: Maybe<CaseConsultationCreateNestedManyWithoutCaseIdInput>;
+  documents?: Maybe<CaseDocumentCreateNestedManyWithoutCaseInput>;
+  issues?: Maybe<CaseIssueCreateNestedManyWithoutCaseIdInput>;
+  korbans?: Maybe<CaseKorbanCreateNestedManyWithoutCaseIdInput>;
+  pelakus?: Maybe<CasePelakuCreateNestedManyWithoutCaseIdInput>;
+  activities?: Maybe<CaseProgressActivityCreateNestedManyWithoutCaseIdInput>;
+  transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
+  violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
+  logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutIssuesInput = {
@@ -12479,6 +13625,7 @@ export type RenamedcaseCreateWithoutIssuesInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12495,6 +13642,10 @@ export type RenamedcaseCreateWithoutIssuesInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutKorbansInput = {
@@ -12513,6 +13664,7 @@ export type RenamedcaseCreateWithoutKorbansInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12529,6 +13681,10 @@ export type RenamedcaseCreateWithoutKorbansInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutLogRequestsInput = {
@@ -12547,6 +13703,7 @@ export type RenamedcaseCreateWithoutLogRequestsInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12563,6 +13720,49 @@ export type RenamedcaseCreateWithoutLogRequestsInput = {
   activities?: Maybe<CaseProgressActivityCreateNestedManyWithoutCaseIdInput>;
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
+};
+
+export type RenamedcaseCreateWithoutModusesInput = {
+  applicationId?: Maybe<Scalars['Int']>;
+  caseClosed: Scalars['Boolean'];
+  caseClosedJenis?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  createdBy?: Maybe<Scalars['String']>;
+  hakTerlanggar?: Maybe<Scalars['String']>;
+  issue?: Maybe<Scalars['String']>;
+  judulKasus?: Maybe<Scalars['String']>;
+  klasifikasiDok?: Maybe<Scalars['String']>;
+  kronologiKasus?: Maybe<Scalars['String']>;
+  lockDitolak: Scalars['Boolean'];
+  statusPendampingan?: Maybe<Scalars['String']>;
+  targetAdvokasi?: Maybe<Scalars['String']>;
+  unlockPk: Scalars['Boolean'];
+  unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  updatedBy?: Maybe<Scalars['String']>;
+  pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
+  progresses?: Maybe<CaseProgressCreateNestedOneWithoutCaseInput>;
+  transfer?: Maybe<CaseTransferCreateNestedOneWithoutCaseInput>;
+  application?: Maybe<ApplicationCreateNestedOneWithoutCaseInput>;
+  referrals?: Maybe<CaseReferralCreateNestedManyWithoutCaseInput>;
+  classifications?: Maybe<CaseClassificationCreateNestedManyWithoutCaseIdInput>;
+  consultations?: Maybe<CaseConsultationCreateNestedManyWithoutCaseIdInput>;
+  documents?: Maybe<CaseDocumentCreateNestedManyWithoutCaseInput>;
+  issues?: Maybe<CaseIssueCreateNestedManyWithoutCaseIdInput>;
+  korbans?: Maybe<CaseKorbanCreateNestedManyWithoutCaseIdInput>;
+  pelakus?: Maybe<CasePelakuCreateNestedManyWithoutCaseIdInput>;
+  activities?: Maybe<CaseProgressActivityCreateNestedManyWithoutCaseIdInput>;
+  transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
+  violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
+  logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutPelakusInput = {
@@ -12581,6 +13781,7 @@ export type RenamedcaseCreateWithoutPelakusInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12597,6 +13798,10 @@ export type RenamedcaseCreateWithoutPelakusInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutPkInput = {
@@ -12615,6 +13820,7 @@ export type RenamedcaseCreateWithoutPkInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   progresses?: Maybe<CaseProgressCreateNestedOneWithoutCaseInput>;
@@ -12631,6 +13837,10 @@ export type RenamedcaseCreateWithoutPkInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutProgressesInput = {
@@ -12649,6 +13859,7 @@ export type RenamedcaseCreateWithoutProgressesInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12665,6 +13876,10 @@ export type RenamedcaseCreateWithoutProgressesInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutReferralsInput = {
@@ -12683,6 +13898,7 @@ export type RenamedcaseCreateWithoutReferralsInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12699,6 +13915,10 @@ export type RenamedcaseCreateWithoutReferralsInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutTransferInput = {
@@ -12717,6 +13937,7 @@ export type RenamedcaseCreateWithoutTransferInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12733,6 +13954,10 @@ export type RenamedcaseCreateWithoutTransferInput = {
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutTransferreferralsInput = {
@@ -12751,6 +13976,7 @@ export type RenamedcaseCreateWithoutTransferreferralsInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12767,6 +13993,10 @@ export type RenamedcaseCreateWithoutTransferreferralsInput = {
   activities?: Maybe<CaseProgressActivityCreateNestedManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseCreateWithoutViolatedrightsInput = {
@@ -12785,6 +14015,7 @@ export type RenamedcaseCreateWithoutViolatedrightsInput = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk: Scalars['Boolean'];
   unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
@@ -12801,6 +14032,49 @@ export type RenamedcaseCreateWithoutViolatedrightsInput = {
   activities?: Maybe<CaseProgressActivityCreateNestedManyWithoutCaseIdInput>;
   transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodCreateNestedManyWithoutCaseIdInput>;
+};
+
+export type RenamedcaseCreateWithoutViolenceMethodsInput = {
+  applicationId?: Maybe<Scalars['Int']>;
+  caseClosed: Scalars['Boolean'];
+  caseClosedJenis?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  createdBy?: Maybe<Scalars['String']>;
+  hakTerlanggar?: Maybe<Scalars['String']>;
+  issue?: Maybe<Scalars['String']>;
+  judulKasus?: Maybe<Scalars['String']>;
+  klasifikasiDok?: Maybe<Scalars['String']>;
+  kronologiKasus?: Maybe<Scalars['String']>;
+  lockDitolak: Scalars['Boolean'];
+  statusPendampingan?: Maybe<Scalars['String']>;
+  targetAdvokasi?: Maybe<Scalars['String']>;
+  unlockPk: Scalars['Boolean'];
+  unlockTransfer: Scalars['Boolean'];
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  updatedBy?: Maybe<Scalars['String']>;
+  pk?: Maybe<CasePkCreateNestedOneWithoutCaseInput>;
+  progresses?: Maybe<CaseProgressCreateNestedOneWithoutCaseInput>;
+  transfer?: Maybe<CaseTransferCreateNestedOneWithoutCaseInput>;
+  application?: Maybe<ApplicationCreateNestedOneWithoutCaseInput>;
+  referrals?: Maybe<CaseReferralCreateNestedManyWithoutCaseInput>;
+  classifications?: Maybe<CaseClassificationCreateNestedManyWithoutCaseIdInput>;
+  consultations?: Maybe<CaseConsultationCreateNestedManyWithoutCaseIdInput>;
+  documents?: Maybe<CaseDocumentCreateNestedManyWithoutCaseInput>;
+  issues?: Maybe<CaseIssueCreateNestedManyWithoutCaseIdInput>;
+  korbans?: Maybe<CaseKorbanCreateNestedManyWithoutCaseIdInput>;
+  pelakus?: Maybe<CasePelakuCreateNestedManyWithoutCaseIdInput>;
+  activities?: Maybe<CaseProgressActivityCreateNestedManyWithoutCaseIdInput>;
+  transferreferrals?: Maybe<CaseTransferReferralCreateNestedManyWithoutCaseIdInput>;
+  violatedrights?: Maybe<CaseViolatedRightCreateNestedManyWithoutCaseIdInput>;
+  logRequests?: Maybe<LogRequestCreateNestedManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryCreateNestedManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationCreateNestedManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusCreateNestedManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseMaxAggregate = {
@@ -12820,6 +14094,7 @@ export type RenamedcaseMaxAggregate = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk?: Maybe<Scalars['Boolean']>;
   unlockTransfer?: Maybe<Scalars['Boolean']>;
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   case_progresses?: Maybe<Scalars['Int']>;
@@ -12844,6 +14119,7 @@ export type RenamedcaseMinAggregate = {
   targetAdvokasi?: Maybe<Scalars['String']>;
   unlockPk?: Maybe<Scalars['Boolean']>;
   unlockTransfer?: Maybe<Scalars['Boolean']>;
+  pelakuKorbanRelasi?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   updatedBy?: Maybe<Scalars['String']>;
   case_progresses?: Maybe<Scalars['Int']>;
@@ -12868,6 +14144,7 @@ export type RenamedcaseOrderByInput = {
   targetAdvokasi?: Maybe<SortOrder>;
   unlockPk?: Maybe<SortOrder>;
   unlockTransfer?: Maybe<SortOrder>;
+  pelakuKorbanRelasi?: Maybe<SortOrder>;
   updatedAt?: Maybe<SortOrder>;
   updatedBy?: Maybe<SortOrder>;
   case_progresses?: Maybe<SortOrder>;
@@ -12897,6 +14174,7 @@ export enum RenamedcaseScalarFieldEnum {
   TargetAdvokasi = 'targetAdvokasi',
   UnlockPk = 'unlockPk',
   UnlockTransfer = 'unlockTransfer',
+  PelakuKorbanRelasi = 'pelakuKorbanRelasi',
   UpdatedAt = 'updatedAt',
   UpdatedBy = 'updatedBy',
   CaseProgresses = 'case_progresses',
@@ -12928,6 +14206,7 @@ export type RenamedcaseUpdateInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -12945,6 +14224,10 @@ export type RenamedcaseUpdateInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateManyMutationInput = {
@@ -12963,6 +14246,7 @@ export type RenamedcaseUpdateManyMutationInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
 };
@@ -12985,6 +14269,16 @@ export type RenamedcaseUpdateOneWithoutApplicationInput = {
   disconnect?: Maybe<Scalars['Boolean']>;
   delete?: Maybe<Scalars['Boolean']>;
   update?: Maybe<RenamedcaseUpdateWithoutApplicationInput>;
+};
+
+export type RenamedcaseUpdateOneWithoutCategoriesInput = {
+  create?: Maybe<RenamedcaseCreateWithoutCategoriesInput>;
+  connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutCategoriesInput>;
+  upsert?: Maybe<RenamedcaseUpsertWithoutCategoriesInput>;
+  connect?: Maybe<RenamedcaseWhereUniqueInput>;
+  disconnect?: Maybe<Scalars['Boolean']>;
+  delete?: Maybe<Scalars['Boolean']>;
+  update?: Maybe<RenamedcaseUpdateWithoutCategoriesInput>;
 };
 
 export type RenamedcaseUpdateOneWithoutClassificationsInput = {
@@ -13017,6 +14311,16 @@ export type RenamedcaseUpdateOneWithoutDocumentsInput = {
   update?: Maybe<RenamedcaseUpdateWithoutDocumentsInput>;
 };
 
+export type RenamedcaseUpdateOneWithoutIncidentLocationsInput = {
+  create?: Maybe<RenamedcaseCreateWithoutIncidentLocationsInput>;
+  connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutIncidentLocationsInput>;
+  upsert?: Maybe<RenamedcaseUpsertWithoutIncidentLocationsInput>;
+  connect?: Maybe<RenamedcaseWhereUniqueInput>;
+  disconnect?: Maybe<Scalars['Boolean']>;
+  delete?: Maybe<Scalars['Boolean']>;
+  update?: Maybe<RenamedcaseUpdateWithoutIncidentLocationsInput>;
+};
+
 export type RenamedcaseUpdateOneWithoutIssuesInput = {
   create?: Maybe<RenamedcaseCreateWithoutIssuesInput>;
   connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutIssuesInput>;
@@ -13045,6 +14349,16 @@ export type RenamedcaseUpdateOneWithoutLogRequestsInput = {
   disconnect?: Maybe<Scalars['Boolean']>;
   delete?: Maybe<Scalars['Boolean']>;
   update?: Maybe<RenamedcaseUpdateWithoutLogRequestsInput>;
+};
+
+export type RenamedcaseUpdateOneWithoutModusesInput = {
+  create?: Maybe<RenamedcaseCreateWithoutModusesInput>;
+  connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutModusesInput>;
+  upsert?: Maybe<RenamedcaseUpsertWithoutModusesInput>;
+  connect?: Maybe<RenamedcaseWhereUniqueInput>;
+  disconnect?: Maybe<Scalars['Boolean']>;
+  delete?: Maybe<Scalars['Boolean']>;
+  update?: Maybe<RenamedcaseUpdateWithoutModusesInput>;
 };
 
 export type RenamedcaseUpdateOneWithoutPelakusInput = {
@@ -13117,6 +14431,16 @@ export type RenamedcaseUpdateOneWithoutViolatedrightsInput = {
   update?: Maybe<RenamedcaseUpdateWithoutViolatedrightsInput>;
 };
 
+export type RenamedcaseUpdateOneWithoutViolenceMethodsInput = {
+  create?: Maybe<RenamedcaseCreateWithoutViolenceMethodsInput>;
+  connectOrCreate?: Maybe<RenamedcaseCreateOrConnectWithoutViolenceMethodsInput>;
+  upsert?: Maybe<RenamedcaseUpsertWithoutViolenceMethodsInput>;
+  connect?: Maybe<RenamedcaseWhereUniqueInput>;
+  disconnect?: Maybe<Scalars['Boolean']>;
+  delete?: Maybe<Scalars['Boolean']>;
+  update?: Maybe<RenamedcaseUpdateWithoutViolenceMethodsInput>;
+};
+
 export type RenamedcaseUpdateWithoutActivitiesInput = {
   applicationId?: Maybe<NullableIntFieldUpdateOperationsInput>;
   caseClosed?: Maybe<BoolFieldUpdateOperationsInput>;
@@ -13133,6 +14457,7 @@ export type RenamedcaseUpdateWithoutActivitiesInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13149,6 +14474,10 @@ export type RenamedcaseUpdateWithoutActivitiesInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutApplicationInput = {
@@ -13167,6 +14496,7 @@ export type RenamedcaseUpdateWithoutApplicationInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13183,6 +14513,49 @@ export type RenamedcaseUpdateWithoutApplicationInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
+};
+
+export type RenamedcaseUpdateWithoutCategoriesInput = {
+  applicationId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  caseClosed?: Maybe<BoolFieldUpdateOperationsInput>;
+  caseClosedJenis?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  createdBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  hakTerlanggar?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  issue?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  judulKasus?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  klasifikasiDok?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  kronologiKasus?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  lockDitolak?: Maybe<BoolFieldUpdateOperationsInput>;
+  statusPendampingan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
+  unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
+  progresses?: Maybe<CaseProgressUpdateOneWithoutCaseInput>;
+  transfer?: Maybe<CaseTransferUpdateOneWithoutCaseInput>;
+  application?: Maybe<ApplicationUpdateOneWithoutCaseInput>;
+  referrals?: Maybe<CaseReferralUpdateManyWithoutCaseInput>;
+  classifications?: Maybe<CaseClassificationUpdateManyWithoutCaseIdInput>;
+  consultations?: Maybe<CaseConsultationUpdateManyWithoutCaseIdInput>;
+  documents?: Maybe<CaseDocumentUpdateManyWithoutCaseInput>;
+  issues?: Maybe<CaseIssueUpdateManyWithoutCaseIdInput>;
+  korbans?: Maybe<CaseKorbanUpdateManyWithoutCaseIdInput>;
+  pelakus?: Maybe<CasePelakuUpdateManyWithoutCaseIdInput>;
+  activities?: Maybe<CaseProgressActivityUpdateManyWithoutCaseIdInput>;
+  transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
+  violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
+  logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutClassificationsInput = {
@@ -13201,6 +14574,7 @@ export type RenamedcaseUpdateWithoutClassificationsInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13217,6 +14591,10 @@ export type RenamedcaseUpdateWithoutClassificationsInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutConsultationsInput = {
@@ -13235,6 +14613,7 @@ export type RenamedcaseUpdateWithoutConsultationsInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13251,6 +14630,10 @@ export type RenamedcaseUpdateWithoutConsultationsInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutDocumentsInput = {
@@ -13269,6 +14652,7 @@ export type RenamedcaseUpdateWithoutDocumentsInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13285,6 +14669,49 @@ export type RenamedcaseUpdateWithoutDocumentsInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
+};
+
+export type RenamedcaseUpdateWithoutIncidentLocationsInput = {
+  applicationId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  caseClosed?: Maybe<BoolFieldUpdateOperationsInput>;
+  caseClosedJenis?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  createdBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  hakTerlanggar?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  issue?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  judulKasus?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  klasifikasiDok?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  kronologiKasus?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  lockDitolak?: Maybe<BoolFieldUpdateOperationsInput>;
+  statusPendampingan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
+  unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
+  progresses?: Maybe<CaseProgressUpdateOneWithoutCaseInput>;
+  transfer?: Maybe<CaseTransferUpdateOneWithoutCaseInput>;
+  application?: Maybe<ApplicationUpdateOneWithoutCaseInput>;
+  referrals?: Maybe<CaseReferralUpdateManyWithoutCaseInput>;
+  classifications?: Maybe<CaseClassificationUpdateManyWithoutCaseIdInput>;
+  consultations?: Maybe<CaseConsultationUpdateManyWithoutCaseIdInput>;
+  documents?: Maybe<CaseDocumentUpdateManyWithoutCaseInput>;
+  issues?: Maybe<CaseIssueUpdateManyWithoutCaseIdInput>;
+  korbans?: Maybe<CaseKorbanUpdateManyWithoutCaseIdInput>;
+  pelakus?: Maybe<CasePelakuUpdateManyWithoutCaseIdInput>;
+  activities?: Maybe<CaseProgressActivityUpdateManyWithoutCaseIdInput>;
+  transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
+  violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
+  logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutIssuesInput = {
@@ -13303,6 +14730,7 @@ export type RenamedcaseUpdateWithoutIssuesInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13319,6 +14747,10 @@ export type RenamedcaseUpdateWithoutIssuesInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutKorbansInput = {
@@ -13337,6 +14769,7 @@ export type RenamedcaseUpdateWithoutKorbansInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13353,6 +14786,10 @@ export type RenamedcaseUpdateWithoutKorbansInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutLogRequestsInput = {
@@ -13371,6 +14808,7 @@ export type RenamedcaseUpdateWithoutLogRequestsInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13387,6 +14825,49 @@ export type RenamedcaseUpdateWithoutLogRequestsInput = {
   activities?: Maybe<CaseProgressActivityUpdateManyWithoutCaseIdInput>;
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
+};
+
+export type RenamedcaseUpdateWithoutModusesInput = {
+  applicationId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  caseClosed?: Maybe<BoolFieldUpdateOperationsInput>;
+  caseClosedJenis?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  createdBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  hakTerlanggar?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  issue?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  judulKasus?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  klasifikasiDok?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  kronologiKasus?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  lockDitolak?: Maybe<BoolFieldUpdateOperationsInput>;
+  statusPendampingan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
+  unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
+  progresses?: Maybe<CaseProgressUpdateOneWithoutCaseInput>;
+  transfer?: Maybe<CaseTransferUpdateOneWithoutCaseInput>;
+  application?: Maybe<ApplicationUpdateOneWithoutCaseInput>;
+  referrals?: Maybe<CaseReferralUpdateManyWithoutCaseInput>;
+  classifications?: Maybe<CaseClassificationUpdateManyWithoutCaseIdInput>;
+  consultations?: Maybe<CaseConsultationUpdateManyWithoutCaseIdInput>;
+  documents?: Maybe<CaseDocumentUpdateManyWithoutCaseInput>;
+  issues?: Maybe<CaseIssueUpdateManyWithoutCaseIdInput>;
+  korbans?: Maybe<CaseKorbanUpdateManyWithoutCaseIdInput>;
+  pelakus?: Maybe<CasePelakuUpdateManyWithoutCaseIdInput>;
+  activities?: Maybe<CaseProgressActivityUpdateManyWithoutCaseIdInput>;
+  transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
+  violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
+  logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutPelakusInput = {
@@ -13405,6 +14886,7 @@ export type RenamedcaseUpdateWithoutPelakusInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13421,6 +14903,10 @@ export type RenamedcaseUpdateWithoutPelakusInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutPkInput = {
@@ -13439,6 +14925,7 @@ export type RenamedcaseUpdateWithoutPkInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   progresses?: Maybe<CaseProgressUpdateOneWithoutCaseInput>;
@@ -13455,6 +14942,10 @@ export type RenamedcaseUpdateWithoutPkInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutProgressesInput = {
@@ -13473,6 +14964,7 @@ export type RenamedcaseUpdateWithoutProgressesInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13489,6 +14981,10 @@ export type RenamedcaseUpdateWithoutProgressesInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutReferralsInput = {
@@ -13507,6 +15003,7 @@ export type RenamedcaseUpdateWithoutReferralsInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13523,6 +15020,10 @@ export type RenamedcaseUpdateWithoutReferralsInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutTransferInput = {
@@ -13541,6 +15042,7 @@ export type RenamedcaseUpdateWithoutTransferInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13557,6 +15059,10 @@ export type RenamedcaseUpdateWithoutTransferInput = {
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutTransferreferralsInput = {
@@ -13575,6 +15081,7 @@ export type RenamedcaseUpdateWithoutTransferreferralsInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13591,6 +15098,10 @@ export type RenamedcaseUpdateWithoutTransferreferralsInput = {
   activities?: Maybe<CaseProgressActivityUpdateManyWithoutCaseIdInput>;
   violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpdateWithoutViolatedrightsInput = {
@@ -13609,6 +15120,7 @@ export type RenamedcaseUpdateWithoutViolatedrightsInput = {
   targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
   unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
   updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
   updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
   pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
@@ -13625,6 +15137,49 @@ export type RenamedcaseUpdateWithoutViolatedrightsInput = {
   activities?: Maybe<CaseProgressActivityUpdateManyWithoutCaseIdInput>;
   transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
   logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
+  violenceMethods?: Maybe<CaseViolenceMethodUpdateManyWithoutCaseIdInput>;
+};
+
+export type RenamedcaseUpdateWithoutViolenceMethodsInput = {
+  applicationId?: Maybe<NullableIntFieldUpdateOperationsInput>;
+  caseClosed?: Maybe<BoolFieldUpdateOperationsInput>;
+  caseClosedJenis?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  createdAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  createdBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  hakTerlanggar?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  issue?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  judulKasus?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  klasifikasiDok?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  kronologiKasus?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  lockDitolak?: Maybe<BoolFieldUpdateOperationsInput>;
+  statusPendampingan?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  targetAdvokasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  unlockPk?: Maybe<BoolFieldUpdateOperationsInput>;
+  unlockTransfer?: Maybe<BoolFieldUpdateOperationsInput>;
+  pelakuKorbanRelasi?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  updatedAt?: Maybe<DateTimeFieldUpdateOperationsInput>;
+  updatedBy?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  pk?: Maybe<CasePkUpdateOneWithoutCaseInput>;
+  progresses?: Maybe<CaseProgressUpdateOneWithoutCaseInput>;
+  transfer?: Maybe<CaseTransferUpdateOneWithoutCaseInput>;
+  application?: Maybe<ApplicationUpdateOneWithoutCaseInput>;
+  referrals?: Maybe<CaseReferralUpdateManyWithoutCaseInput>;
+  classifications?: Maybe<CaseClassificationUpdateManyWithoutCaseIdInput>;
+  consultations?: Maybe<CaseConsultationUpdateManyWithoutCaseIdInput>;
+  documents?: Maybe<CaseDocumentUpdateManyWithoutCaseInput>;
+  issues?: Maybe<CaseIssueUpdateManyWithoutCaseIdInput>;
+  korbans?: Maybe<CaseKorbanUpdateManyWithoutCaseIdInput>;
+  pelakus?: Maybe<CasePelakuUpdateManyWithoutCaseIdInput>;
+  activities?: Maybe<CaseProgressActivityUpdateManyWithoutCaseIdInput>;
+  transferreferrals?: Maybe<CaseTransferReferralUpdateManyWithoutCaseIdInput>;
+  violatedrights?: Maybe<CaseViolatedRightUpdateManyWithoutCaseIdInput>;
+  logRequests?: Maybe<LogRequestUpdateManyWithoutCaseIdInput>;
+  categories?: Maybe<CaseCategoryUpdateManyWithoutCaseIdInput>;
+  incidentLocations?: Maybe<CaseIncidentLocationUpdateManyWithoutCaseIdInput>;
+  moduses?: Maybe<CaseModusUpdateManyWithoutCaseIdInput>;
 };
 
 export type RenamedcaseUpsertWithoutActivitiesInput = {
@@ -13635,6 +15190,11 @@ export type RenamedcaseUpsertWithoutActivitiesInput = {
 export type RenamedcaseUpsertWithoutApplicationInput = {
   update: RenamedcaseUpdateWithoutApplicationInput;
   create: RenamedcaseCreateWithoutApplicationInput;
+};
+
+export type RenamedcaseUpsertWithoutCategoriesInput = {
+  update: RenamedcaseUpdateWithoutCategoriesInput;
+  create: RenamedcaseCreateWithoutCategoriesInput;
 };
 
 export type RenamedcaseUpsertWithoutClassificationsInput = {
@@ -13652,6 +15212,11 @@ export type RenamedcaseUpsertWithoutDocumentsInput = {
   create: RenamedcaseCreateWithoutDocumentsInput;
 };
 
+export type RenamedcaseUpsertWithoutIncidentLocationsInput = {
+  update: RenamedcaseUpdateWithoutIncidentLocationsInput;
+  create: RenamedcaseCreateWithoutIncidentLocationsInput;
+};
+
 export type RenamedcaseUpsertWithoutIssuesInput = {
   update: RenamedcaseUpdateWithoutIssuesInput;
   create: RenamedcaseCreateWithoutIssuesInput;
@@ -13665,6 +15230,11 @@ export type RenamedcaseUpsertWithoutKorbansInput = {
 export type RenamedcaseUpsertWithoutLogRequestsInput = {
   update: RenamedcaseUpdateWithoutLogRequestsInput;
   create: RenamedcaseCreateWithoutLogRequestsInput;
+};
+
+export type RenamedcaseUpsertWithoutModusesInput = {
+  update: RenamedcaseUpdateWithoutModusesInput;
+  create: RenamedcaseCreateWithoutModusesInput;
 };
 
 export type RenamedcaseUpsertWithoutPelakusInput = {
@@ -13702,6 +15272,11 @@ export type RenamedcaseUpsertWithoutViolatedrightsInput = {
   create: RenamedcaseCreateWithoutViolatedrightsInput;
 };
 
+export type RenamedcaseUpsertWithoutViolenceMethodsInput = {
+  update: RenamedcaseUpdateWithoutViolenceMethodsInput;
+  create: RenamedcaseCreateWithoutViolenceMethodsInput;
+};
+
 export type RenamedcaseWhereInput = {
   AND?: Maybe<Array<RenamedcaseWhereInput>>;
   OR?: Maybe<Array<RenamedcaseWhereInput>>;
@@ -13722,6 +15297,7 @@ export type RenamedcaseWhereInput = {
   targetAdvokasi?: Maybe<StringNullableFilter>;
   unlockPk?: Maybe<BoolFilter>;
   unlockTransfer?: Maybe<BoolFilter>;
+  pelakuKorbanRelasi?: Maybe<StringNullableFilter>;
   updatedAt?: Maybe<DateTimeFilter>;
   updatedBy?: Maybe<StringNullableFilter>;
   case_progresses?: Maybe<IntNullableFilter>;
@@ -13742,6 +15318,10 @@ export type RenamedcaseWhereInput = {
   transferreferrals?: Maybe<CaseTransferReferralListRelationFilter>;
   violatedrights?: Maybe<CaseViolatedRightListRelationFilter>;
   logRequests?: Maybe<LogRequestListRelationFilter>;
+  categories?: Maybe<CaseCategoryListRelationFilter>;
+  incidentLocations?: Maybe<CaseIncidentLocationListRelationFilter>;
+  moduses?: Maybe<CaseModusListRelationFilter>;
+  violenceMethods?: Maybe<CaseViolenceMethodListRelationFilter>;
 };
 
 export type RenamedcaseWhereUniqueInput = {
@@ -15466,6 +17046,34 @@ export type DestroyCaseIssueMutationVariables = Exact<{
 
 export type DestroyCaseIssueMutation = { deleteManyCaseIssue: Pick<AffectedRowsOutput, 'count'> };
 
+export type DestroyCaseCategoryMutationVariables = Exact<{
+  where: CaseCategoryWhereInput;
+}>;
+
+
+export type DestroyCaseCategoryMutation = { deleteManyCaseCategory: Pick<AffectedRowsOutput, 'count'> };
+
+export type DestroyCaseIncidentLocationMutationVariables = Exact<{
+  where: CaseIncidentLocationWhereInput;
+}>;
+
+
+export type DestroyCaseIncidentLocationMutation = { deleteManyCaseIncidentLocation: Pick<AffectedRowsOutput, 'count'> };
+
+export type DestroyCaseViolenceMethodMutationVariables = Exact<{
+  where: CaseViolenceMethodWhereInput;
+}>;
+
+
+export type DestroyCaseViolenceMethodMutation = { deleteManyCaseViolenceMethod: Pick<AffectedRowsOutput, 'count'> };
+
+export type DestroyCaseModusMutationVariables = Exact<{
+  where: CaseModusWhereInput;
+}>;
+
+
+export type DestroyCaseModusMutation = { deleteManyCaseModus: Pick<AffectedRowsOutput, 'count'> };
+
 export type PostLogRequestMutationVariables = Exact<{
   data: LogRequestCreateInput;
 }>;
@@ -15526,7 +17134,7 @@ export type PutCaseMutation = { updateRenamedcase?: Maybe<(
     Pick<Renamedcase, 'id' | 'applicationId' | 'caseClosed' | 'caseClosedJenis' | 'createdAt' | 'createdBy' | 'hakTerlanggar' | 'issue' | 'judulKasus' | 'klasifikasiDok' | 'kronologiKasus' | 'lockDitolak' | 'statusPendampingan' | 'targetAdvokasi' | 'unlockPk' | 'unlockTransfer' | 'updatedAt' | 'updatedBy'>
     & { application?: Maybe<(
       Pick<Application, 'id' | 'createdAt' | 'createdBy' | 'dudukPerara' | 'infoLbh' | 'jumlahPenerimaManfaat' | 'konfirmasiData' | 'noReg' | 'pernahKlien' | 'pernahPpLain' | 'ppLain' | 'regDate' | 'relasiWakilClient' | 'setujuAdvokasi' | 'statusPerwakilan' | 'updatedAt' | 'updatedBy' | 'waktuPernahKlien' | 'whyLbh' | 'tahap' | 'status'>
-      & { wakilId?: Maybe<Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'pekerjaan' | 'pendidikan' | 'statusPernikahan' | 'telepon'>>, clients: Array<{ personId?: Maybe<Pick<Person, 'namaLengkap'>> }> }
+      & { wakilId?: Maybe<Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'orientasiSeksual' | 'pekerjaan' | 'pekerjaanLokal' | 'pendidikan' | 'statusPernikahan' | 'telepon'>>, clients: Array<{ personId?: Maybe<Pick<Person, 'namaLengkap'>> }> }
     )>, classifications: Array<Pick<CaseClassification, 'id' | 'kodeMt'>>, consultations: Array<(
       Pick<CaseConsultation, 'id' | 'appKonsul' | 'createdAt' | 'createdBy' | 'isiKonsul' | 'judulAktifitas' | 'ppKonsul' | 'harapan' | 'saranHukum' | 'rencanaTindakLanjut' | 'tglKonsul' | 'updatedAt' | 'updatedBy'>
       & { apps: Array<{ appConsultation?: Maybe<Pick<User, 'name' | 'id'>> }> }
@@ -15599,7 +17207,7 @@ export type PutPersonMutationVariables = Exact<{
 
 
 export type PutPersonMutation = { updatePerson?: Maybe<(
-    Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'pekerjaan' | 'pendidikan' | 'statusPernikahan' | 'telepon' | 'tglLahir' | 'tmpLahir' | 'unitSatuan' | 'updatedAt' | 'updatedBy' | 'wargaNegara'>
+    Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'orientasiSeksual' | 'pekerjaan' | 'pekerjaanLokal' | 'pendidikan' | 'statusPernikahan' | 'telepon' | 'tglLahir' | 'tmpLahir' | 'unitSatuan' | 'updatedAt' | 'updatedBy' | 'wargaNegara'>
     & { applications: Array<Pick<Application, 'id' | 'noReg' | 'createdAt'>>, clients: Array<(
       Pick<Client, 'id'>
       & { applicationId?: Maybe<Pick<Application, 'id' | 'noReg' | 'createdAt'>> }
@@ -15612,7 +17220,7 @@ export type PostPersonMutationVariables = Exact<{
 
 
 export type PostPersonMutation = { createPerson: (
-    Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'pekerjaan' | 'pendidikan' | 'statusPernikahan' | 'telepon' | 'tglLahir' | 'tmpLahir' | 'unitSatuan' | 'updatedAt' | 'updatedBy' | 'wargaNegara'>
+    Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'orientasiSeksual' | 'pekerjaan' | 'pekerjaanLokal' | 'pendidikan' | 'statusPernikahan' | 'telepon' | 'tglLahir' | 'tmpLahir' | 'unitSatuan' | 'updatedAt' | 'updatedBy' | 'wargaNegara'>
     & { applications: Array<Pick<Application, 'id' | 'noReg' | 'createdAt'>>, clients: Array<(
       Pick<Client, 'id'>
       & { applicationId?: Maybe<Pick<Application, 'id' | 'noReg' | 'createdAt'>> }
@@ -15698,7 +17306,7 @@ export type GetCaseQueryVariables = Exact<{
 
 
 export type GetCaseQuery = { renamedcases: Array<(
-    Pick<Renamedcase, 'id' | 'applicationId' | 'caseClosed' | 'caseClosedJenis' | 'createdAt' | 'createdBy' | 'hakTerlanggar' | 'issue' | 'judulKasus' | 'klasifikasiDok' | 'kronologiKasus' | 'lockDitolak' | 'statusPendampingan' | 'targetAdvokasi' | 'unlockPk' | 'unlockTransfer' | 'updatedAt' | 'updatedBy'>
+    Pick<Renamedcase, 'id' | 'applicationId' | 'caseClosed' | 'caseClosedJenis' | 'createdAt' | 'createdBy' | 'hakTerlanggar' | 'issue' | 'judulKasus' | 'klasifikasiDok' | 'pelakuKorbanRelasi' | 'kronologiKasus' | 'lockDitolak' | 'statusPendampingan' | 'targetAdvokasi' | 'unlockPk' | 'unlockTransfer' | 'updatedAt' | 'updatedBy'>
     & { transfer?: Maybe<(
       Pick<CaseTransfer, 'id' | 'tglTransfer' | 'catatan' | 'createdBy' | 'updatedBy'>
       & { network?: Maybe<Pick<Network, 'id' | 'name'>> }
@@ -15707,9 +17315,9 @@ export type GetCaseQuery = { renamedcases: Array<(
       & { client?: Maybe<Pick<Person, 'id' | 'namaLengkap'>>, network?: Maybe<Pick<Network, 'id' | 'name'>> }
     )>, application?: Maybe<(
       Pick<Application, 'id' | 'createdAt' | 'createdBy' | 'dudukPerara' | 'infoLbh' | 'jumlahPenerimaManfaat' | 'konfirmasiData' | 'noReg' | 'pernahKlien' | 'pernahPpLain' | 'ppLain' | 'regDate' | 'relasiWakilClient' | 'setujuAdvokasi' | 'statusPerwakilan' | 'updatedAt' | 'updatedBy' | 'waktuPernahKlien' | 'whyLbh' | 'tahap' | 'status'>
-      & { wakilId?: Maybe<Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'pekerjaan' | 'pendidikan' | 'statusPernikahan' | 'telepon'>>, clients: Array<(
+      & { wakilId?: Maybe<Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'orientasiSeksual' | 'pekerjaan' | 'pekerjaanLokal' | 'pendidikan' | 'statusPernikahan' | 'telepon'>>, clients: Array<(
         Pick<Client, 'id' | 'alamatLokasi' | 'asetGedung' | 'asetKios' | 'asetLahanGarapan' | 'asetLapak' | 'asetMobil' | 'asetMotor' | 'asetRumah' | 'asetTanah' | 'asetToko' | 'asetWarung' | 'createdAt' | 'createdBy' | 'pendapatan' | 'sktm' | 'sktmUpload' | 'stmKeterangan' | 'tanggunganAnak' | 'tanggunganFamili' | 'tanggunganLain' | 'tanggunganPasangan' | 'updatedAt' | 'updatedBy' | 'usiaSaatKlien'>
-        & { personId?: Maybe<Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'pekerjaan' | 'pendidikan' | 'statusPernikahan' | 'telepon' | 'tglLahir' | 'tmpLahir' | 'unitSatuan' | 'updatedAt' | 'updatedBy' | 'wargaNegara'>> }
+        & { personId?: Maybe<Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'orientasiSeksual' | 'pekerjaan' | 'pekerjaanLokal' | 'pendidikan' | 'statusPernikahan' | 'telepon' | 'tglLahir' | 'tmpLahir' | 'unitSatuan' | 'updatedAt' | 'updatedBy' | 'wargaNegara'>> }
       )> }
     )>, classifications: Array<Pick<CaseClassification, 'id' | 'kodeMt'>>, consultations: Array<(
       Pick<CaseConsultation, 'id' | 'appKonsul' | 'createdAt' | 'createdBy' | 'isiKonsul' | 'judulAktifitas' | 'ppKonsul' | 'tglKonsul' | 'harapan' | 'saranHukum' | 'rencanaTindakLanjut' | 'updatedAt' | 'updatedBy'>
@@ -15739,9 +17347,9 @@ export type GetCaseQuery = { renamedcases: Array<(
         & { profile?: Maybe<Pick<UserProfile, 'id' | 'noContact'>> }
       )> }
     )>, progresses?: Maybe<Pick<CaseProgress, 'id' | 'catatan' | 'jenisPeradilan'>>, activities: Array<(
-      Pick<CaseProgressActivity, 'id' | 'capaian' | 'hambatan' | 'tglAktifitas' | 'judulAktifitas' | 'position' | 'rencanaStrategi' | 'targetAdvokasi'>
+      Pick<CaseProgressActivity, 'id' | 'capaian' | 'hambatan' | 'tglAktifitas' | 'judulAktifitas' | 'position' | 'rencanaStrategi' | 'targetAdvokasi' | 'updatedBy' | 'createdBy'>
       & { activitieslit: Array<Pick<CaseProgressActivityLit, 'id' | 'kodeMt'>>, activitiesnonlit: Array<Pick<CaseProgressActivityNonlit, 'id' | 'kodeMt'>> }
-    )>, transferreferrals: Array<Pick<CaseTransferReferral, 'id' | 'catatan' | 'document' | 'jenisTransferReferral' | 'networkId' | 'updatedAt' | 'updatedBy'>>, violatedrights: Array<Pick<CaseViolatedRight, 'id' | 'kodeMt'>>, logRequests: Array<(
+    )>, transferreferrals: Array<Pick<CaseTransferReferral, 'id' | 'catatan' | 'document' | 'jenisTransferReferral' | 'networkId' | 'updatedAt' | 'updatedBy'>>, violatedrights: Array<Pick<CaseViolatedRight, 'id' | 'kodeMt'>>, categories: Array<Pick<CaseCategory, 'id' | 'kodeMt'>>, violenceMethods: Array<Pick<CaseViolenceMethod, 'id' | 'kodeMt'>>, moduses: Array<Pick<CaseModus, 'id' | 'kodeMt'>>, incidentLocations: Array<Pick<CaseIncidentLocation, 'id' | 'kodeMt'>>, logRequests: Array<(
       Pick<LogRequest, 'ID' | 'isiRequest' | 'tanggapanRequestIsi' | 'jenisRequest' | 'statusRequest' | 'tanggapanRequest' | 'tglExpired' | 'tglRequest' | 'tglRespon'>
       & { caseId?: Maybe<Pick<Renamedcase, 'id' | 'judulKasus'>>, applicationId?: Maybe<(
         Pick<Application, 'id' | 'tahap' | 'noReg' | 'dudukPerara'>
@@ -15807,7 +17415,7 @@ export type GetApplicationsQuery = { applications: Array<(
     Pick<Application, 'id' | 'createdAt' | 'createdBy' | 'dudukPerara' | 'infoLbh' | 'jumlahPenerimaManfaat' | 'konfirmasiData' | 'noReg' | 'pernahKlien' | 'pernahPpLain' | 'ppLain' | 'regDate' | 'relasiWakilClient' | 'setujuAdvokasi' | 'statusPerwakilan' | 'updatedAt' | 'updatedBy' | 'waktuPernahKlien' | 'whyLbh'>
     & { wakilId?: Maybe<Pick<Person, 'id' | 'namaLengkap' | 'alamatId'>>, case?: Maybe<Pick<Renamedcase, 'id'>>, clients: Array<(
       Pick<Client, 'id' | 'alamatLokasi' | 'asetGedung' | 'asetKios' | 'asetLahanGarapan' | 'asetLapak' | 'asetMobil' | 'asetMotor' | 'asetRumah' | 'asetTanah' | 'asetToko' | 'asetWarung' | 'createdAt' | 'createdBy' | 'pendapatan' | 'sktm' | 'sktmUpload' | 'stmKeterangan' | 'tanggunganAnak' | 'tanggunganFamili' | 'tanggunganLain' | 'tanggunganPasangan' | 'updatedAt' | 'updatedBy' | 'usiaSaatKlien'>
-      & { personId?: Maybe<Pick<Person, 'id' | 'namaLengkap' | 'tglLahir' | 'tmpLahir' | 'alamatId' | 'pekerjaan' | 'jenisId' | 'nomorId'>> }
+      & { personId?: Maybe<Pick<Person, 'id' | 'namaLengkap' | 'tglLahir' | 'tmpLahir' | 'alamatId' | 'pekerjaan' | 'pekerjaanLokal' | 'jenisId' | 'nomorId'>> }
     )> }
   )>, aggregateApplication: { count?: Maybe<Pick<ApplicationCountAggregate, 'id'>> } };
 
@@ -15830,7 +17438,7 @@ export type AllPersonQueryVariables = Exact<{
 
 
 export type AllPersonQuery = { people: Array<(
-    Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'pekerjaan' | 'pendidikan' | 'statusPernikahan' | 'telepon' | 'tglLahir' | 'tmpLahir' | 'unitSatuan' | 'updatedAt' | 'updatedBy' | 'wargaNegara'>
+    Pick<Person, 'id' | 'agama' | 'alamatDomisili' | 'alamatId' | 'alatBantu' | 'alias' | 'createdAt' | 'createdBy' | 'disabilitas' | 'distrikDomisili' | 'distrikId' | 'domisiliSama' | 'email' | 'golDarah' | 'jenisDisabilitas' | 'jenisDomisili' | 'jenisId' | 'jenisKelamin' | 'jmlAnggota' | 'namaLengkap' | 'nomorId' | 'orientasiSeksual' | 'pekerjaan' | 'pekerjaanLokal' | 'pendidikan' | 'statusPernikahan' | 'telepon' | 'tglLahir' | 'tmpLahir' | 'unitSatuan' | 'updatedAt' | 'updatedBy' | 'wargaNegara'>
     & { applications: Array<Pick<Application, 'id' | 'noReg' | 'createdAt'>>, clients: Array<(
       Pick<Client, 'id'>
       & { applicationId?: Maybe<Pick<Application, 'id' | 'noReg' | 'createdAt'>> }
@@ -16012,6 +17620,78 @@ export const DestroyCaseIssueDocument = gql`
   })
   export class DestroyCaseIssueGQL extends Apollo.Mutation<DestroyCaseIssueMutation, DestroyCaseIssueMutationVariables> {
     document = DestroyCaseIssueDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DestroyCaseCategoryDocument = gql`
+    mutation destroyCaseCategory($where: CaseCategoryWhereInput!) {
+  deleteManyCaseCategory(where: $where) {
+    count
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DestroyCaseCategoryGQL extends Apollo.Mutation<DestroyCaseCategoryMutation, DestroyCaseCategoryMutationVariables> {
+    document = DestroyCaseCategoryDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DestroyCaseIncidentLocationDocument = gql`
+    mutation destroyCaseIncidentLocation($where: CaseIncidentLocationWhereInput!) {
+  deleteManyCaseIncidentLocation(where: $where) {
+    count
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DestroyCaseIncidentLocationGQL extends Apollo.Mutation<DestroyCaseIncidentLocationMutation, DestroyCaseIncidentLocationMutationVariables> {
+    document = DestroyCaseIncidentLocationDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DestroyCaseViolenceMethodDocument = gql`
+    mutation destroyCaseViolenceMethod($where: CaseViolenceMethodWhereInput!) {
+  deleteManyCaseViolenceMethod(where: $where) {
+    count
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DestroyCaseViolenceMethodGQL extends Apollo.Mutation<DestroyCaseViolenceMethodMutation, DestroyCaseViolenceMethodMutationVariables> {
+    document = DestroyCaseViolenceMethodDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DestroyCaseModusDocument = gql`
+    mutation destroyCaseModus($where: CaseModusWhereInput!) {
+  deleteManyCaseModus(where: $where) {
+    count
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DestroyCaseModusGQL extends Apollo.Mutation<DestroyCaseModusMutation, DestroyCaseModusMutationVariables> {
+    document = DestroyCaseModusDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);
@@ -16313,7 +17993,9 @@ export const PutCaseDocument = gql`
         jmlAnggota
         namaLengkap
         nomorId
+        orientasiSeksual
         pekerjaan
+        pekerjaanLokal
         pendidikan
         statusPernikahan
         telepon
@@ -16670,7 +18352,9 @@ export const PutPersonDocument = gql`
     jmlAnggota
     namaLengkap
     nomorId
+    orientasiSeksual
     pekerjaan
+    pekerjaanLokal
     pendidikan
     statusPernikahan
     telepon
@@ -16736,7 +18420,9 @@ export const PostPersonDocument = gql`
     jmlAnggota
     namaLengkap
     nomorId
+    orientasiSeksual
     pekerjaan
+    pekerjaanLokal
     pendidikan
     statusPernikahan
     telepon
@@ -16988,7 +18674,7 @@ export const GetCaseDocument = gql`
     issue
     judulKasus
     klasifikasiDok
-    klasifikasiDok
+    pelakuKorbanRelasi
     kronologiKasus
     lockDitolak
     statusPendampingan
@@ -17063,7 +18749,9 @@ export const GetCaseDocument = gql`
         jmlAnggota
         namaLengkap
         nomorId
+        orientasiSeksual
         pekerjaan
+        pekerjaanLokal
         pendidikan
         statusPernikahan
         telepon
@@ -17108,7 +18796,9 @@ export const GetCaseDocument = gql`
           jmlAnggota
           namaLengkap
           nomorId
+          orientasiSeksual
           pekerjaan
+          pekerjaanLokal
           pendidikan
           statusPernikahan
           telepon
@@ -17255,6 +18945,8 @@ export const GetCaseDocument = gql`
         id
         kodeMt
       }
+      updatedBy
+      createdBy
     }
     transferreferrals {
       id
@@ -17266,6 +18958,22 @@ export const GetCaseDocument = gql`
       updatedBy
     }
     violatedrights {
+      id
+      kodeMt
+    }
+    categories {
+      id
+      kodeMt
+    }
+    violenceMethods {
+      id
+      kodeMt
+    }
+    moduses {
+      id
+      kodeMt
+    }
+    incidentLocations {
       id
       kodeMt
     }
@@ -17478,6 +19186,7 @@ export const GetApplicationsDocument = gql`
         tmpLahir
         alamatId
         pekerjaan
+        pekerjaanLokal
         jenisId
         nomorId
       }
@@ -17558,7 +19267,9 @@ export const AllPersonDocument = gql`
     jmlAnggota
     namaLengkap
     nomorId
+    orientasiSeksual
     pekerjaan
+    pekerjaanLokal
     pendidikan
     statusPernikahan
     telepon
@@ -17663,6 +19374,30 @@ export namespace DestroyCaseIssue {
   export type Variables = DestroyCaseIssueMutationVariables;
   export type Mutation = DestroyCaseIssueMutation;
   export type DeleteManyCaseIssue = DestroyCaseIssueMutation['deleteManyCaseIssue'];
+}
+
+export namespace DestroyCaseCategory {
+  export type Variables = DestroyCaseCategoryMutationVariables;
+  export type Mutation = DestroyCaseCategoryMutation;
+  export type DeleteManyCaseCategory = DestroyCaseCategoryMutation['deleteManyCaseCategory'];
+}
+
+export namespace DestroyCaseIncidentLocation {
+  export type Variables = DestroyCaseIncidentLocationMutationVariables;
+  export type Mutation = DestroyCaseIncidentLocationMutation;
+  export type DeleteManyCaseIncidentLocation = DestroyCaseIncidentLocationMutation['deleteManyCaseIncidentLocation'];
+}
+
+export namespace DestroyCaseViolenceMethod {
+  export type Variables = DestroyCaseViolenceMethodMutationVariables;
+  export type Mutation = DestroyCaseViolenceMethodMutation;
+  export type DeleteManyCaseViolenceMethod = DestroyCaseViolenceMethodMutation['deleteManyCaseViolenceMethod'];
+}
+
+export namespace DestroyCaseModus {
+  export type Variables = DestroyCaseModusMutationVariables;
+  export type Mutation = DestroyCaseModusMutation;
+  export type DeleteManyCaseModus = DestroyCaseModusMutation['deleteManyCaseModus'];
 }
 
 export namespace PostLogRequest {
@@ -17879,6 +19614,10 @@ export namespace GetCase {
   export type Activitiesnonlit = GetCaseQuery['renamedcases'][0]['activities'][0]['activitiesnonlit'][0];
   export type Transferreferrals = GetCaseQuery['renamedcases'][0]['transferreferrals'][0];
   export type Violatedrights = GetCaseQuery['renamedcases'][0]['violatedrights'][0];
+  export type Categories = GetCaseQuery['renamedcases'][0]['categories'][0];
+  export type ViolenceMethods = GetCaseQuery['renamedcases'][0]['violenceMethods'][0];
+  export type Moduses = GetCaseQuery['renamedcases'][0]['moduses'][0];
+  export type IncidentLocations = GetCaseQuery['renamedcases'][0]['incidentLocations'][0];
   export type LogRequests = GetCaseQuery['renamedcases'][0]['logRequests'][0];
   export type _CaseId = GetCaseQuery['renamedcases'][0]['logRequests'][0]['caseId'];
   export type ApplicationId = GetCaseQuery['renamedcases'][0]['logRequests'][0]['applicationId'];

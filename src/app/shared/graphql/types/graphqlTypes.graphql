@@ -62,6 +62,30 @@ mutation destroyCaseIssue($where: CaseIssueWhereInput!) {
   }
 }
 
+mutation destroyCaseCategory($where: CaseCategoryWhereInput!){
+  deleteManyCaseCategory(where:$where){
+    count
+  }
+}
+
+mutation destroyCaseIncidentLocation($where: CaseIncidentLocationWhereInput!){
+  deleteManyCaseIncidentLocation(where:$where){
+    count
+  }
+}
+
+mutation destroyCaseViolenceMethod($where: CaseViolenceMethodWhereInput!){
+  deleteManyCaseViolenceMethod(where:$where){
+    count
+  }
+}
+
+mutation destroyCaseModus($where: CaseModusWhereInput!){
+  deleteManyCaseModus(where:$where){
+    count
+  }
+}
+
 mutation postLogRequest($data: LogRequestCreateInput!) {
   createLogRequest(data: $data) {
     ID
@@ -296,7 +320,9 @@ mutation putCase($data: RenamedcaseUpdateInput!, $where: RenamedcaseWhereUniqueI
         jmlAnggota
         namaLengkap
         nomorId
+        orientasiSeksual
         pekerjaan
+        pekerjaanLokal
         pendidikan
         statusPernikahan
         telepon
@@ -593,7 +619,9 @@ mutation putPerson($data: PersonUpdateInput!, $where: PersonWhereUniqueInput!) {
     jmlAnggota
     namaLengkap
     nomorId
+    orientasiSeksual
     pekerjaan
+    pekerjaanLokal
     pendidikan
     statusPernikahan
     telepon
@@ -647,7 +675,9 @@ mutation postPerson($data: PersonCreateInput!) {
     jmlAnggota
     namaLengkap
     nomorId
+    orientasiSeksual
     pekerjaan
+    pekerjaanLokal
     pendidikan
     statusPernikahan
     telepon
@@ -876,7 +906,7 @@ query getCase(
     issue
     judulKasus
     klasifikasiDok
-    klasifikasiDok
+    pelakuKorbanRelasi
     kronologiKasus
     lockDitolak
     statusPendampingan
@@ -951,7 +981,9 @@ query getCase(
         jmlAnggota
         namaLengkap
         nomorId
+        orientasiSeksual
         pekerjaan
+        pekerjaanLokal
         pendidikan
         statusPernikahan
         telepon
@@ -996,7 +1028,9 @@ query getCase(
           jmlAnggota
           namaLengkap
           nomorId
+          orientasiSeksual
           pekerjaan
+          pekerjaanLokal
           pendidikan
           statusPernikahan
           telepon
@@ -1143,6 +1177,8 @@ query getCase(
         id
         kodeMt
       }
+      updatedBy
+      createdBy
     }
     transferreferrals {
       id
@@ -1154,6 +1190,22 @@ query getCase(
       updatedBy
     }
     violatedrights {
+      id
+      kodeMt
+    }
+    categories{
+      id
+      kodeMt
+    }
+    violenceMethods{
+      id
+      kodeMt
+    }
+    moduses{
+      id
+      kodeMt
+    }
+    incidentLocations{
       id
       kodeMt
     }
@@ -1349,6 +1401,7 @@ query getApplications(
         tmpLahir
         alamatId
         pekerjaan
+        pekerjaanLokal
         jenisId
         nomorId
       }
@@ -1415,7 +1468,9 @@ query allPerson(
     jmlAnggota
     namaLengkap
     nomorId
+    orientasiSeksual
     pekerjaan
+    pekerjaanLokal
     pendidikan
     statusPernikahan
     telepon

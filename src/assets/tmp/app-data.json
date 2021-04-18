@@ -27,7 +27,6 @@
           },
           {
             "text": "All Cases",
-            "acl": ["7", "5", "6", "8"],
             "link": "/landing/cases",
             "i18n": "menu.dashboard.cases"
           },

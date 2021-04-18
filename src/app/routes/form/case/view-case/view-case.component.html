@@ -91,8 +91,13 @@
             <sv><a nz-button (click)="openModalAnalisa(modalContentAnalisa)">Edit Data Analisa</a></sv>
             <sv label="Korban">{{ translateKorbanPelaku('korban') }}</sv>
             <sv label="Pelaku">{{ translateKorbanPelaku('pelaku') }}</sv>
+            <sv label="Relasi Korban Pelaku">{{ data?.pelakuKorbanRelasiTeks | async}}</sv>
             <sv label="Issue Lokal">{{ translateCaseIssues() }}</sv>
             <sv label="Hak Terdampak">{{ translateHakTerdampak() }}</sv>
+            <sv label="Kategori Kasus">{{ translateKategoriKasus() }}</sv>
+            <sv label="Jenis Lokasi Kejadian">{{ translateJenisLokasiKejadian() }}</sv>
+            <sv label="Modus">{{ translateCaseModuses() }}</sv>
+            <sv label="Metode Kekerasan">{{ translateViolenceMethod() }}</sv>
           </sv-container>
         </nz-card>
       </nz-tab>
