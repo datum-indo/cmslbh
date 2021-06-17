@@ -6,12 +6,10 @@ import { environment } from '@env/environment';
 import { LayoutPassportComponent } from '../layout/passport/passport.component';
 // dashboard pages
 // import { DashboardV1Component } from './dashboard/v1/v1.component';
-import { DashboardWorkplaceComponent } from './dashboard/workplace/workplace.component';
 // passport pages
 import { UserLoginComponent } from './passport/login/login.component';
 // single pages
 // import { UserLockComponent } from './passport/lock/lock.component';
-import { CasesComponent } from './dashboard/cases/cases.component';
 import { LayoutBasicComponent } from '../layout/basic/basic.component';
 import { LayoutBlankComponent } from '../layout/blank/blank.component';
 

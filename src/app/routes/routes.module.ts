@@ -8,7 +8,6 @@ import { UserLoginComponent } from './passport/login/login.component';
 // single pages
 // import { UserLockComponent } from './passport/lock/lock.component';
 import { FormModule } from './form/form.module';
-import { CasesComponent } from './dashboard/cases/cases.component';
 import { LandingRoutingModule } from './landing/landing-routing.module';
 const COMPONENTS = [
   // DashboardV1Component,

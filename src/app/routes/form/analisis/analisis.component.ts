@@ -7,7 +7,6 @@ import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormArray, Validators, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { _HttpClient } from '@delon/theme';
 import { MtVocabHelper } from '@shared/helper';
-import { query } from './query';
 import * as moment from 'moment';
 import { NzTreeSelectComponent } from 'ng-zorro-antd/tree-select';
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
