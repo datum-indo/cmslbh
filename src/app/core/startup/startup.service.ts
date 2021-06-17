@@ -58,7 +58,6 @@ export class StartupService {
 
 
             this.aclService.setFull(false);
-            console.log(this.settingService.user.roles_type)
             if (this.settingService.user.roles_type) {
               if (this.settingService.user.roles_type.find(el => el.type.id === 8)) {
                 this.aclService.setFull(true);
@@ -66,8 +65,6 @@ export class StartupService {
               const roles_type = this.settingService.user.roles_type.map(val => val.type.id.toString());
               this.aclService.setRole([...roles_type]);
             }
-            console.log('here')
-            console.log(this.appData.menu)
             this.menuService.clear();
             this.menuService.add(this.appData.menu);
 

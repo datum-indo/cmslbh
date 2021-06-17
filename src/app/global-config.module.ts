@@ -23,6 +23,12 @@ const alainConfig: AlainConfig = {
     login_url: '/passport/login', executeOtherInterceptors: true,
     token_invalid_redirect: true,
   },
+  chart: {
+    libs: [
+      './assets/@antv/g2/g2.min.js',
+      './assets/@antv/data-set/data-set.js',
+    ],
+  },
 };
 
 const alainModules: any[] = [AlainThemeModule.forRoot(), DelonACLModule.forRoot()];

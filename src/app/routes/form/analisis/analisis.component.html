@@ -1,36 +1,32 @@
 <page-header [title]="'Analisa Data'"></page-header>
 <div #card>
   <nz-card [nzBordered]="false">
-    <form nz-form [formGroup]="analisaForm" (ngSubmit)="getData()" [nzLayout]="'inline'" class="search__form">
+    <form [formGroup]="analisaForm" (ngSubmit)="getData()" class="search__form">
       <div formArrayName="analisaFilter">
         <div *ngFor="let filter of getFilter(analisaForm); let i = index">
-          <div [formGroupName]="i" nz-row [nzGutter]="16">
-            <div nz-col nzMd="4" nzSm="24" nzSpan="4">
+          <div [formGroupName]="i" nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
+            <div nz-col nzSpan="4">
               <nz-form-item>
-                <nz-form-label>Group</nz-form-label>
-                <nz-form-control>
+                <nz-form-label [nzSpan]="6">Group</nz-form-label>
+                <nz-form-control [nzSpan]="18">
                   <nz-select formControlName="group" (ngModelChange)="refreshForm(i, 1)">
                     <ng-container *ngFor="let o of groupObservable | async">
                       <nz-option *ngIf="!loading" [nzValue]="o.group" [nzLabel]="o.group"></nz-option>
                     </ng-container>
-                    <nz-option *ngIf="!groupObservable | async" nzDisabled nzCustomContent>
+                    <nz-option *ngIf="!(groupObservable | async)" nzDisabled nzCustomContent>
                       <i nz-icon nzType="loading" class="loading-icon"></i> Loading Data...
                     </nz-option>
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
             </div>
-            <div nz-col nzMd="4" nzSm="24" nzSpan="4">
+            <div nz-col nzSpan="4">
               <nz-form-item>
                 <nz-form-label [nzSpan]="6">Field</nz-form-label>
                 <nz-form-control [nzSpan]="18">
-                  <nz-select
-                    formControlName="field"
-                    (nzOpenChange)="queryFieldList(i)"
-                    [nzDropdownMatchSelectWidth]="false"
-                    [nzDisabled]="!analisaForm.value.analisaFilter[i].group"
-                    (ngModelChange)="refreshForm(i, 2)"
-                  >
+                  <nz-select formControlName="field" (nzOpenChange)="queryFieldList(i)"
+                    [nzDropdownMatchSelectWidth]="false" [nzDisabled]="!analisaForm.value.analisaFilter[i].group"
+                    (ngModelChange)="refreshForm(i, 2)">
                     <ng-container *ngFor="let o of getFieldList(i) | async">
                       <nz-option *ngIf="!loading" [nzValue]="o" [nzLabel]="o.label"></nz-option>
                     </ng-container>
@@ -38,17 +34,13 @@
                 </nz-form-control>
               </nz-form-item>
             </div>
-            <div nz-col nzMd="4" nzSm="24" nzSpan="4">
+            <div nz-col nzSpan="4">
               <nz-form-item>
-                <nz-form-label [nzSpan]="6">Operator</nz-form-label>
+                <nz-form-label [nzSpan]="6">Operator:</nz-form-label>
                 <nz-form-control [nzSpan]="18">
-                  <nz-select
-                    formControlName="operator"
-                    (nzOpenChange)="queryOperatorList(i)"
-                    [nzDropdownMatchSelectWidth]="false"
-                    [nzDisabled]="!analisaForm.value.analisaFilter[i].field"
-                    (ngModelChange)="refreshForm(i, 3, true)"
-                  >
+                  <nz-select formControlName="operator" (nzOpenChange)="queryOperatorList(i)"
+                    [nzDropdownMatchSelectWidth]="false" [nzDisabled]="!analisaForm.value.analisaFilter[i].field"
+                    (ngModelChange)="refreshForm(i, 3, true)">
                     <ng-container *ngFor="let o of getOperatorList(i) | async">
                       <nz-option *ngIf="!loading" [nzValue]="o" [nzLabel]="o.label"></nz-option>
                     </ng-container>
@@ -56,22 +48,18 @@
                 </nz-form-control>
               </nz-form-item>
             </div>
-            <div nz-col nzMd="4" nzSm="24" nzSpan="4">
+            <div nz-col nzSpan="4">
               <nz-form-item>
                 <nz-form-label [nzSpan]="6">Nilai</nz-form-label>
                 <nz-form-control [nzSpan]="18">
                   <!-- id -->
                   <ng-container *ngIf="analisaForm.value.analisaFilter[i].operator?.type === 'id'">
-                    <nz-select
-                      formControlName="nilai"
-                      (nzOpenChange)="queryNilaiIdList(i)"
-                      [nzDropdownMatchSelectWidth]="false"
-                      [nzDisabled]="
+                    <nz-select formControlName="nilai" (nzOpenChange)="queryNilaiIdList(i)"
+                      [nzDropdownMatchSelectWidth]="false" [nzDisabled]="
                         !analisaForm.value.analisaFilter[i].field ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is null' ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is not null'
-                      "
-                    >
+                      ">
                       <ng-container *ngFor="let o of getNilaiIdList(i) | async">
                         <nz-option *ngIf="!loading" [nzValue]="o.id" [nzLabel]="o.label"></nz-option>
                       </ng-container>
@@ -80,16 +68,12 @@
                   <!-- id -->
                   <!-- mt -->
                   <ng-container *ngIf="analisaForm.value.analisaFilter[i].operator?.type === 'mt'">
-                    <nz-select
-                      formControlName="nilai"
-                      (nzOpenChange)="queryNilaiIdList(i)"
-                      [nzDropdownMatchSelectWidth]="false"
-                      [nzDisabled]="
+                    <nz-select formControlName="nilai" (nzOpenChange)="queryNilaiIdList(i)"
+                      [nzDropdownMatchSelectWidth]="false" [nzDisabled]="
                         !analisaForm.value.analisaFilter[i].field ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is null' ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is not null'
-                      "
-                    >
+                      ">
                       <ng-container *ngFor="let o of getNilaiIdList(i) | async">
                         <nz-option *ngIf="!loading" [nzValue]="o.id" [nzLabel]="o.label"></nz-option>
                       </ng-container>
@@ -98,15 +82,11 @@
                   <!-- mt -->
                   <!-- check -->
                   <ng-container *ngIf="analisaForm.value.analisaFilter[i].operator?.type === 'check'">
-                    <nz-select
-                      formControlName="nilai"
-                      [nzDropdownMatchSelectWidth]="false"
-                      [nzDisabled]="
+                    <nz-select formControlName="nilai" [nzDropdownMatchSelectWidth]="false" [nzDisabled]="
                         !analisaForm.value.analisaFilter[i].field ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is null' ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is not null'
-                      "
-                    >
+                      ">
                       <nz-option [nzValue]="true" [nzLabel]="'TRUE'"></nz-option>
                       <nz-option [nzValue]="false" [nzLabel]="'FALSE'"></nz-option>
                     </nz-select>
@@ -114,33 +94,23 @@
                   <!-- check -->
                   <!-- date -->
                   <ng-container *ngIf="analisaForm.value.analisaFilter[i].operator?.type === 'date'">
-                    <nz-date-picker
-                      formControlName="nilai"
-                      [nzDisabled]="
+                    <nz-date-picker formControlName="nilai" [nzDisabled]="
                         !analisaForm.value.analisaFilter[i].field ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is null' ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is not null'
-                      "
-                    ></nz-date-picker>
+                      "></nz-date-picker>
                   </ng-container>
                   <!-- date -->
                   <!-- mt_tree -->
                   <ng-container *ngIf="analisaForm.value.analisaFilter[i].operator?.type === 'mt_tree'">
-                    <nz-tree-select
-                      #tree
-                      [nzDisabled]="
+                    <nz-tree-select #tree [nzDisabled]="
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is null' ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is not null'
-                      "
-                      *ngIf="nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]"
-                      formControlName="nilai"
-                      nzPlaceHolder="Please select"
-                      [nzDropdownMatchSelectWidth]="false"
+                      " *ngIf="nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]"
+                      formControlName="nilai" nzPlaceHolder="Please select" [nzDropdownMatchSelectWidth]="false"
                       [nzDropdownStyle]="{ 'max-height': '300px' }"
-                      [nzNodes]="nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]"
-                      [nzAsyncData]="true"
-                      (nzExpandChange)="onExpandChange($event, analisaForm.value.analisaFilter[i].field?.kode_list)"
-                    >
+                      [nzNodes]="nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]" [nzAsyncData]="true"
+                      (nzExpandChange)="onExpandChange($event, analisaForm.value.analisaFilter[i].field?.kode_list)">
                     </nz-tree-select>
 
                     <ng-container *ngIf="!nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]">
@@ -150,22 +120,14 @@
                   <!-- mt_tree -->
                   <!-- mt_tree_unrestrictred -->
                   <ng-container *ngIf="analisaForm.value.analisaFilter[i].operator?.type === 'mt_unrestricted'">
-                    <nz-tree-select
-                      #tree
-                      [nzDisabled]="
+                    <nz-tree-select #tree [nzDisabled]="
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is null' ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is not null'
-                      "
-                      *ngIf="nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]"
-                      formControlName="nilai"
-                      nzCheckable
-                      nzPlaceHolder="Please select"
-                      [nzDropdownMatchSelectWidth]="false"
-                      [nzDropdownStyle]="{ 'max-height': '300px' }"
-                      [nzNodes]="nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]"
-                      [nzAsyncData]="true"
-                      (nzExpandChange)="onExpandChange($event, analisaForm.value.analisaFilter[i].field?.kode_list)"
-                    >
+                      " *ngIf="nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]"
+                      formControlName="nilai" nzCheckable nzPlaceHolder="Please select"
+                      [nzDropdownMatchSelectWidth]="false" [nzDropdownStyle]="{ 'max-height': '300px' }"
+                      [nzNodes]="nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]" [nzAsyncData]="true"
+                      (nzExpandChange)="onExpandChange($event, analisaForm.value.analisaFilter[i].field?.kode_list)">
                     </nz-tree-select>
 
                     <ng-container *ngIf="!nodeArray[(analisaForm.value.analisaFilter[i].field?.kode_list)]">
@@ -175,38 +137,24 @@
                   <!-- mt_tree_unrestricted -->
                   <!-- numeric -->
                   <ng-container *ngIf="analisaForm.value.analisaFilter[i].operator?.type === 'numeric'">
-                    <nz-input-number
-                      formControlName="nilai"
-                      [nzMin]="1"
-                      [nzStep]="1"
-                      [nzDisabled]="
+                    <nz-input-number formControlName="nilai" [nzMin]="1" [nzStep]="1" [nzDisabled]="
                         !analisaForm.value.analisaFilter[i].field ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is null' ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is not null'
-                      "
-                    ></nz-input-number>
+                      "></nz-input-number>
                   </ng-container>
                   <!-- numeric -->
                   <!-- text -->
                   <ng-container *ngIf="analisaForm.value.analisaFilter[i].operator?.type === 'text'">
-                    <input
-                      nz-input
-                      formControlName="nilai"
-                      *ngIf="
+                    <input nz-input formControlName="nilai" *ngIf="
                         analisaForm.value.analisaFilter[i].operator?.operator !== 'is null' &&
                         analisaForm.value.analisaFilter[i].operator?.operator !== 'is not null'
-                      "
-                    />
-                    <input
-                      *ngIf="
+                      " />
+                    <input *ngIf="
                         !analisaForm.value.analisaFilter[i].field ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is null' ||
                         analisaForm.value.analisaFilter[i].operator?.operator === 'is not null'
-                      "
-                      nz-input
-                      formControlName="nilai"
-                      disabled="true"
-                    />
+                      " nz-input formControlName="nilai" [disabled]="true" />
                   </ng-container>
                   <!-- text -->
                   <nz-select formControlName="nilai" nzDisabled *ngIf="!analisaForm.value.analisaFilter[i]?.operator">
@@ -214,21 +162,19 @@
                 </nz-form-control>
               </nz-form-item>
             </div>
-            <div nz-col nzMd="4" nzSm="24" nzSpan="4">
+            <div nz-col nzSpan="4">
               <nz-form-item>
-                <nz-form-label>Logika</nz-form-label>
-                <nz-form-control>
-                  <nz-select
-                    formControlName="logika"
-                    [nzDisabled]="!analisaForm.value.analisaFilter[i].operator || isFormArrayLast(i) === true"
-                  >
+                <nz-form-label [nzSpan]="6">Logika</nz-form-label>
+                <nz-form-control [nzSpan]="18">
+                  <nz-select formControlName="logika"
+                    [nzDisabled]="!analisaForm.value.analisaFilter[i].operator || isFormArrayLast(i) === true">
                     <nz-option [nzValue]="'AND'" [nzLabel]="'AND'"></nz-option>
                     <nz-option [nzValue]="'OR'" [nzLabel]="'OR'"></nz-option>
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
             </div>
-            <div nz-col nzMd="4" nzSm="24" nzSpan="4" *ngIf="!isFormArrayOnlyOne()">
+            <div nz-col nzSpan="4" *ngIf="!isFormArrayOnlyOne()">
               <button nz-button (click)="deleteList(i)" [nzType]="'danger'">
                 <i nz-icon nzType="minus"></i>
                 <span>Hapus</span>
@@ -244,8 +190,9 @@
         </div> -->
           </div>
 
-          <hr style="margin-top:0px" />
+          <nz-divider nzOrientation="left"></nz-divider>
         </div>
+
       </div>
       <div nz-col [nzSpan]="8">
         <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="loading">Search</button>
@@ -277,7 +224,7 @@
   </nz-card>
 
   <nz-card [nzBordered]="false">
-    <sv-container size="Large" col="4" layout="vertical">
+    <sv-container size="large" col="4" layout="vertical">
       <sv-title>Sebaran Kasus</sv-title>
       <sv label="Total Kasus">{{ sebaranKasus?.totalKasus }}</sv>
       <sv label="Total Kasus Didampingi">{{ sebaranKasus?.totalDidampingi }}</sv>
@@ -285,14 +232,14 @@
       <sv label="Total Kasus Ditransfer">{{ sebaranKasus?.totalTransfer }}</sv>
     </sv-container>
     <br />
-    <sv-container size="Large" col="4" layout="vertical">
+    <sv-container size="large" col="4" layout="vertical">
       <sv-title>Sebaran Klien</sv-title>
       <sv label="Total Korban">{{ sebaranPerson?.totalKorban }}</sv>
       <sv label="Total Pelaku">{{ sebaranPerson?.totalPelaku }}</sv>
       <sv label="Total Klien">{{ sebaranPerson?.totalKlien }}</sv>
     </sv-container>
     <br />
-    <sv-container size="Large" col="4" layout="vertical">
+    <sv-container size="large" col="4" layout="vertical">
       <sv-title>Sebaran Permohonan</sv-title>
       <sv label="Total Permohonan">{{ sebaranPermohonan?.totalPermohonan }}</sv>
       <sv label="Total Penerima Manfaat">{{ sebaranPermohonan?.totalPenerimaManfaat }}</sv>

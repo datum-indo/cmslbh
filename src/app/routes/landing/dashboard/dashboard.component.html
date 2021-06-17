@@ -1,1 +1,102 @@
-Dashboard on progress!
+<page-header [title]="'Dashboard'">
+  <form [formGroup]="formGroup" (ngSubmit)="findData()">
+    <div nz-row>
+      <nz-range-picker nz-col formControlName="dateRange"></nz-range-picker>
+      <div nz-col>
+        <button nz-button type="submit" [nzType]="'primary'" class="mx-sm">
+          Search
+        </button>
+      </div>
+    </div>
+  </form>
+</page-header>
+
+<div nz-row nzGutter="16">
+  <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+    <div nz-row nzType="flex" nzAlign="middle" class="bg-primary-dark rounded-md">
+      <div nz-col nzSpan="12" class="p-md text-white">
+        <ng-container *ngIf="processData | async as data; else spinner">
+          <div class="h2 mt0">{{data.aggregateApplication.count.id}}</div>
+        </ng-container>
+
+        <p class="text-nowrap mb0">Jumlah Permohonan</p>
+      </div>
+    </div>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+    <div nz-row nzType="flex" nzAlign="middle" class="bg-success rounded-md">
+      <div nz-col nzSpan="12" class="p-md text-white">
+        <ng-container *ngIf="processData | async as data; else spinner">
+          <div class="h2 mt0">{{data.aggregateApplication.sum.jumlahPenerimaManfaat}}</div>
+        </ng-container>
+        <p class="text-nowrap mb0">Jumlah Penerima Manfaat</p>
+      </div>
+    </div>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+    <div nz-row nzType="flex" nzAlign="middle" class="bg-orange rounded-md">
+      <div nz-col nzSpan="12" class="p-md text-white">
+        <ng-container *ngIf="processData | async as data; else spinner">
+          <div class="h2 mt0">{{data.aggregateCaseTransfer.count.id}}</div>
+        </ng-container>
+        <p class="text-nowrap mb0">Jumlah Transfer</p>
+      </div>
+    </div>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+    <div nz-row nzType="flex" nzAlign="middle" class="bg-magenta rounded-md">
+      <div nz-col nzSpan="12" class="p-md text-white">
+        <ng-container *ngIf="processData | async as data; else spinner">
+          <div class="h2 mt0">{{data.aggregateCaseReferral.count.id}}</div>
+        </ng-container>
+        <p class="text-nowrap mb0">Jumlah Rujukan</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div nz-row nzGutter="16">
+  <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+    <div nz-row nzType="flex" nzAlign="middle" class="bg-primary-dark rounded-md">
+      <div nz-col nzSpan="12" class="p-md text-white">
+        <ng-container *ngIf="processData | async as data; else spinner">
+          <div class="h2 mt0">{{data.aggregateCase.count.id}}</div>
+        </ng-container>
+        <p class="text-nowrap mb0">Jumlah Kasus</p>
+      </div>
+    </div>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+    <div nz-row nzType="flex" nzAlign="middle" class="bg-success rounded-md">
+      <div nz-col nzSpan="12" class="p-md text-white">
+        <ng-container *ngIf="processData | async as data; else spinner">
+          <div class="h2 mt0">{{data.aggregateCaseConsultation.count.id}}</div>
+        </ng-container>
+        <p class="text-nowrap mb0">Jumlah Konsultasi</p>
+      </div>
+    </div>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+    <div nz-row nzType="flex" nzAlign="middle" class="bg-orange rounded-md">
+      <div nz-col nzSpan="12" class="p-md text-white">
+        <ng-container *ngIf="processData | async as data; else spinner">
+          <div class="h2 mt0">{{data.aggregateActiveCase.count.id}}</div>
+        </ng-container>
+        <p class="text-nowrap mb0">Kasus Berjalan</p>
+      </div>
+    </div>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
+    <div nz-row nzType="flex" nzAlign="middle" class="bg-magenta rounded-md">
+      <div nz-col nzSpan="12" class="p-md text-white">
+        <ng-container *ngIf="processData | async as data; else spinner">
+          <div class="h2 mt0">{{data.aggregateFinishedCase.count.id}}</div>
+        </ng-container>
+        <p class="text-nowrap mb0">Kasus Selesai</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #spinner>
+  <nz-spin nzSimple></nz-spin>
+</ng-template>

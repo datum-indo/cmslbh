@@ -124,7 +124,6 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
     //     unlockTransfer: false,
     //   },
     // });
-    console.log(data.regDate);
     data.regDate = moment(data.regDate).toDate();
     // data.case = caseCreate;
     let wakilIdTemp: any;
@@ -142,7 +141,6 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
 
   processDataUpdate(data: any): ApplicationUpdateInput {
     // updatemode
-    console.log(data.regDate);
     const clientsTemp = this.processUpdateClientData(data);
     data.regDate = moment(data.regDate).toDate();
     let wakilIdTemp: any;
@@ -178,8 +176,6 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
       }
 
     }, applicationUpdateInput)
-    console.log(applicationUpdateInput)
-    console.log(clients)
 
     return <ApplicationUpdateInput>{ ...applicationUpdateInput, clients, wakilId };
   }
@@ -454,8 +450,8 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
       },
       konfirmasiData: {
         type: 'boolean',
-        title: 'Data Sudah Benar',
-        description: 'Konfirmasi data yang diisikan sudah benar',
+        title: 'Konfimasi (setuju dan mengerti)',
+        description: 'Data yang saya isikan adalah benar, jika informasi yang tidak benar maka saya bersedia menanggung segala resiko yang timbul, termasuk pemutusan sepihak.',
         ui: {
           widget: 'checkbox',
           validator: (value: any): ErrorData[] | null => {
@@ -469,8 +465,8 @@ export class CreateApplicationComponent implements OnInit, OnDestroy {
       },
       setujuAdvokasi: {
         type: 'boolean',
-        title: 'Setuju, mengerti dan bersedia advokasi',
-        description: 'Pilih jika setuju untuk advokasi',
+        title: 'Penggunaan data untuk advokasi',
+        description: 'Saya setuju, mengerti dan bersedia jika data ini digunakan untuk kepentingan advokasi.',
         ui: {
           widget: 'checkbox',
         },

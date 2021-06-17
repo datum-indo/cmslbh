@@ -178,7 +178,6 @@ export class ListCaseComponent implements OnInit, OnDestroy {
   }
 
   getData() {
-    console.log(this.searchGeneratorAppend(this.query));
     this.loading = true;
     this.cases
       .refetch(this.searchGeneratorAppend(this.query))
@@ -193,7 +192,6 @@ export class ListCaseComponent implements OnInit, OnDestroy {
 
   searchGeneratorAppend(query: GetCase.Variables): GetCase.Variables {
     const queryVar = JSON.parse(JSON.stringify(query));
-    console.log(queryVar);
     queryVar.where.AND.push({
       AND: <RenamedcaseWhereInput[]>[
         !this.q.judulKasus

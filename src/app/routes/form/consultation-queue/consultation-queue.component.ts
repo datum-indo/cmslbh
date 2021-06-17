@@ -284,7 +284,6 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
         const data = await res;
         this.data = data.tempLog
         this.st.total = data.aggregateLogRequest.count.ID
-        console.log(data)
         this.cdr.detectChanges();
       });
   }
@@ -503,11 +502,9 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
       },
     });
     // console.log('caseId.id' in this.editData);
-    console.log(this.editData);
     if ('caseId' in this.editData) {
       if (this.editData.caseId) {
         this.editData.handlingPP = await this.mtVocabHelper.findHandlingPPString(Number(this.editData.caseId.id));
-        console.log(this.editData);
       }
     }
     this.modalInstance = this.modalSrv.create({
@@ -647,7 +644,6 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
     data.tglRespon = { set: moment().toDate() }
     data.statusRequest = { set: '1' };
     data.pp = <LogRequestAppUpdateManyWithoutLogRequestIdInput>{ create: listPPAPP };
-    console.log(data)
     return <LogRequestUpdateInput>{
       pp: data.pp,
       tglRespon: data.tglRespon,

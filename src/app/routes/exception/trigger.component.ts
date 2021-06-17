@@ -16,7 +16,7 @@ import { _HttpClient } from '@delon/theme';
 export class ExceptionTriggerComponent {
   types = [401, 403, 404, 500];
 
-  constructor(private http: _HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {}
+  constructor(private http: _HttpClient, @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) { }
 
   go(type: number): void {
     this.http.get(`/api/${type}`).subscribe();
@@ -28,7 +28,6 @@ export class ExceptionTriggerComponent {
     this.http.post(`https://localhost:5001/auth`).subscribe(
       (res) => console.warn('成功', res),
       (err) => {
-        console.log('最后结果失败', err);
       },
     );
   }

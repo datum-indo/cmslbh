@@ -1505,3 +1505,58 @@ query allPerson(
     }
   }
 }
+
+
+query getDashboardData(
+  $whereAggApplication: ApplicationWhereInput
+  $whereAggTransfer: CaseTransferWhereInput
+  $whereAggRujukan: CaseReferralWhereInput
+  $whereAggCase: RenamedcaseWhereInput
+  $whereAggConsultation: CaseConsultationWhereInput
+  $whereAggActiveCase: RenamedcaseWhereInput
+  $whereAggFinishedCase:RenamedcaseWhereInput
+  ){
+    aggregateApplication(where: $whereAggApplication){
+      count{
+        id
+      }
+      sum{
+        jumlahPenerimaManfaat
+      }
+    }
+
+    aggregateCaseTransfer(where: $whereAggTransfer){
+      count{
+        id
+      }
+    }
+
+ aggregateCaseReferral(where:$whereAggRujukan){
+count{
+  id
+}
+    }
+
+    aggregateCase: aggregateRenamedcase(where:$whereAggCase){
+      count{
+        id
+      }
+    }
+
+    aggregateCaseConsultation(where:$whereAggConsultation){
+      count{
+        id
+      }
+    }
+
+    aggregateActiveCase: aggregateRenamedcase(where: $whereAggActiveCase){
+      count{
+        id
+      }
+    }
+    aggregateFinishedCase: aggregateRenamedcase(where: $whereAggFinishedCase){
+      count{
+        id
+      }
+    }
+}

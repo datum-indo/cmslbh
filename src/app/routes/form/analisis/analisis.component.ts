@@ -4,13 +4,15 @@ import { GetCaseGQL, GetCase } from '@shared';
 import { map, tap } from 'rxjs/operators';
 
 import { Subscription, Observable } from 'rxjs';
-import { FormBuilder, FormArray, Validators, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormArray, Validators, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { _HttpClient } from '@delon/theme';
 import { MtVocabHelper } from '@shared/helper';
 import { query } from './query';
 import * as moment from 'moment';
 import { NzTreeSelectComponent } from 'ng-zorro-antd/tree-select';
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
+import { HttpClient } from '@angular/common/http';
+import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
   selector: 'app-analisis',
   templateUrl: './analisis.component.html',
@@ -24,9 +26,10 @@ export class AnalisisComponent implements OnInit {
   caseObs: Subscription;
   loading = false;
   analisaForm: FormGroup;
-  urlQuery = `http://${window.location.hostname}:3000/query`;
+  urlQuery = `http://${window.location.hostname}:3000/query-prisma`;
+  urlSebaran = `http://${window.location.hostname}:3000/query/sebaran`;
   urlCsv = `http://${window.location.hostname}:3000/query/csv`;
-  groupObservable = this.http.post(this.urlQuery, {
+  groupObservable = this.http.post<any>(this.urlQuery, {
     query: 'select distinct `group` from `src_analisa`',
   });
   nodeArray = {};
@@ -39,9 +42,10 @@ export class AnalisisComponent implements OnInit {
   constructor(
     private getCaseGQL: GetCaseGQL,
     public fb: FormBuilder,
-    public http: _HttpClient,
+    public http: HttpClient,
     public mtVocabHelper: MtVocabHelper,
     public cdr: ChangeDetectorRef,
+    public msg: NzMessageService,
   ) { }
 
   ngOnInit() {
@@ -50,8 +54,8 @@ export class AnalisisComponent implements OnInit {
     });
 
     this.queryTemplate = this.http
-      .post(this.urlQuery, {
-        query: 'select `name`,`template`,`id` from `src_template`',
+      .post<any>(this.urlQuery, {
+        query: "select `name`,`template`,`id` from `src_template` where `name` not in ('sebaranCase','sebaranPerson','sebaranPermohonan')",
       })
       .toPromise();
   }
@@ -186,8 +190,8 @@ export class AnalisisComponent implements OnInit {
   refreshForm(i, level, downloadNode?) {
     if (
       downloadNode &&
-      (this.analisaForm.value.analisaFilter[i].field.type === 'mt_tree' ||
-        this.analisaForm.value.analisaFilter[i].field.type === 'mt_unrestricted')
+      (this.analisaForm.value.analisaFilter[i].field?.type === 'mt_tree' ||
+        this.analisaForm.value.analisaFilter[i].field?.type === 'mt_unrestricted')
     ) {
       this.initNode(i, this.analisaForm.value.analisaFilter[i].field.kode_list);
     }
@@ -269,8 +273,30 @@ export class AnalisisComponent implements OnInit {
     this.analisaForm.get('analisaFilter').reset();
   }
 
+  fieldEmpty() {
+    const formArr = this.analisaForm.get('analisaFilter') as FormArray
+    const formArrLength = formArr.controls.length
+    let empty = false
+    formArr.controls.forEach((element, ind) => {
+      if (ind === formArrLength - 1) {
+        if (!element.get('operator').value?.label) {
+          empty = true
+        }
+        return
+      }
+      if (!element.get('logika').value || !element.get('operator').value?.label) {
+        empty = true
+      }
+    });
+    return empty
+  }
+
   async getData() {
-    if (!this.analisaForm.value.analisaFilter[0].operator.operator) {
+    // if (!this.analisaForm.value.analisaFilter[0]?.operator?.operator) {
+    //   return null;
+    // }
+    if (this.fieldEmpty()) {
+      this.msg.info("Form masih belum lengkap")
       return null;
     }
     const arr = this.analisaForm.get('analisaFilter') as FormArray;
@@ -278,24 +304,22 @@ export class AnalisisComponent implements OnInit {
       .at(arr.length - 1)
       .get('logika')
       .setValue('');
-    // console.log(this.analisaForm.value);
 
     this.loading = true;
     const builtQuery = await this.queryBuilder(this.analisaForm.value.analisaFilter);
-    // console.log(builtQuery);
     await this.submitQuery(builtQuery);
     this.loading = false;
     this.cdr.detectChanges();
   }
 
   async submitQuery(builtQuery) {
-    const where = ' where ';
     this.sebaranKasus = await this.http
-      .post(this.urlQuery, {
-        query: query.defaultCase + where + builtQuery,
+      .post(this.urlSebaran, {
+        query: builtQuery,
+        template: 'sebaranCase'
       })
       .pipe(
-        map(res => {
+        map<any, any>(res => {
           const sebaranKasus: any = {
             totalKasus: 0,
             totalDidampingi: 0,
@@ -322,11 +346,12 @@ export class AnalisisComponent implements OnInit {
       .toPromise();
     // console.log(builtQuery);
     this.sebaranPerson = await this.http
-      .post(this.urlQuery, {
-        query: query.defaultPerson + where + builtQuery,
+      .post(this.urlSebaran, {
+        query: builtQuery,
+        template: 'sebaranPerson'
       })
       .pipe(
-        map(res => {
+        map<any, any>(res => {
           const sebaranPerson: any = {
             totalKorban: 0,
             totalPelaku: 0,
@@ -348,11 +373,12 @@ export class AnalisisComponent implements OnInit {
       )
       .toPromise();
     this.sebaranPermohonan = await this.http
-      .post(this.urlQuery, {
-        query: query.defaultPermohonan + where + builtQuery,
+      .post(this.urlSebaran, {
+        query: builtQuery,
+        template: 'sebaranPermohonan'
       })
       .pipe(
-        map(res => {
+        map<any, any>(res => {
           const sebaranPermohonan: any = {
             totalPermohonan: 0,
             totalPenerimaManfaat: 0,
@@ -442,6 +468,10 @@ export class AnalisisComponent implements OnInit {
   }
 
   async runTemplate() {
+    if (this.fieldEmpty()) {
+      this.msg.info("Form masih belum lengkap")
+      return null;
+    }
     if (!this.selectedTemplate) return;
     const builtQuery = await this.queryBuilder(this.analisaForm.value.analisaFilter);
     if (!builtQuery) {
@@ -459,7 +489,6 @@ export class AnalisisComponent implements OnInit {
           query: builtQuery,
           template: this.selectedTemplate,
         },
-        {},
         { responseType: 'blob' },
       )
       .subscribe(async res => {

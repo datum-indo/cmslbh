@@ -11,6 +11,7 @@ import { LinkyModule } from 'angular-linky';
 
 import { SHARED_DELON_MODULES } from './shared-delon.module';
 import { SHARED_ZORRO_MODULES } from './shared-zorro.module';
+import { G2BarModule } from '@delon/chart/bar';
 
 // #region third libs
 // import { NgxTinymceModule } from 'ngx-tinymce';
@@ -39,6 +40,7 @@ const DIRECTIVES: Type<any>[] = [];
     ...SHARED_ZORRO_MODULES,
     // third libs
     ...THIRDMODULES,
+    G2BarModule
   ],
   declarations: [
     // your components
@@ -54,6 +56,7 @@ const DIRECTIVES: Type<any>[] = [];
     DelonACLModule,
     DelonFormModule,
     TranslateModule,
+    G2BarModule,
     LinkyModule,
     ...SHARED_DELON_MODULES,
     ...SHARED_ZORRO_MODULES,

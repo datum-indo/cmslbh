@@ -153,7 +153,6 @@ export class DashboardWorkplaceComponent implements OnInit, OnDestroy {
         tap(() => (this.loading = false)),
       )
       .subscribe(res => {
-        console.log(res);
         this.data = res;
         this.translateMtVocab();
         this.cdr.detectChanges();

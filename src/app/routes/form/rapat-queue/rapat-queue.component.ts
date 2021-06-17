@@ -320,7 +320,6 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
         const data = await res;
         this.data = data.tempLog
         this.st.total = data.aggregateLogRequest.count.ID
-        console.log(data)
         this.cdr.detectChanges();
       });
   }

@@ -22,6 +22,7 @@ import { ReferralQueueComponent } from './referral-queue/referral-queue.componen
 // import { AnalisisComponent } from './analisis/analisis.component';
 import { CreateNetworkComponent } from './network/create-network/create-network.component';
 import { ListNetworkComponent } from './network/list-network/list-network.component';
+import { AnalisisComponent } from './analisis/analisis.component';
 
 const COMPONENTS = [ListPersonComponent, CreatePersonComponent];
 
@@ -43,7 +44,7 @@ const COMPONENTS = [ListPersonComponent, CreatePersonComponent];
     CaseConsultationComponent,
     RapatQueueComponent,
     ReferralQueueComponent,
-    // AnalisisComponent,
+    AnalisisComponent,
     CreateNetworkComponent,
     ListNetworkComponent,
   ],

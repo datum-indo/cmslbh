@@ -9,9 +9,10 @@
     "group": true,
     "hideInBreadcrumb": true,
     "children": [{
-        "text": "Dashboard",
+        "text": "Landing",
         "acl": ["8", "1", "2", "3", "4", "5", "6", "7"],
         "i18n": "menu.dashboard",
+        "link": "/landing",
         "icon": "anticon-dashboard",
         "children": [
           {
@@ -99,7 +100,7 @@
         "acl": ["8", "1", "2", "3", "4", "5"],
         "children": [{
             "text": "Konsultasi",
-            "acl": ["1", "2", "3", "4"],
+            "acl": ["1", "2", "3", "4","5"],
             "link": "/form/consultation-queue"
           }, {
             "text": "Rekomendasi Kasus",

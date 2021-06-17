@@ -23,10 +23,8 @@ const routes: Routes = [
     canActivateChild: [JWTGuard],
     children: [
       { path: '', redirectTo: 'landing', pathMatch: 'full' },
-      { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full' },
       // { path: 'dashboard/v1', component: DashboardV1Component },
-      { path: 'dashboard/cases', component: CasesComponent },
-      { path: 'landing', loadChildren: () => import('../routes/landing/landing.module').then(m => m.LandingModule) },
+      { path: 'landing', loadChildren: () => import('./landing/landing.module').then(m => m.LandingModule) },
       // Exception
       { path: 'exception', loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule) },
       { path: 'form', loadChildren: () => import('./form/form.module').then(m => m.FormModule) },

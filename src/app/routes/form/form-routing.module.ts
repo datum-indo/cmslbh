@@ -18,6 +18,7 @@ import { ReferralQueueComponent } from './referral-queue/referral-queue.componen
 // import { AnalisisComponent } from './analisis/analisis.component';
 import { CreateNetworkComponent } from './network/create-network/create-network.component';
 import { ListNetworkComponent } from './network/list-network/list-network.component';
+import { AnalisisComponent } from './analisis/analisis.component';
 
 const routes: Routes = [
   {
@@ -46,10 +47,10 @@ const routes: Routes = [
     path: 'consultation-queue',
     component: ConsultationQueueComponent,
   },
-  // {
-  //   path: 'analisa',
-  //   component: AnalisisComponent,
-  // },
+  {
+    path: 'analisa',
+    component: AnalisisComponent,
+  },
   {
     path: 'rapat-queue',
     component: RapatQueueComponent,

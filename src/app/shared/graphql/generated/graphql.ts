@@ -14,12 +14,22 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: any;
 };
 
 
 
 export type AffectedRowsOutput = {
   count: Scalars['Int'];
+};
+
+export type AggregateAnalisaFilter = {
+  count?: Maybe<AnalisaFilterCountAggregate>;
+  avg?: Maybe<AnalisaFilterAvgAggregate>;
+  sum?: Maybe<AnalisaFilterSumAggregate>;
+  min?: Maybe<AnalisaFilterMinAggregate>;
+  max?: Maybe<AnalisaFilterMaxAggregate>;
 };
 
 export type AggregateApplication = {
@@ -338,6 +348,147 @@ export type AggregateUserProfile = {
   sum?: Maybe<UserProfileSumAggregate>;
   min?: Maybe<UserProfileMinAggregate>;
   max?: Maybe<UserProfileMaxAggregate>;
+};
+
+export type AnalisaFilter = {
+  id: Scalars['Int'];
+  group?: Maybe<Scalars['String']>;
+  groupLabel?: Maybe<Scalars['String']>;
+  field?: Maybe<Scalars['String']>;
+  fieldLabel?: Maybe<Scalars['String']>;
+  operator?: Maybe<Scalars['String']>;
+  operatorLabel?: Maybe<Scalars['String']>;
+  queryJson?: Maybe<Scalars['JSON']>;
+  type?: Maybe<Scalars['String']>;
+  source?: Maybe<Scalars['String']>;
+};
+
+export type AnalisaFilterAvgAggregate = {
+  id: Scalars['Float'];
+};
+
+export type AnalisaFilterCountAggregate = {
+  id: Scalars['Int'];
+  group?: Maybe<Scalars['Int']>;
+  groupLabel?: Maybe<Scalars['Int']>;
+  field?: Maybe<Scalars['Int']>;
+  fieldLabel?: Maybe<Scalars['Int']>;
+  operator?: Maybe<Scalars['Int']>;
+  operatorLabel?: Maybe<Scalars['Int']>;
+  queryJson?: Maybe<Scalars['Int']>;
+  type?: Maybe<Scalars['Int']>;
+  source?: Maybe<Scalars['Int']>;
+  _all: Scalars['Int'];
+};
+
+export type AnalisaFilterCreateInput = {
+  group?: Maybe<Scalars['String']>;
+  groupLabel?: Maybe<Scalars['String']>;
+  field?: Maybe<Scalars['String']>;
+  fieldLabel?: Maybe<Scalars['String']>;
+  operator?: Maybe<Scalars['String']>;
+  operatorLabel?: Maybe<Scalars['String']>;
+  queryJson?: Maybe<Scalars['JSON']>;
+  type?: Maybe<Scalars['String']>;
+  source?: Maybe<Scalars['String']>;
+};
+
+export type AnalisaFilterMaxAggregate = {
+  id: Scalars['Int'];
+  group?: Maybe<Scalars['String']>;
+  groupLabel?: Maybe<Scalars['String']>;
+  field?: Maybe<Scalars['String']>;
+  fieldLabel?: Maybe<Scalars['String']>;
+  operator?: Maybe<Scalars['String']>;
+  operatorLabel?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  source?: Maybe<Scalars['String']>;
+};
+
+export type AnalisaFilterMinAggregate = {
+  id: Scalars['Int'];
+  group?: Maybe<Scalars['String']>;
+  groupLabel?: Maybe<Scalars['String']>;
+  field?: Maybe<Scalars['String']>;
+  fieldLabel?: Maybe<Scalars['String']>;
+  operator?: Maybe<Scalars['String']>;
+  operatorLabel?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  source?: Maybe<Scalars['String']>;
+};
+
+export type AnalisaFilterOrderByInput = {
+  id?: Maybe<SortOrder>;
+  group?: Maybe<SortOrder>;
+  groupLabel?: Maybe<SortOrder>;
+  field?: Maybe<SortOrder>;
+  fieldLabel?: Maybe<SortOrder>;
+  operator?: Maybe<SortOrder>;
+  operatorLabel?: Maybe<SortOrder>;
+  queryJson?: Maybe<SortOrder>;
+  type?: Maybe<SortOrder>;
+  source?: Maybe<SortOrder>;
+};
+
+export enum AnalisaFilterScalarFieldEnum {
+  Id = 'id',
+  Group = 'group',
+  GroupLabel = 'groupLabel',
+  Field = 'field',
+  FieldLabel = 'fieldLabel',
+  Operator = 'operator',
+  OperatorLabel = 'operatorLabel',
+  QueryJson = 'queryJson',
+  Type = 'type',
+  Source = 'source'
+}
+
+export type AnalisaFilterSumAggregate = {
+  id: Scalars['Int'];
+};
+
+export type AnalisaFilterUpdateInput = {
+  group?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  groupLabel?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  field?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  fieldLabel?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  operator?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  operatorLabel?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  queryJson?: Maybe<Scalars['JSON']>;
+  type?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  source?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type AnalisaFilterUpdateManyMutationInput = {
+  group?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  groupLabel?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  field?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  fieldLabel?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  operator?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  operatorLabel?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  queryJson?: Maybe<Scalars['JSON']>;
+  type?: Maybe<NullableStringFieldUpdateOperationsInput>;
+  source?: Maybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type AnalisaFilterWhereInput = {
+  AND?: Maybe<Array<AnalisaFilterWhereInput>>;
+  OR?: Maybe<Array<AnalisaFilterWhereInput>>;
+  NOT?: Maybe<Array<AnalisaFilterWhereInput>>;
+  id?: Maybe<IntFilter>;
+  group?: Maybe<StringNullableFilter>;
+  groupLabel?: Maybe<StringNullableFilter>;
+  field?: Maybe<StringNullableFilter>;
+  fieldLabel?: Maybe<StringNullableFilter>;
+  operator?: Maybe<StringNullableFilter>;
+  operatorLabel?: Maybe<StringNullableFilter>;
+  queryJson?: Maybe<JsonNullableFilter>;
+  type?: Maybe<StringNullableFilter>;
+  source?: Maybe<StringNullableFilter>;
+};
+
+export type AnalisaFilterWhereUniqueInput = {
+  id?: Maybe<Scalars['Int']>;
 };
 
 export type Application = {
@@ -6412,6 +6563,12 @@ export type IntNullableFilter = {
   not?: Maybe<NestedIntNullableFilter>;
 };
 
+
+export type JsonNullableFilter = {
+  equals?: Maybe<Scalars['JSON']>;
+  not?: Maybe<Scalars['JSON']>;
+};
+
 export type LogRequest = {
   ID: Scalars['Int'];
   isiRequest?: Maybe<Scalars['String']>;
@@ -7824,6 +7981,12 @@ export type MtVocabWhereUniqueInput = {
 };
 
 export type Mutation = {
+  createAnalisaFilter: AnalisaFilter;
+  deleteAnalisaFilter?: Maybe<AnalisaFilter>;
+  updateAnalisaFilter?: Maybe<AnalisaFilter>;
+  deleteManyAnalisaFilter: AffectedRowsOutput;
+  updateManyAnalisaFilter: AffectedRowsOutput;
+  upsertAnalisaFilter: AnalisaFilter;
   createApplication: Application;
   deleteApplication?: Maybe<Application>;
   updateApplication?: Maybe<Application>;
@@ -8064,6 +8227,40 @@ export type Mutation = {
   deleteManyUserProfile: AffectedRowsOutput;
   updateManyUserProfile: AffectedRowsOutput;
   upsertUserProfile: UserProfile;
+};
+
+
+export type MutationCreateAnalisaFilterArgs = {
+  data: AnalisaFilterCreateInput;
+};
+
+
+export type MutationDeleteAnalisaFilterArgs = {
+  where: AnalisaFilterWhereUniqueInput;
+};
+
+
+export type MutationUpdateAnalisaFilterArgs = {
+  data: AnalisaFilterUpdateInput;
+  where: AnalisaFilterWhereUniqueInput;
+};
+
+
+export type MutationDeleteManyAnalisaFilterArgs = {
+  where?: Maybe<AnalisaFilterWhereInput>;
+};
+
+
+export type MutationUpdateManyAnalisaFilterArgs = {
+  data: AnalisaFilterUpdateManyMutationInput;
+  where?: Maybe<AnalisaFilterWhereInput>;
+};
+
+
+export type MutationUpsertAnalisaFilterArgs = {
+  where: AnalisaFilterWhereUniqueInput;
+  create: AnalisaFilterCreateInput;
+  update: AnalisaFilterUpdateInput;
 };
 
 
@@ -11337,6 +11534,10 @@ export type PersonWhereUniqueInput = {
 };
 
 export type Query = {
+  analisaFilter?: Maybe<AnalisaFilter>;
+  findFirstAnalisaFilter?: Maybe<AnalisaFilter>;
+  analisaFilters: Array<AnalisaFilter>;
+  aggregateAnalisaFilter: AggregateAnalisaFilter;
   application?: Maybe<Application>;
   findFirstApplication?: Maybe<Application>;
   applications: Array<Application>;
@@ -11497,6 +11698,40 @@ export type Query = {
   findFirstUserProfile?: Maybe<UserProfile>;
   userProfiles: Array<UserProfile>;
   aggregateUserProfile: AggregateUserProfile;
+};
+
+
+export type QueryAnalisaFilterArgs = {
+  where: AnalisaFilterWhereUniqueInput;
+};
+
+
+export type QueryFindFirstAnalisaFilterArgs = {
+  where?: Maybe<AnalisaFilterWhereInput>;
+  orderBy?: Maybe<Array<AnalisaFilterOrderByInput>>;
+  cursor?: Maybe<AnalisaFilterWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<AnalisaFilterScalarFieldEnum>>;
+};
+
+
+export type QueryAnalisaFiltersArgs = {
+  where?: Maybe<AnalisaFilterWhereInput>;
+  orderBy?: Maybe<Array<AnalisaFilterOrderByInput>>;
+  cursor?: Maybe<AnalisaFilterWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
+  distinct?: Maybe<Array<AnalisaFilterScalarFieldEnum>>;
+};
+
+
+export type QueryAggregateAnalisaFilterArgs = {
+  where?: Maybe<AnalisaFilterWhereInput>;
+  orderBy?: Maybe<Array<AnalisaFilterOrderByInput>>;
+  cursor?: Maybe<AnalisaFilterWhereUniqueInput>;
+  take?: Maybe<Scalars['Int']>;
+  skip?: Maybe<Scalars['Int']>;
 };
 
 
@@ -17445,6 +17680,19 @@ export type AllPersonQuery = { people: Array<(
     )>, documents: Array<Pick<PersonDocument, 'id' | 'title' | 'file'>> }
   )>, aggregatePerson: { count?: Maybe<Pick<PersonCountAggregate, 'id'>> } };
 
+export type GetDashboardDataQueryVariables = Exact<{
+  whereAggApplication?: Maybe<ApplicationWhereInput>;
+  whereAggTransfer?: Maybe<CaseTransferWhereInput>;
+  whereAggRujukan?: Maybe<CaseReferralWhereInput>;
+  whereAggCase?: Maybe<RenamedcaseWhereInput>;
+  whereAggConsultation?: Maybe<CaseConsultationWhereInput>;
+  whereAggActiveCase?: Maybe<RenamedcaseWhereInput>;
+  whereAggFinishedCase?: Maybe<RenamedcaseWhereInput>;
+}>;
+
+
+export type GetDashboardDataQuery = { aggregateApplication: { count?: Maybe<Pick<ApplicationCountAggregate, 'id'>>, sum?: Maybe<Pick<ApplicationSumAggregate, 'jumlahPenerimaManfaat'>> }, aggregateCaseTransfer: { count?: Maybe<Pick<CaseTransferCountAggregate, 'id'>> }, aggregateCaseReferral: { count?: Maybe<Pick<CaseReferralCountAggregate, 'id'>> }, aggregateCase: { count?: Maybe<Pick<RenamedcaseCountAggregate, 'id'>> }, aggregateCaseConsultation: { count?: Maybe<Pick<CaseConsultationCountAggregate, 'id'>> }, aggregateActiveCase: { count?: Maybe<Pick<RenamedcaseCountAggregate, 'id'>> }, aggregateFinishedCase: { count?: Maybe<Pick<RenamedcaseCountAggregate, 'id'>> } };
+
 export const DestroyRolesDocument = gql`
     mutation destroyRoles($where: RoleWhereInput!) {
   deleteManyRole(where: $where) {
@@ -19316,6 +19564,59 @@ export const AllPersonDocument = gql`
       super(apollo);
     }
   }
+export const GetDashboardDataDocument = gql`
+    query getDashboardData($whereAggApplication: ApplicationWhereInput, $whereAggTransfer: CaseTransferWhereInput, $whereAggRujukan: CaseReferralWhereInput, $whereAggCase: RenamedcaseWhereInput, $whereAggConsultation: CaseConsultationWhereInput, $whereAggActiveCase: RenamedcaseWhereInput, $whereAggFinishedCase: RenamedcaseWhereInput) {
+  aggregateApplication(where: $whereAggApplication) {
+    count {
+      id
+    }
+    sum {
+      jumlahPenerimaManfaat
+    }
+  }
+  aggregateCaseTransfer(where: $whereAggTransfer) {
+    count {
+      id
+    }
+  }
+  aggregateCaseReferral(where: $whereAggRujukan) {
+    count {
+      id
+    }
+  }
+  aggregateCase: aggregateRenamedcase(where: $whereAggCase) {
+    count {
+      id
+    }
+  }
+  aggregateCaseConsultation(where: $whereAggConsultation) {
+    count {
+      id
+    }
+  }
+  aggregateActiveCase: aggregateRenamedcase(where: $whereAggActiveCase) {
+    count {
+      id
+    }
+  }
+  aggregateFinishedCase: aggregateRenamedcase(where: $whereAggFinishedCase) {
+    count {
+      id
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetDashboardDataGQL extends Apollo.Query<GetDashboardDataQuery, GetDashboardDataQueryVariables> {
+    document = GetDashboardDataDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export namespace DestroyRoles {
   export type Variables = DestroyRolesMutationVariables;
   export type Mutation = DestroyRolesMutation;
@@ -19683,4 +19984,24 @@ export namespace AllPerson {
   export type Documents = AllPersonQuery['people'][0]['documents'][0];
   export type AggregatePerson = AllPersonQuery['aggregatePerson'];
   export type Count = AllPersonQuery['aggregatePerson']['count'];
+}
+
+export namespace GetDashboardData {
+  export type Variables = GetDashboardDataQueryVariables;
+  export type Query = GetDashboardDataQuery;
+  export type AggregateApplication = GetDashboardDataQuery['aggregateApplication'];
+  export type Count = GetDashboardDataQuery['aggregateApplication']['count'];
+  export type Sum = GetDashboardDataQuery['aggregateApplication']['sum'];
+  export type AggregateCaseTransfer = GetDashboardDataQuery['aggregateCaseTransfer'];
+  export type _Count = GetDashboardDataQuery['aggregateCaseTransfer']['count'];
+  export type AggregateCaseReferral = GetDashboardDataQuery['aggregateCaseReferral'];
+  export type __Count = GetDashboardDataQuery['aggregateCaseReferral']['count'];
+  export type AggregateCase = GetDashboardDataQuery['aggregateCase'];
+  export type ___Count = GetDashboardDataQuery['aggregateCase']['count'];
+  export type AggregateCaseConsultation = GetDashboardDataQuery['aggregateCaseConsultation'];
+  export type ____Count = GetDashboardDataQuery['aggregateCaseConsultation']['count'];
+  export type AggregateActiveCase = GetDashboardDataQuery['aggregateActiveCase'];
+  export type _____Count = GetDashboardDataQuery['aggregateActiveCase']['count'];
+  export type AggregateFinishedCase = GetDashboardDataQuery['aggregateFinishedCase'];
+  export type ______Count = GetDashboardDataQuery['aggregateFinishedCase']['count'];
 }
