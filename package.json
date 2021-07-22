@@ -129,7 +129,7 @@
     "tslint-language-service": "^0.9.9",
     "typescript": "~3.2.2",
     "webpack-bundle-analyzer": "^3.3.2",
-    "xlsx": "^0.14.2"
+    "xlsx": "^0.17.0"
   },
   "husky": {
     "hooks": {
