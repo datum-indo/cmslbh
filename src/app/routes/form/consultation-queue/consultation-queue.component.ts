@@ -76,7 +76,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
         {
           text: 'View Kasus',
           click: (item: any) => {
-            this.router.navigateByUrl('form/case/view/' + item.caseId.id);
+            this.router.navigate([]).then(res=>{window.open('#/form/case/view/' + item.caseId.id,'_blank')});
           },
           iif: (item: any) => item.caseId,
         },
@@ -110,7 +110,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
           },
           iif: item => {
             if (
-              (this.aclService.data.roles.find(el => el === '5')) &&
+              (this.aclService.data.roles.find(el => el === '5' || el === '3')) &&
               moment().isSame(moment(item.tglRequest), 'day') &&
               item.statusRequest === '0'
             ) {
@@ -315,7 +315,7 @@ export class ConsultationQueueComponent implements OnInit, OnDestroy {
   }
 
   searchGenerator(): GetLogRequest.Variables {
-    if (this.aclService.data.roles.find(el => el === '5'))
+    if (this.aclService.data.roles.find(el => el === '5' || el === '3'))
       return <GetLogRequest.Variables>{
         where: this.mtVocabHelper.whereHelper({
           jenisRequest: { equals: '1011' },

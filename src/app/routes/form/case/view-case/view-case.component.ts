@@ -12,9 +12,9 @@ import {
 } from '@angular/core';
 import { STColumn, STComponent } from '@delon/abc/st';
 import { NzTabChangeEvent } from 'ng-zorro-antd/tabs';
-import { NzUploadFile } from 'ng-zorro-antd/upload'
+import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzMessageService, } from 'ng-zorro-antd/message';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { _HttpClient, SettingsService } from '@delon/theme';
 import { saveAs as importedSaveAs } from 'file-saver';
 import {
@@ -66,7 +66,7 @@ import { Location, LocationStrategy, PathLocationStrategy } from '@angular/commo
 import { MtVocabHelper, HelperService } from '@shared/helper';
 import * as moment from 'moment';
 import { SFSchema, SFComponent } from '@delon/form';
-import { isNil, mapObjIndexed } from 'ramda';
+import { has, isNil, mapObjIndexed } from 'ramda';
 import { ACLService } from '@delon/acl';
 
 @Component({
@@ -1205,7 +1205,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     //     },
     //   );
 
-    const whereQuery = { where: { caseId: { is: { id: { equals: this.data.id } } } } }
+    const whereQuery = { where: { caseId: { is: { id: { equals: this.data.id } } } } };
     this.loading = true;
     zip(
       this.destroyCaseIssue.mutate(whereQuery),
@@ -1219,8 +1219,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     ).subscribe(res => {
       this.loading = false;
       this.dataMutationUpdateUmum(this.processAnalisa(data), { id: this.data.id });
-    })
-
+    });
   }
 
   submitRapatPK(data) {
@@ -1424,7 +1423,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       categories: { create: caseCategory },
       violenceMethods: { create: violenceMethod },
       incidentLocations: { create: incidentLocation },
-      pelakuKorbanRelasi: { set: data.pelakuKorbanRelasi }
+      pelakuKorbanRelasi: { set: data.pelakuKorbanRelasi },
     };
   }
 
@@ -1546,32 +1545,31 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
   }
 
   processDataRapatPK(data): RenamedcaseUpdateInput | string {
-    if ('progresses' in this.data) {
-      if (this.data.progresses) {
-        return 'Status penanganan lebih lanjut tidak bisa dirubah karena sudah ada aktifitas pendampingan';
-      }
-    }
-    if ('activities' in this.data) {
-      if (this.data.activities) {
-        if (this.data.activities.length > 0) {
-          return 'Status penanganan lebih lanjut tidak bisa dirubah karena sudah ada aktifitas pendampingan';
-        }
-      }
-    }
     switch (data.didampingi) {
       case '0111':
         return <RenamedcaseUpdateInput>{
           statusPendampingan: { set: '0111' },
           application: { update: { tahap: { set: '2012' } } },
           pk: {
-            update: {
-              tglRapat: { set: moment(data.tglRapat).toDate() },
-              updatedBy: { set: this.settingService.user.name },
-              didampingi: { set: data.didampingi },
-              ppPendamping: { connect: { id: data.ppPendamping } },
-              statusAlasanTdk: { set: '' },
-              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
-              strategiAdvokasi: { set: data.strategiAdvokasi },
+            upsert: {
+              create: {
+                tglRapat: moment(data.tglRapat).toDate(),
+                updatedBy: this.settingService.user.name,
+                didampingi: data.didampingi,
+                ppPendamping: { connect: { id: data.ppPendamping } },
+                statusAlasanTdk: '',
+                targetAkhirAdvokasi: data.targetAkhirAdvokasi ?? '',
+                strategiAdvokasi: data.strategiAdvokasi ?? '',
+              },
+              update: {
+                tglRapat: { set: moment(data.tglRapat).toDate() },
+                updatedBy: { set: this.settingService.user.name },
+                didampingi: { set: data.didampingi },
+                ppPendamping: { connect: { id: data.ppPendamping } },
+                statusAlasanTdk: { set: '' },
+                targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi ?? '' },
+                strategiAdvokasi: { set: data.strategiAdvokasi ?? '' },
+              },
             },
           },
           transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : undefined) : undefined,
@@ -1581,19 +1579,24 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           statusPendampingan: { set: '4111' },
           application: { update: { tahap: { set: '2012' } } },
           pk: {
-            update: {
-              tglRapat: { set: moment(data.tglRapat).toDate() },
-              updatedBy: { set: this.settingService.user.name },
-              didampingi: { set: data.didampingi },
-              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
-              strategiAdvokasi: { set: data.strategiAdvokasi },
-              ppPendamping:
-                'ppPendamping' in this.data.pk
-                  ? this.data.pk.ppPendamping !== null
-                    ? { disconnect: true }
-                    : undefined
-                  : undefined,
-              statusAlasanTdk: { set: data.statusAlasanTdk },
+            upsert: {
+              create: {
+                tglRapat: moment(data.tglRapat).toDate(),
+                updatedBy: this.settingService.user.name,
+                didampingi: data.didampingi,
+                targetAkhirAdvokasi: data.targetAkhirAdvokasi ?? '',
+                strategiAdvokasi: data.strategiAdvokasi ?? '',
+                statusAlasanTdk: data.statusAlasanTdk ?? '',
+              },
+              update: {
+                tglRapat: { set: moment(data.tglRapat).toDate() },
+                updatedBy: { set: this.settingService.user.name },
+                didampingi: { set: data.didampingi },
+                targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
+                strategiAdvokasi: { set: data.strategiAdvokasi ?? '' },
+                ppPendamping: this.existAndNotNull('ppPendamping', this.data.pk) ? { disconnect: true } : undefined,
+                statusAlasanTdk: { set: data.statusAlasanTdk ?? '' },
+              },
             },
           },
           transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : undefined) : undefined,
@@ -1603,19 +1606,24 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           statusPendampingan: { set: '5111' },
           application: { update: { tahap: { set: '2012' } } },
           pk: {
-            update: {
-              tglRapat: { set: moment(data.tglRapat).toDate() },
-              updatedBy: { set: this.settingService.user.name },
-              didampingi: { set: data.didampingi },
-              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
-              strategiAdvokasi: { set: data.strategiAdvokasi },
-              ppPendamping:
-                'ppPendamping' in this.data.pk
-                  ? this.data.pk.ppPendamping !== null
-                    ? { disconnect: true }
-                    : undefined
-                  : undefined,
-              statusAlasanTdk: { set: data.statusAlasanTdk },
+            upsert: {
+              create: {
+                tglRapat: moment(data.tglRapat).toDate(),
+                updatedBy: this.settingService.user.name,
+                didampingi: data.didampingi,
+                targetAkhirAdvokasi: data.targetAkhirAdvokasi ?? '',
+                strategiAdvokasi: data.strategiAdvokasi ?? '',
+                statusAlasanTdk: data.statusAlasanTdk ?? '',
+              },
+              update: {
+                tglRapat: { set: moment(data.tglRapat).toDate() },
+                updatedBy: { set: this.settingService.user.name },
+                didampingi: { set: data.didampingi },
+                targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi ?? '' },
+                strategiAdvokasi: { set: data.strategiAdvokasi ?? '' },
+                ppPendamping: this.existAndNotNull('ppPendamping', this.data.pk) ? { disconnect: true } : undefined,
+                statusAlasanTdk: { set: data.statusAlasanTdk ?? '' },
+              },
             },
           },
           transfer:
@@ -1630,14 +1638,25 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           statusPendampingan: { set: '6111' },
           application: { update: { tahap: { set: '2012' } } },
           pk: {
-            update: {
-              tglRapat: { set: moment(data.tglRapat).toDate() },
-              updatedBy: { set: this.settingService.user.name },
-              didampingi: { set: data.didampingi },
-              ppPendamping: { connect: { id: data.ppPendamping } },
-              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
-              strategiAdvokasi: { set: data.strategiAdvokasi },
-              statusAlasanTdk: { set: '' },
+            upsert: {
+              create: {
+                tglRapat: moment(data.tglRapat).toDate(),
+                updatedBy: this.settingService.user.name,
+                didampingi: data.didampingi,
+                ppPendamping: { connect: { id: data.ppPendamping } },
+                targetAkhirAdvokasi: data.targetAkhirAdvokasi ?? '',
+                strategiAdvokasi: data.strategiAdvokasi ?? '',
+                statusAlasanTdk: '',
+              },
+              update: {
+                tglRapat: { set: moment(data.tglRapat).toDate() },
+                updatedBy: { set: this.settingService.user.name },
+                didampingi: { set: data.didampingi },
+                ppPendamping: { connect: { id: data.ppPendamping } },
+                targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi ?? '' },
+                strategiAdvokasi: { set: data.strategiAdvokasi ?? '' },
+                statusAlasanTdk: { set: '' },
+              },
             },
           },
           transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : undefined) : undefined,
@@ -1648,14 +1667,25 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           statusPendampingan: { set: '7111' },
           application: { update: { tahap: { set: '2012' } } },
           pk: {
-            update: {
-              tglRapat: { set: moment(data.tglRapat).toDate() },
-              updatedBy: { set: this.settingService.user.name },
-              didampingi: { set: data.didampingi },
-              ppPendamping: { connect: { id: data.ppPendamping } },
-              targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi },
-              strategiAdvokasi: { set: data.strategiAdvokasi },
-              statusAlasanTdk: { set: '' },
+            upsert: {
+              create: {
+                tglRapat: moment(data.tglRapat).toDate(),
+                updatedBy: this.settingService.user.name,
+                didampingi: data.didampingi,
+                ppPendamping: { connect: { id: data.ppPendamping } },
+                targetAkhirAdvokasi: data.targetAkhirAdvokasi ?? '',
+                strategiAdvokasi: data.strategiAdvokasi ?? '',
+                statusAlasanTdk: '',
+              },
+              update: {
+                tglRapat: { set: moment(data.tglRapat).toDate() },
+                updatedBy: { set: this.settingService.user.name },
+                didampingi: { set: data.didampingi },
+                ppPendamping: { connect: { id: data.ppPendamping } },
+                targetAkhirAdvokasi: { set: data.targetAkhirAdvokasi ?? '' },
+                strategiAdvokasi: { set: data.strategiAdvokasi ?? '' },
+                statusAlasanTdk: { set: '' },
+              },
             },
           },
           transfer: 'transfer' in this.data ? (this.data.transfer !== null ? { delete: true } : undefined) : undefined,
@@ -1663,16 +1693,23 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     }
   }
 
+  existAndNotNull(propName: string, obj: any) {
+    if (has(propName)(obj)) {
+      return !isNil(obj[propName]);
+    } else {
+      return false;
+    }
+  }
+
   submitUmum(data) {
     // console.log(data);
     data = mapObjIndexed((val, _key) => {
       if (isNil(val)) {
-        return { set: null }
+        return { set: null };
       } else {
-        return { set: val }
+        return { set: val };
       }
-
-    }, data)
+    }, data);
     this.dataMutationUpdateUmum(data, { id: this.data.id });
   }
 
@@ -1845,7 +1882,6 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       arrCaseModuses.push(a.kodeMt);
     }
 
-
     this.dataModalTemp = {
       hakTerdampak: arrHakTerdampak,
       issues: arrCaseIssues,
@@ -1853,7 +1889,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
       violenceMethod: arrViolenceMethods,
       kategoriKasus: arrKategoriKasus,
       lokasiKejadian: arrJenisLokasiKejadian,
-      pelakuKorbanRelasi: this.data.pelakuKorbanRelasi
+      pelakuKorbanRelasi: this.data.pelakuKorbanRelasi,
     };
     // console.log(this.dataModalTemp);
     // this.sfUmum. formData = {
@@ -2593,7 +2629,8 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
           },
           iif: (item: any) => {
             return (
-              this.aclService.data.roles.find(el => el === '3' || el === '4' || el === '5') && this.data.application.tahap !== '4012'
+              this.aclService.data.roles.find(el => el === '3' || el === '4' || el === '5') &&
+              this.data.application.tahap !== '4012'
             );
           },
         },
@@ -2627,7 +2664,7 @@ export class ViewCaseComponent implements OnInit, OnDestroy {
     {
       title: 'Updated By',
       index: 'updatedBy',
-    }
+    },
   ];
 
   columnsLampiranDokumen: STColumn[] = [

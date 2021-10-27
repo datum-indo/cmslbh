@@ -98,7 +98,7 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
         {
           text: 'View Kasus',
           click: (item: any) => {
-            this.router.navigateByUrl('form/case/view/' + item.caseId.id);
+            this.router.navigate([]).then(res=>{window.open('#/form/case/view/' + item.caseId.id,'_blank')});
           },
         },
         {
@@ -204,7 +204,7 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
       type: 'badge',
       index: 'tanggapanRequest',
       badge: {
-        3111: { text: 'Rapat PK', color: 'success' },
+        // 3111: { text: 'Rapat PK', color: 'success' },
         4111: { text: 'Tidak Didampingi', color: 'success' },
         5111: { text: 'Transfer', color: 'success' },
         99011: { text: 'Belum Bisa Diputuskan', color: 'success' },
@@ -545,7 +545,7 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
         type: 'string',
         title: 'Rekomendasi',
         enum: [
-          { value: '3111', label: 'Rapat PK' },
+          // { value: '3111', label: 'Rapat PK' },
           { value: '4111', label: 'Tidak Didampingi' },
           { value: '5111', label: 'Transfer' },
         ],
@@ -596,7 +596,7 @@ export class RapatQueueComponent implements OnInit, OnDestroy {
         type: 'string',
         title: 'Penanganan Lebih Lanjut',
         enum: [
-          { value: '3111', label: 'Rapat PK' },
+          // { value: '3111', label: 'Rapat PK' },
           { value: '4111', label: 'Tidak Didampingi' },
           { value: '5111', label: 'Transfer' },
           { value: '99011', label: 'Belum Bisa Diputuskan' },

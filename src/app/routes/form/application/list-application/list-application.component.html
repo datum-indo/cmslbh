@@ -65,3 +65,19 @@
   <app-create-application [parent]="true" [modeApp]="mode" [editData]="dataSelected" (saveDone)="closeModal()">
   </app-create-application>
 </ng-template>
+
+<ng-template #modalClient>
+  <sv-container size=large col="4" layout="vertical">
+    <sv-title>Detail Klien</sv-title>
+    <sv label="Nama Lengkap">{{ dataModalTemp?.personId?.namaLengkap }}</sv>
+    <sv label="SKTM">{{ dataModalTemp?.stmKeterangan }}</sv>
+    <sv label="Alamat ID">{{ dataModalTemp?.personId?.alamatId }}</sv>
+    <sv label="Alamat Domisili">{{ dataModalTemp?.personId?.alamatDomisili }}</sv>
+    <sv label="Posisi Saat Ini">{{ dataModalTemp?.alamatLokasi }}</sv>
+    <sv label="Tanggal Lahir">{{ dataModalTemp?.personId?.tglLahirTeks }}</sv>
+    <sv label="Agama">{{ dataModalTemp?.personId?.agama }}</sv>
+    <sv label="Pendapatan">{{ dataModalTemp?.pendapatanTeks }}</sv>
+    <sv label="Pekerjaan">{{ dataModalTemp?.personId?.pekerjaanTeks }}</sv>
+    <sv label="Nomor Telepon">{{ dataModalTemp?.personId?.telepon }}</sv>
+  </sv-container>
+</ng-template>

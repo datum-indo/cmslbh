@@ -40,7 +40,6 @@ const DIRECTIVES: Type<any>[] = [];
     ...SHARED_ZORRO_MODULES,
     // third libs
     ...THIRDMODULES,
-    G2BarModule
   ],
   declarations: [
     // your components
@@ -56,7 +55,6 @@ const DIRECTIVES: Type<any>[] = [];
     DelonACLModule,
     DelonFormModule,
     TranslateModule,
-    G2BarModule,
     LinkyModule,
     ...SHARED_DELON_MODULES,
     ...SHARED_ZORRO_MODULES,

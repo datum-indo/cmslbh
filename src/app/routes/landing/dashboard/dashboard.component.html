@@ -97,6 +97,52 @@
   </div>
 </div>
 
+<nz-card [nzBordered]="false" [nzTitle]="'Kategori Kasus'">
+  <ng-container *ngIf="processData | async as data; else spinner">
+    <g2-bar height="200" [data]='data.caseCategoryBarChartData' ></g2-bar>
+  </ng-container>
+</nz-card>
+
+<nz-card [nzBordered]="false" [nzTitle]="'Hak Terlanggar'">
+      <ng-container *ngIf="processData | async as data; else spinner">
+        <g2-bar height="200" [data]='data.violatedRightsBarChartData' ></g2-bar>
+      </ng-container>
+</nz-card>
+
+
+<nz-card [nzBordered]="false" [nzTitle]="'Modus'">
+  <ng-container *ngIf="processData | async as data; else spinner">
+    <g2-pie
+      #pie
+      [hasLegend]="true"
+      subTitle="Modus"
+      [data]="data.modusesPieChartData"
+      height="294"
+      repaint="false"
+    ></g2-pie>
+  </ng-container>
+</nz-card>
+
+<nz-card [nzBordered]="false" [nzTitle]="'Metode Kekerasan'">
+  <ng-container *ngIf="processData | async as data; else spinner">
+    <g2-bar height="200" [data]='data.violenceMethodsBarChartdata' ></g2-bar>
+  </ng-container>
+</nz-card>
+
+<nz-card [nzBordered]="false" [nzTitle]="'Orientasi Seksual'">
+  <ng-container *ngIf="processData | async as data; else spinner">
+    <g2-pie
+      #pie
+      [hasLegend]="true"
+      subTitle="Orientasi Seksual"
+      [data]="data.orientasiSeksualPieChartData"
+      height="294"
+      repaint="false"
+    ></g2-pie>
+  </ng-container>
+</nz-card>
+
+
 <ng-template #spinner>
   <nz-spin nzSimple></nz-spin>
 </ng-template>

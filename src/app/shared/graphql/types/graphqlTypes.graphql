@@ -1515,7 +1515,47 @@ query getDashboardData(
   $whereAggConsultation: CaseConsultationWhereInput
   $whereAggActiveCase: RenamedcaseWhereInput
   $whereAggFinishedCase:RenamedcaseWhereInput
+  $whereViolatedRights: CaseViolatedRightWhereInput
+  $whereViolenceMethods: CaseViolenceMethodWhereInput
+  $whereCaseModuses: CaseModusWhereInput
+  $whereOrientasiSeksual: RenamedcaseWhereInput
+  $whereCaseCategory: CaseCategoryWhereInput
   ){
+
+  renamedcases(where: $whereOrientasiSeksual){
+    application{
+      clients{
+        personId{
+          orientasiSeksual
+        }
+      }
+    }
+  }
+
+  caseCategories(where: $whereCaseCategory){
+    id
+    kodeMt
+    case_id
+  }
+
+  caseModuses(where: $whereCaseModuses){
+    id
+    kodeMt
+    case_id
+  }
+
+  caseViolatedRights(where: $whereViolatedRights){
+    id
+    kodeMt
+    case_id
+  }
+
+  caseViolenceMethods(where: $whereViolenceMethods){
+    id
+    kodeMt
+    case_id
+  }
+
     aggregateApplication(where: $whereAggApplication){
       count{
         id

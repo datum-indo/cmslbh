@@ -25,11 +25,22 @@
             "main": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
-            "assets": ["src/assets",    {
+            "assets": ["src/assets",
+              {
               "glob": "**/*",
               "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
               "output": "/assets/"
-          }, "src/favicon.ico"],
+              },
+              {
+              "glob": "**/*",
+              "input": "./node_modules/@antv/g2/dist",
+              "output": "/assets/@antv/g2/"
+            },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@antv/data-set/dist",
+                "output": "/assets/@antv/data-set/"
+              },"src/favicon.ico"],
             "styles": ["src/styles.less"],
             "scripts": [
             ],
@@ -49,7 +60,7 @@
               "ajv",
               "date-fns"
             ]
-     
+
           },
           "configurations": {
             "production": {

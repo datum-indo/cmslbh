@@ -28,13 +28,13 @@ import {
 import { Subscription } from 'rxjs';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { STComponent, STColumn, STData, STChange, STPage, STColumnSort } from '@delon/abc/st';
+import { STComponent, STColumn, STData, STChange, STPage, STColumnSort, STColumnButton } from '@delon/abc/st';
 import * as moment from 'moment';
 import { _HttpClient, MenuService, SettingsService } from '@delon/theme';
 import { MtVocabHelper } from '@shared/helper';
 import { map, tap, take } from 'rxjs/operators';
 import { ACLService } from '@delon/acl';
-import { assoc, filter, insertAll, prop } from 'ramda';
+import { assoc, filter, findIndex, insert, insertAll, isNil, prop, propEq, slice } from 'ramda';
 
 @Component({
   selector: 'app-list-application',
@@ -61,8 +61,12 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
   urlDocx = `http://${window.location.hostname}:3000/applicationdoc`;
   loading = false;
   modalInstance: NzModalRef;
+  dataModalTemp
+  personTemplate
   @ViewChild('st', { static: true })
   st: STComponent;
+
+  @ViewChild('modalClient') modalPerson
 
   columns: STColumn[] = [
     {
@@ -124,19 +128,7 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
       },
     },
     {
-      title: 'Klien',
-      index: 'applicationId.clients',
-      format: (item, col) => {
-        const formatText = item.clients.map(val => {
-          return val.personId.namaLengkap;
-        });
-        formatText.sort();
-        let concattedText = '';
-        for (const a of formatText) {
-          concattedText === '' ? (concattedText = a) : (concattedText = concattedText + ', ' + a);
-        }
-        return concattedText;
-      },
+      title:'Klien'
     },
     {
       title: 'Wakil',
@@ -198,8 +190,68 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
         // console.log(res);
         this.data = res.applications;
         this.st.total = res.aggregateApplication.count.id;
+        this.updateClients(res.applications);
         this.cdr.detectChanges();
       });
+  }
+
+  generateClients(data:any):STColumnButton[]{
+    let maxClients = 0
+    data.forEach(res=>{
+     maxClients = res.clients.length > maxClients ? res.clients.length:maxClients
+    })
+   return [...Array(maxClients).keys()].map((res)=>{
+      return {
+        text: record=>{
+          return `${record.clients[res].personId.namaLengkap}`;
+        },
+        iif: record=> record.clients.length > res,
+        click:record=>{
+          this.dataModalTemp = record.clients[res]
+          this.openModalClient(record.clients[res])
+        }
+      }
+    })
+  }
+
+  async openModalClient(client: any) {
+    this.loading = true;
+    // console.log(client);
+    if ('tglLahir' in client.personId) {
+      if (client.personId.tglLahir) {
+        client.personId.tglLahirTeks = moment(client.personId.tglLahir).format('DD-MM-YYYY');
+      }
+    }
+    if ('pendapatan' in client) {
+      if (client.pendapatan) {
+        client.pendapatanTeks = await this.mtVocabHelper.translateMtVocab(client.pendapatan);
+      }
+    }
+    if ('pekerjaan' in client.personId) {
+      if (client.personId.pekerjaan) {
+        client.personId.pekerjaanTeks = await this.mtVocabHelper.translateMtVocab(client.personId.pekerjaan);
+      }
+    }
+    this.dataModalTemp = client;
+    this.modalInstance = this.modalSrv.create({
+      nzContent: this.modalPerson,
+      nzWidth: this.card.nativeElement.offsetWidth,
+      nzFooter: null,
+      nzBodyStyle: {},
+    });
+    this.loading = false;
+  }
+
+  updateClients(applications){
+    this.columns = [...this.columns.map(res=>{
+      if(res.title==="Klien"){
+        return {
+          title:'Klien',
+          buttons:this.generateClients(applications)
+        }
+      }
+      return res
+    })]
   }
 
   ngOnDestroy(): void {
@@ -213,6 +265,7 @@ export class ListApplicationComponent implements OnInit, OnDestroy {
       .then(res => {
         this.data = res.data.applications;
         this.st.total = res.data.aggregateApplication.count.id;
+        this.updateClients(res.data.applications);
       })
       .finally(() => {
         this.loading = false;

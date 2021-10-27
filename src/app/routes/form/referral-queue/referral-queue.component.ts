@@ -100,7 +100,7 @@ export class ReferralQueueComponent implements OnInit, OnDestroy {
         {
           text: 'View Kasus',
           click: (item: any) => {
-            this.router.navigateByUrl('form/case/view/' + item.caseId.id);
+            this.router.navigate([]).then(res=>{window.open('#/form/case/view/' + item.caseId.id,'_blank')});
           },
         },
         {
